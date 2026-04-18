@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v1.9.4',
+  currentVersion: 'v1.9.5',
   updatedDate: '2026-04-18',
-  buildId: 'dining-explorer-refine',
+  buildId: 'header-brand-polish',
   changelogEntries: [
+    {
+      version: 'v1.9.5',
+      date: '2026-04-18',
+      changes: [
+        'Updated the header brand block subtitle to Royal Caribbean decision tools.',
+        'Improved the brand block spacing and text hierarchy so the product identity reads cleaner and more premium.',
+        'Kept the full header brand block linked to the homepage while tightening the top-left presentation.',
+      ],
+    },
     {
       version: 'v1.9.4',
       date: '2026-04-18',

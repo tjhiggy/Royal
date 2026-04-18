@@ -105,15 +105,31 @@ img {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 1rem;
   font-weight: 700;
   color: var(--text);
 }
 
+.brand-copy {
+  display: grid;
+  gap: 0.08rem;
+  align-items: start;
+}
+
+.brand-title {
+  font-size: 1.08rem;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+}
+
 .brand small {
   display: block;
-  color: var(--text-soft);
-  font-weight: 500;
+  color: var(--text-faint);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.2;
 }
 
 .brand-mark {
