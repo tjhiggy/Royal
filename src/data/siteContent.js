@@ -36,6 +36,13 @@ export const toolCards = [
     ctaLabel: 'Explore dining',
   },
   {
+    title: 'Dining Package Calculator',
+    description: 'Check whether the Unlimited Dining Package actually saves money based on meals you will really use.',
+    to: '/tools/dining-package',
+    badge: 'Live',
+    ctaLabel: 'Check dining package',
+  },
+  {
     title: 'Compare Scenarios',
     description: 'Put two trip versions side by side and see which choice is quietly making the total worse.',
     to: '/compare',

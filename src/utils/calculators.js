@@ -7,6 +7,9 @@ const recommendationOrder = {
   'Skip it': 'Skip it',
 }
 
+const SPECIALTY_DINNER_PRICE = 55
+const SPECIALTY_LUNCH_PRICE = 30
+
 export function calculateDrinkPackage(form) {
   const nights = Number(form.cruiseNights) || 0
   const gratuityRate = (Number(form.gratuityPercentage) || 0) / 100
@@ -58,6 +61,116 @@ export function calculateDrinkPackage(form) {
     waterSpend,
     sodaSpend,
     recommendation,
+  }
+}
+
+export function calculateDiningPackage(form) {
+  const nights = Math.max(Number(form.cruiseNights) || 0, 0)
+  const seaDays = Math.max(Number(form.seaDays) || 0, 0)
+  const portDays = Math.max(Number(form.portDays) || 0, 0)
+  const packagePriceInput = Math.max(Number(form.packagePrice) || 0, 0)
+  const specialtyDinnersPlanned = Math.max(Number(form.specialtyDinnersPlanned) || 0, 0)
+  const specialtyLunchesPlanned = Math.max(Number(form.specialtyLunchesPlanned) || 0, 0)
+  const priceMode = form.priceMode || 'per-day'
+  const interestLevel = form.interestLevel || 'medium'
+
+  const packageTotal = priceMode === 'total' ? packagePriceInput : packagePriceInput * nights
+  const totalTripDays = Math.max(seaDays + portDays, 1)
+  const seaDayShare = seaDays / totalTripDays
+
+  const dinnerUseRateMap = {
+    low: 0.7,
+    medium: 0.85,
+    high: 1,
+  }
+
+  const lunchBaseRateMap = {
+    low: 0.25,
+    medium: 0.5,
+    high: 0.75,
+  }
+
+  const estimatedDinnerCount = Math.min(specialtyDinnersPlanned, nights) * (dinnerUseRateMap[interestLevel] ?? 0.85)
+  const lunchUseRate = Math.min(
+    0.95,
+    (lunchBaseRateMap[interestLevel] ?? 0.5) * (0.55 + seaDayShare),
+  )
+  const estimatedLunchCount =
+    Math.min(specialtyLunchesPlanned, seaDays + portDays) * lunchUseRate
+
+  const dinnerValue = estimatedDinnerCount * SPECIALTY_DINNER_PRICE
+  const lunchValue = estimatedLunchCount * SPECIALTY_LUNCH_PRICE
+  const estimatedValueUsed = dinnerValue + lunchValue
+  const netSavings = estimatedValueUsed - packageTotal
+
+  const plannedMealCount = specialtyDinnersPlanned + specialtyLunchesPlanned
+  const weightedMealValue =
+    plannedMealCount > 0
+      ? ((specialtyDinnersPlanned * SPECIALTY_DINNER_PRICE) + (specialtyLunchesPlanned * SPECIALTY_LUNCH_PRICE)) / plannedMealCount
+      : ((SPECIALTY_DINNER_PRICE * 2) + SPECIALTY_LUNCH_PRICE) / 3
+  const breakEvenMealsRequired = weightedMealValue > 0 ? packageTotal / weightedMealValue : 0
+
+  let recommendation = 'Skip it'
+  if (estimatedValueUsed > packageTotal * 1.08) {
+    recommendation = 'Worth it'
+  } else if (Math.abs(netSavings) <= Math.max(packageTotal * 0.08, 35)) {
+    recommendation = 'Borderline'
+  }
+
+  const quickWins = []
+
+  if (recommendation === 'Skip it') {
+    quickWins.push({
+      title: `Skip the package -> avoid about ${formatCurrency(Math.abs(netSavings || packageTotal))}`,
+      detail: 'Book the meals you actually want instead of paying upfront for optimistic usage.',
+    })
+  }
+
+  if (specialtyLunchesPlanned > 0 && estimatedLunchCount < specialtyLunchesPlanned * 0.7) {
+    quickWins.push({
+      title: 'Do not count every lunch',
+      detail: 'Port days and lighter interest usually kill lunch value faster than people expect.',
+    })
+  }
+
+  if (recommendation !== 'Worth it') {
+    const extraMealsNeeded = Math.max(Math.ceil(breakEvenMealsRequired - (estimatedDinnerCount + estimatedLunchCount)), 0)
+    quickWins.push({
+      title: extraMealsNeeded > 0
+        ? `You need about ${extraMealsNeeded} more specialty meals`
+        : 'You are basically at the break-even line',
+      detail: extraMealsNeeded > 0
+        ? 'Without more real usage, the package is doing more marketing than saving.'
+        : 'This is close enough that convenience is the only real argument left.',
+    })
+  }
+
+  if (recommendation === 'Worth it') {
+    quickWins.push({
+      title: 'Use the package on sea days',
+      detail: 'That is where lunch value and repeat dinners stop this from turning into an overpay.',
+    })
+  }
+
+  if (!quickWins.length) {
+    quickWins.push({
+      title: 'No obvious shortcut',
+      detail: 'This one mostly comes down to whether you will actually use the meals you are counting.',
+    })
+  }
+
+  return {
+    packageTotal,
+    estimatedValueUsed,
+    netSavings,
+    breakEvenMealsRequired,
+    estimatedDinnerCount,
+    estimatedLunchCount,
+    dinnerValue,
+    lunchValue,
+    weightedMealValue,
+    recommendation,
+    quickWins: quickWins.slice(0, 3),
   }
 }
 

@@ -6,6 +6,7 @@ import ComparePage from './pages/ComparePage'
 import CruiseCostPage from './pages/CruiseCostPage'
 import DealEvaluatorPage from './pages/DealEvaluatorPage'
 import DiningPage from './pages/DiningPage'
+import DiningPackagePage from './pages/DiningPackagePage'
 import DrinkPackagePage from './pages/DrinkPackagePage'
 import HomePage from './pages/HomePage'
 import PackingPage from './pages/PackingPage'
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/compare" element={<ComparePage />} />
         <Route path="/dining" element={<DiningPage />} />
         <Route path="/changelog" element={<ChangelogPage />} />
+        <Route path="/tools/dining-package" element={<DiningPackagePage />} />
         <Route path="/tools/deal-evaluator" element={<DealEvaluatorPage />} />
         <Route path="/tools/drink-package" element={<DrinkPackagePage />} />
         <Route path="/tools/cruise-cost" element={<CruiseCostPage />} />

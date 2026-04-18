@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v1.9.6',
+  currentVersion: 'v1.10.0',
   updatedDate: '2026-04-18',
-  buildId: 'brand-name-update',
+  buildId: 'dining-package-calculator',
   changelogEntries: [
+    {
+      version: 'v1.10.0',
+      date: '2026-04-18',
+      changes: [
+        'Added the Dining Package Calculator to judge whether the Unlimited Dining Package is actually worth it.',
+        'Added verdict, savings or overpay messaging, realistic meal usage, break-even meal count, and quick-win guidance for dining package decisions.',
+        'Replaced the old Dining Explorer placeholder with a live link to the new dining package tool.',
+      ],
+    },
     {
       version: 'v1.9.6',
       date: '2026-04-18',

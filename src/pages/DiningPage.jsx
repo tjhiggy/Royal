@@ -259,6 +259,14 @@ export default function DiningPage() {
               description="Use the ship view here, then move to the money decision that matters next."
             />
             <div className="card-grid dining-next-step-grid">
+              <Link className="card info-card dining-next-step-card" to="/tools/dining-package">
+                <div className="card-topline">
+                  <h3>Dining Package Calculator</h3>
+                  <span className="status-pill">Live</span>
+                </div>
+                <p>Run the actual package math instead of guessing from menus and wishful thinking.</p>
+                <span className="card-link">Check dining package</span>
+              </Link>
               <Link className="card info-card dining-next-step-card" to="/compare">
                 <div className="card-topline">
                   <h3>Compare trip versions</h3>
@@ -267,10 +275,6 @@ export default function DiningPage() {
                 <p>Compare one trip with more paid add-ons against a leaner version before the budget gets stupid.</p>
                 <span className="card-link">Compare scenarios</span>
               </Link>
-            </div>
-            <div className="dining-placeholder-note">
-              <strong>Dining Package Calculator</strong>
-              <span>Not built yet. The ship dining data is ready for it when we wire the package logic in.</span>
             </div>
           </section>
 
