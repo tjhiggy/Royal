@@ -19,8 +19,8 @@ export default function SiteLayout() {
           <NavLink className="brand" to="/">
             <span className="brand-mark">R</span>
             <span className="brand-copy">
-              <span className="brand-title">Royal</span>
-              <small>Royal Caribbean decision tools</small>
+              <span className="brand-title">Cruise Decision Engine</span>
+              <small>Royal Caribbean trip decision tools</small>
             </span>
           </NavLink>
 

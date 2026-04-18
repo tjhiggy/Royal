@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v1.9.5',
+  currentVersion: 'v1.9.6',
   updatedDate: '2026-04-18',
-  buildId: 'header-brand-polish',
+  buildId: 'brand-name-update',
   changelogEntries: [
+    {
+      version: 'v1.9.6',
+      date: '2026-04-18',
+      changes: [
+        'Replaced the primary brand name with Cruise Decision Engine in the header and footer.',
+        'Updated the subtitle to Royal Caribbean trip decision tools for clearer product positioning.',
+        'Kept the existing header and footer layout while tightening text hierarchy for the new brand name.',
+      ],
+    },
     {
       version: 'v1.9.5',
       date: '2026-04-18',
