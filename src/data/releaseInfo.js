@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v1.2.0',
+  currentVersion: 'v1.3.0',
   updatedDate: '2026-04-18',
-  buildId: 'compare-presets',
+  buildId: 'share-and-key',
   changelogEntries: [
+    {
+      version: 'v1.3.0',
+      date: '2026-04-18',
+      changes: [
+        'Added The Key Calculator with verdict, value drivers, and simple worth-it guidance.',
+        'Added save, load, and delete support for Compare scenarios using localStorage only.',
+        'Added share summary and share-link support for Compare, including restore-from-URL behavior.',
+      ],
+    },
     {
       version: 'v1.2.0',
       date: '2026-04-18',
