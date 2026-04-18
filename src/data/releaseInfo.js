@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v1.6.2',
+  currentVersion: 'v1.7.0',
   updatedDate: '2026-04-18',
-  buildId: 'deal-evaluator-polish',
+  buildId: 'royal-ship-dataset',
   changelogEntries: [
+    {
+      version: 'v1.7.0',
+      date: '2026-04-18',
+      changes: [
+        'Added a canonical Royal Caribbean ship dataset covering every ship on the official deck plan pages.',
+        'Separated active ships from future ships like Legend of the Seas and Hero of the Seas instead of pretending all hulls are already sailing.',
+        'Added maintainable ship-level dining data with complimentary, specialty, and hybrid venue groupings for future dining tools.',
+      ],
+    },
     {
       version: 'v1.6.2',
       date: '2026-04-18',
