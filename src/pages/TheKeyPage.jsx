@@ -78,12 +78,15 @@ export default function TheKeyPage() {
       ? ['The Key looks worthwhile here.', outcomeMessage]
       : results.recommendation === 'Borderline'
         ? ['The Key is a close call here.', outcomeMessage]
-        : ['The Key probably is not worth it here.', outcomeMessage]
+        : [
+            'The Key is not doing enough to justify the price here.',
+            `You are paying ${formatCurrency(results.keyTotal)} for perks worth about ${formatCurrency(results.estimatedValueUsed)} to you.`,
+          ]
 
   const insight =
     results.mainDriver
       ? `${results.mainDriver.label} is doing the most work in the value estimate.`
-      : 'Most of the bundled perks are not adding much value for this trip.'
+      : 'Most of the bundled perks are not adding enough real value for this trip.'
 
   return (
     <div className="container page-stack">
@@ -243,7 +246,7 @@ export default function TheKeyPage() {
         <section className="card callout-card">
           <SectionHeader
             title="What would make it worth it"
-            description="Simple levers that would push The Key closer to making sense."
+            description="These are the few real changes that would stop this from being an obvious overpay."
           />
           <div className="explanation-list">
             {results.suggestions.map((suggestion) => (

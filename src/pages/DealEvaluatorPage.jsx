@@ -22,6 +22,12 @@ const initialState = {
 export default function DealEvaluatorPage() {
   const [form, setForm] = useState(initialState)
   const results = useMemo(() => calculateDealEvaluator(form), [form])
+  const statusClassName =
+    results.verdict === 'Solid deal'
+      ? 'status-worth-it'
+      : results.verdict === 'Mixed deal'
+        ? 'status-borderline'
+        : 'status-skip-it'
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -115,7 +121,7 @@ export default function DealEvaluatorPage() {
               ))}
             </div>
           </div>
-          <span className="status-pill status-muted">{results.verdict}</span>
+          <span className={`status-pill ${statusClassName}`}>{results.verdict}</span>
         </div>
       </section>
 
@@ -163,7 +169,7 @@ export default function DealEvaluatorPage() {
         <section className="card">
           <SectionHeader
             title="Biggest cost drivers"
-            description="This is where your money is actually going."
+            description="This is where your controllable spend is actually going."
           />
           <div className="driver-list">
             {results.costDrivers.map((driver, index) => (
@@ -213,7 +219,7 @@ export default function DealEvaluatorPage() {
       <section className="card">
         <SectionHeader
           title="Quick wins"
-          description="These are the easiest places to cut cost without pretending the fare is the only issue."
+          description="These are the cleanest places to cut cost without pretending the fare is the problem you can control."
         />
         <div className="explanation-list">
           {results.quickWins.map((win) => (

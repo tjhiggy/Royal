@@ -8,28 +8,32 @@ function sanitizeScenario(scenario, template) {
   )
 }
 
-export function buildCompareSummary(comparison) {
+export function buildCompareSummary(comparison, labels = { scenarioA: 'Scenario A', scenarioB: 'Scenario B' }) {
+  const scenarioAName = labels.scenarioA || 'Scenario A'
+  const scenarioBName = labels.scenarioB || 'Scenario B'
   const totalLine =
     comparison.totalDifference === 0
-      ? 'Both scenarios land at about the same total'
-      : `${comparison.moreExpensiveScenario} costs about ${formatCurrency(Math.abs(comparison.totalDifference))} more overall`
+      ? `${scenarioAName} and ${scenarioBName} land at about the same total`
+      : `${comparison.totalDifference > 0 ? scenarioBName : scenarioAName} costs about ${formatCurrency(comparison.absoluteTotalDifference)} more overall`
   const driver = comparison.topDifferenceLines[0]
   const driverLine = driver
-    ? `Main driver: ${driver.label} (${driver.value >= 0 ? '+' : '-'}${formatCurrency(Math.abs(driver.value))})`
+    ? `Main driver: ${driver.label} (+${formatCurrency(driver.amount)} in ${driver.higherIn.replace('Scenario A', scenarioAName).replace('Scenario B', scenarioBName)})`
     : 'Main driver: no single line item is creating a major gap'
 
   return [
     totalLine,
     driverLine,
-    `Nightly difference: about ${formatCurrency(Math.abs(comparison.costPerNightDifference))}`,
-    `Add-ons gap: about ${formatCurrency(Math.abs(comparison.addOnsDifference))}`,
+    `Nightly difference: about ${formatCurrency(comparison.absoluteCostPerNightDifference)}`,
+    `Add-ons gap: about ${formatCurrency(comparison.absoluteAddOnsDifference)}`,
   ].join('\n')
 }
 
-export function encodeCompareState({ scenarioA, scenarioB }, template) {
+export function encodeCompareState({ scenarioA, scenarioB, scenarioALabel, scenarioBLabel }, template) {
   const payload = {
     a: sanitizeScenario(scenarioA, template),
     b: sanitizeScenario(scenarioB, template),
+    al: scenarioALabel || 'Scenario A',
+    bl: scenarioBLabel || 'Scenario B',
   }
 
   const json = JSON.stringify(payload)
@@ -48,6 +52,8 @@ export function decodeCompareState(encoded, template) {
     return {
       scenarioA: sanitizeScenario(parsed.a, template),
       scenarioB: sanitizeScenario(parsed.b, template),
+      scenarioALabel: parsed.al || 'Scenario A',
+      scenarioBLabel: parsed.bl || 'Scenario B',
     }
   } catch {
     return null

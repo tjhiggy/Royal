@@ -18,8 +18,6 @@ export default function CruiseCostPage() {
         : results.status === 'Fare-first'
           ? 'status-worth-it'
           : 'status-muted'
-  const quickWinMessage = results.quickWin.replace(/^Quick win:\s*/i, '')
-
   function handleChange(event) {
     const { name, value } = event.target
     setForm((current) => ({ ...current, [name]: value }))
@@ -91,22 +89,18 @@ export default function CruiseCostPage() {
 
         <section className="card callout-card">
           <div className="card-topline">
-            <h2>Quick Win</h2>
+            <h2>Quick wins</h2>
           </div>
-          <p className="quick-win-copy">{quickWinMessage}</p>
           <div className="explanation-list compact-list">
-            <div className="explanation-item">
-              <span>Base fare</span>
-              <strong>{formatCurrency(results.fare)}</strong>
-            </div>
-            <div className="explanation-item">
-              <span>Add-ons subtotal</span>
-              <strong>{formatCurrency(results.addOnsSubtotal)}</strong>
-            </div>
-            <div className="explanation-item">
-              <span>Travel-related costs</span>
-              <strong>{formatCurrency(results.travelCosts)}</strong>
-            </div>
+            {results.quickWins.map((win) => (
+              <div key={win.title} className="explanation-item">
+                <span>
+                  <strong>{win.title}</strong>
+                  <br />
+                  {win.detail}
+                </span>
+              </div>
+            ))}
           </div>
         </section>
       </div>

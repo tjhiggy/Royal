@@ -111,21 +111,28 @@ export function calculateTheKey(form) {
 
   const mainDriver = valueDrivers[0] ?? null
   const suggestions = []
+  const additionalWifiValue =
+    !form.wifiNeeded ? nights * (Number(form.numberOfDevices) >= 2 ? 30 : 20) : 0
+  const additionalLunchValue = form.embarkationLunch ? 0 : 25
+  const additionalPriorityValue = Math.max(25 - (perkValueMap[form.priorityBoardingImportance] ?? 0), 0)
+  const additionalSeatingValue = Math.max(20 - (seatingValueMap[form.reservedSeatingImportance] ?? 0), 0)
+  const additionalSkipLineValue = Math.max(25 - (perkValueMap[form.skipLineImportance] ?? 0), 0)
 
   if (!form.wifiNeeded) {
-    suggestions.push('The Key gets more reasonable if you already planned to pay for WiFi.')
+    suggestions.push(`If you would have paid for WiFi anyway, that adds about ${formatCurrency(additionalWifiValue)} in real value.`)
   }
   if (!form.embarkationLunch) {
-    suggestions.push('Taking the embarkation lunch adds some value back to the package.')
+    suggestions.push(`Using the embarkation lunch adds about ${formatCurrency(additionalLunchValue)} back to the value side.`)
   }
-  if ((perkValueMap[form.priorityBoardingImportance] ?? 0) === 0) {
-    suggestions.push('If priority boarding matters more to you than it does now, The Key looks a little less overpriced.')
+  if (additionalPriorityValue > 0 || additionalSeatingValue > 0 || additionalSkipLineValue > 0) {
+    const convenienceGain = additionalPriorityValue + additionalSeatingValue + additionalSkipLineValue
+    suggestions.push(`If you actually value the convenience perks more, that can add about ${formatCurrency(convenienceGain)} in usable value.`)
   }
-  if ((perkValueMap[form.skipLineImportance] ?? 0) === 0) {
-    suggestions.push('The skip-the-line perks only help if that convenience actually matters to you.')
+  if (difference > 0) {
+    suggestions.push(`Right now you are still short by about ${formatCurrency(difference)}. Without more real value, this is mostly paying for the label.`)
   }
   if (!suggestions.length) {
-    suggestions.push('This already includes most of the value levers, so the answer mainly comes down to whether that convenience is worth the price.')
+    suggestions.push('You are already counting the main value levers here, so this mostly comes down to whether the convenience feels worth the price to you.')
   }
 
   return {
@@ -189,12 +196,7 @@ export function calculateWifiRecommendation(form) {
     twoVsNone: twoDeviceCost - noWifiCost,
   }
 
-  let verdict = 'Worth it'
-  if (recommendedPlan === 'no-wifi') {
-    verdict = 'Skip it'
-  } else if (recommendedPlan === 'one-device' && usageType === 'moderate') {
-    verdict = 'Borderline'
-  }
+  const verdict = recommendedPlan === 'no-wifi' ? 'Skip it' : 'Worth it'
 
   const insightLines = []
   if (recommendedPlan === 'no-wifi') {
@@ -318,7 +320,7 @@ export function calculateCruiseCost(form) {
     summaryLines.push(`${dominantDriver.label} is carrying a big share of this total.`)
   }
 
-  const quickWin = buildCruiseQuickWin({
+  const quickWins = buildCruiseQuickWins({
     fare,
     addOns,
     travelCosts,
@@ -343,7 +345,7 @@ export function calculateCruiseCost(form) {
     dominantDriver,
     status,
     summaryLines: summaryLines.slice(0, 3),
-    quickWin,
+    quickWins,
   }
 }
 
@@ -390,7 +392,6 @@ export function calculateDealEvaluator(form) {
   const baseFareShare = total ? ((Number(form.baseFare) || 0) / total) * 100 : 0
 
   const costDrivers = [
-    { key: 'baseFare', label: 'Base fare', value: Number(form.baseFare) || 0 },
     { key: 'taxesAndFees', label: 'Taxes and fees', value: Number(form.taxesAndFees) || 0 },
     { key: 'drinkPackage', label: 'Drink package', value: Number(form.drinkPackage) || 0 },
     { key: 'wifi', label: 'WiFi', value: Number(form.wifi) || 0 },
@@ -426,31 +427,20 @@ export function calculateDealEvaluator(form) {
     verdictLines.push('Nothing is totally out of control, but this is not the bargain the fare tries to suggest.')
   }
 
-  const quickWins = []
-  if ((Number(form.drinkPackage) || 0) > 0) {
-    quickWins.push({
-      title: `Skip the drink package -> save about ${formatCurrency(Number(form.drinkPackage) || 0)}`,
-      detail: 'This is one of the biggest drivers in your total cost.',
-    })
-  }
-  if ((Number(form.theKey) || 0) > 0) {
-    quickWins.push({
-      title: `Skip The Key -> save about ${formatCurrency(Number(form.theKey) || 0)}`,
-      detail: 'If you are already questioning the deal, this is usually an easy cut.',
-    })
-  }
-  if (travelSubtotal >= total * TRAVEL_HEAVY_THRESHOLD / 100) {
-    quickWins.push({
-      title: 'Recheck travel first',
-      detail: 'Flights, hotel, or transport are large enough to move the budget more than small onboard cuts.',
-    })
-  }
-  if ((Number(form.excursions) || 0) + (Number(form.specialtyDining) || 0) >= total * DINING_EXCURSION_THRESHOLD) {
-    quickWins.push({
-      title: 'Trim excursions or specialty dining',
-      detail: 'Those extras are big enough to cut without changing the sailing itself.',
-    })
-  }
+  const quickWins = buildDealQuickWins({
+    drinkPackage: Number(form.drinkPackage) || 0,
+    wifi: Number(form.wifi) || 0,
+    excursions: Number(form.excursions) || 0,
+    specialtyDining: Number(form.specialtyDining) || 0,
+    theKey: Number(form.theKey) || 0,
+    flights: Number(form.flights) || 0,
+    hotel: Number(form.hotel) || 0,
+    parkingTransport: Number(form.parkingTransport) || 0,
+    travelSubtotal,
+    total,
+    travelHeavyThreshold: TRAVEL_HEAVY_THRESHOLD,
+    diningExcursionThreshold: DINING_EXCURSION_THRESHOLD,
+  })
 
   let addOnPressureMessage = 'Add-ons are under control for this trip.'
   if (addOnsShare > ADD_ON_HEAVY_THRESHOLD) {
@@ -531,7 +521,8 @@ export function compareCruiseCostScenarios(scenarioA, scenarioB) {
   const biggestDifference = categoryDifferences[0] ?? null
   const topDifferenceLines = categoryDifferences.slice(0, 3).map((category) => ({
     ...category,
-    direction: category.value > 0 ? 'higher in Scenario B' : 'higher in Scenario A',
+    amount: Math.abs(category.value),
+    higherIn: category.value > 0 ? 'Scenario B' : 'Scenario A',
   }))
 
   let interpretation = 'The two scenarios land in almost the same place overall.'
@@ -550,6 +541,9 @@ export function compareCruiseCostScenarios(scenarioA, scenarioB) {
     totalDifference,
     costPerNightDifference,
     addOnsDifference,
+    absoluteTotalDifference: Math.abs(totalDifference),
+    absoluteCostPerNightDifference: Math.abs(costPerNightDifference),
+    absoluteAddOnsDifference: Math.abs(addOnsDifference),
     moreExpensiveScenario,
     interpretation,
     driverNote,
@@ -573,13 +567,21 @@ function costPerNightBand(costPerNight) {
   return 'low'
 }
 
-function buildCruiseQuickWin({ fare, addOns, travelCosts, grandTotal, topAddOnDriver, addOnCategories }) {
+function buildCruiseQuickWins({ fare, addOns, travelCosts, grandTotal, topAddOnDriver, addOnCategories }) {
+  const quickWins = []
+
   if (topAddOnDriver && topAddOnDriver.value >= grandTotal * 0.12) {
-    return `Cutting ${topAddOnDriver.label.toLowerCase()} would lower the total by about ${formatCurrency(topAddOnDriver.value)}.`
+    quickWins.push({
+      title: `Cut ${topAddOnDriver.label.toLowerCase()} -> save about ${formatCurrency(topAddOnDriver.value)}`,
+      detail: 'This is the clearest add-on lever in the total.',
+    })
   }
 
   if (travelCosts >= grandTotal * 0.28) {
-    return 'Travel is expensive enough here that changing flights, hotel, or transfers could move the total more than trimming small onboard extras.'
+    quickWins.push({
+      title: `Trim travel costs -> save about ${formatCurrency(travelCosts)}`,
+      detail: 'Flights, hotel, parking, or transfers are big enough to matter more than small onboard cuts.',
+    })
   }
 
   const diningAndExcursions = addOnCategories
@@ -587,14 +589,84 @@ function buildCruiseQuickWin({ fare, addOns, travelCosts, grandTotal, topAddOnDr
     .reduce((total, category) => total + category.value, 0)
 
   if (diningAndExcursions >= grandTotal * 0.15) {
-    return 'Excursions and specialty dining are large enough to trim before you mess with the sailing itself.'
+    quickWins.push({
+      title: `Trim dining or excursions -> save about ${formatCurrency(diningAndExcursions)}`,
+      detail: 'Those extras are large enough to move the total without changing the sailing itself.',
+    })
   }
 
   if (addOns > fare && addOns > 0) {
-    return 'The easiest savings are probably in the add-ons, not the cabin fare.'
+    quickWins.push({
+      title: `Cut add-ons first -> save about ${formatCurrency(addOns)}`,
+      detail: 'The easiest savings are in the extras, not the cabin fare.',
+    })
   }
 
-  return 'There is no single obvious budget fix here, so compare the add-ons before cutting the sailing itself.'
+  if (!quickWins.length) {
+    quickWins.push({
+      title: 'No obvious easy cut',
+      detail: 'This total is fairly spread out, so compare the extras before you touch the sailing itself.',
+    })
+  }
+
+  return quickWins.slice(0, 3)
+}
+
+function buildDealQuickWins({
+  drinkPackage,
+  wifi,
+  excursions,
+  specialtyDining,
+  theKey,
+  flights,
+  hotel,
+  parkingTransport,
+  travelSubtotal,
+  total,
+  travelHeavyThreshold,
+  diningExcursionThreshold,
+}) {
+  const quickWins = []
+  const directCuts = [
+    { key: 'drinkPackage', label: 'Skip the drink package', value: drinkPackage, detail: 'This is often the fastest way to strip out a big optional cost.' },
+    { key: 'excursions', label: 'Trim excursions', value: excursions, detail: 'Port spend can get out of hand fast and is easier to scale back than the sailing.' },
+    { key: 'specialtyDining', label: 'Cut specialty dining', value: specialtyDining, detail: 'This is easier to trim than the trip itself and usually hurts less.' },
+    { key: 'theKey', label: 'Skip The Key', value: theKey, detail: 'If the deal already looks shaky, this is usually easy to cut.' },
+    { key: 'wifi', label: 'Scale back WiFi', value: wifi, detail: 'This is optional spend, not a required part of the fare.' },
+  ]
+    .filter((item) => item.value > 0)
+    .sort((left, right) => right.value - left.value)
+
+  directCuts.slice(0, 2).forEach((item) => {
+    quickWins.push({
+      title: `${item.label} -> save about ${formatCurrency(item.value)}`,
+      detail: item.detail,
+    })
+  })
+
+  if (travelSubtotal >= total * travelHeavyThreshold / 100) {
+    const biggestTravelComponent = Math.max(flights, hotel, parkingTransport)
+    quickWins.push({
+      title: `Rework travel -> save about ${formatCurrency(biggestTravelComponent || travelSubtotal)}`,
+      detail: 'Flights, hotel, or transport are large enough to matter more than small onboard cuts.',
+    })
+  }
+
+  if (excursions + specialtyDining >= total * diningExcursionThreshold) {
+    quickWins.push({
+      title: `Trim dining and excursions -> save about ${formatCurrency(excursions + specialtyDining)}`,
+      detail: 'Those extras are large enough to move the budget without changing the sailing.',
+    })
+  }
+
+  if (!quickWins.length) {
+    quickWins.push({
+      title: 'No obvious easy cut',
+      detail: 'This total is fairly spread out, so the best move is comparing several smaller extras instead of chasing one magic fix.',
+    })
+  }
+
+  return quickWins.slice(0, 3)
 }
 
 export function generatePackingList(form) {

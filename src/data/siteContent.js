@@ -8,11 +8,18 @@ export const featureList = [
 
 export const toolCards = [
   {
-    title: 'Dining Explorer',
-    description: 'Pick a ship and see what dining is included, what costs extra, and where the fine print gets sneaky.',
-    to: '/dining',
+    title: 'Deal Evaluator',
+    description: 'See whether a cruise is actually a deal once the fare, extras, and travel all tell the truth.',
+    to: '/tools/deal-evaluator',
     badge: 'Live',
-    ctaLabel: 'Explore dining',
+    ctaLabel: 'Evaluate the deal',
+  },
+  {
+    title: 'Cruise Cost Calculator',
+    description: 'Add fare, extras, and travel costs so you can see the real trip price before you book.',
+    to: '/tools/cruise-cost',
+    badge: 'Live',
+    ctaLabel: 'Check real cost',
   },
   {
     title: 'Drink Package Calculator',
@@ -22,11 +29,11 @@ export const toolCards = [
     ctaLabel: 'Check the package math',
   },
   {
-    title: 'Cruise Cost Calculator',
-    description: 'Add fare, extras, and travel costs so you can see the real trip price before you book.',
-    to: '/tools/cruise-cost',
+    title: 'Dining Explorer',
+    description: 'Pick a ship and see what dining is included, what costs extra, and where the fine print gets sneaky.',
+    to: '/dining',
     badge: 'Live',
-    ctaLabel: 'Check real cost',
+    ctaLabel: 'Explore dining',
   },
   {
     title: 'Compare Scenarios',
@@ -48,12 +55,5 @@ export const toolCards = [
     to: '/tools/wifi',
     badge: 'Live',
     ctaLabel: 'Check WiFi',
-  },
-  {
-    title: 'Deal Evaluator',
-    description: 'See whether a cruise is actually a deal once the fare, extras, and travel all tell the truth.',
-    to: '/tools/deal-evaluator',
-    badge: 'Live',
-    ctaLabel: 'Evaluate the deal',
   },
 ]

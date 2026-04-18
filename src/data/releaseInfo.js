@@ -1,8 +1,53 @@
 export const releaseInfo = {
-  currentVersion: 'v1.8.1',
+  currentVersion: 'v1.9.4',
   updatedDate: '2026-04-18',
-  buildId: 'dining-explorer-polish',
+  buildId: 'dining-explorer-refine',
   changelogEntries: [
+    {
+      version: 'v1.9.4',
+      date: '2026-04-18',
+      changes: [
+        'Refined Dining Explorer so the summary verdict more clearly answers whether specialty dining is actually needed on each ship.',
+        'Surfaced included-with-caveat venues more clearly and grouped dining fine print into included caveats versus extra-cost or policy nuance.',
+        'Reduced the prominence of the unbuilt Dining Package Calculator placeholder and added a clearer verification note about policy changes.',
+      ],
+    },
+    {
+      version: 'v1.9.3',
+      date: '2026-04-18',
+      changes: [
+        'Tightened verdict language and action recommendations across Compare, WiFi, Cruise Cost, The Key, and Deal Evaluator.',
+        'Removed contradictory signals like negative compare deltas and soft WiFi borderline messaging when the recommendation is actually decisive.',
+        'Improved quick-win logic so controllable costs get the attention instead of base fare pretending to be a user choice.',
+      ],
+    },
+    {
+      version: 'v1.9.2',
+      date: '2026-04-18',
+      changes: [
+        'Redesigned the footer with clearer structure for brand, statement, disclaimer, navigation, and release metadata.',
+        'Added an explicit independent-tool disclaimer and made version/build information quieter without hiding it.',
+        'Improved footer spacing, contrast, and alignment so it feels like part of the product instead of an afterthought.',
+      ],
+    },
+    {
+      version: 'v1.9.1',
+      date: '2026-04-18',
+      changes: [
+        'Reworked the homepage to behave more like a Royal Caribbean decision engine instead of a generic tool hub.',
+        'Put the most important decisions first with a Start Here strip and a primary tool order led by Deal Evaluator, Cruise Cost, and Drink Package.',
+        'Moved Dining Explorer and lower-priority utilities into secondary sections so the homepage pushes the money decisions first.',
+      ],
+    },
+    {
+      version: 'v1.9.0',
+      date: '2026-04-18',
+      changes: [
+        'Reworked the site into a premium dark theme with deep navy and charcoal surfaces, brighter text, and blue-cyan accents.',
+        'Updated cards, forms, buttons, badges, and verdict states to fit the darker visual system without changing layouts.',
+        'Strengthened contrast and focus states so the darker theme still reads cleanly and feels deliberate instead of muddy.',
+      ],
+    },
     {
       version: 'v1.8.1',
       date: '2026-04-18',

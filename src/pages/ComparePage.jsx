@@ -91,14 +91,24 @@ const compactFieldNames = new Set([
   'cruiseNights',
 ])
 
-function ScenarioSection({ title, label, form, onChange, results }) {
+function ScenarioSection({ title, helper, scenarioLabel, onLabelChange, form, onChange, results }) {
   return (
     <section className="card compare-scenario-card">
       <div className="compare-scenario-label">{title}</div>
       <SectionHeader
-        title="Trip details"
-        description={label}
+        title={scenarioLabel}
+        description={helper}
       />
+      <label className="field">
+        <span className="field-label">Scenario label</span>
+        <input
+          className="field-input"
+          type="text"
+          value={scenarioLabel}
+          onChange={onLabelChange}
+          placeholder={title}
+        />
+      </label>
       <div className="compare-form-grid">
         {cruiseCostFields
           .filter(([name]) => compactFieldNames.has(name))
@@ -142,6 +152,8 @@ export default function ComparePage() {
   const location = useLocation()
   const [scenarioA, setScenarioA] = useState(cruiseCostInitialState)
   const [scenarioB, setScenarioB] = useState(scenarioBInitialState)
+  const [scenarioALabel, setScenarioALabel] = useState('Scenario A')
+  const [scenarioBLabel, setScenarioBLabel] = useState('Scenario B')
   const [activePreset, setActivePreset] = useState('')
   const [comparisonName, setComparisonName] = useState('')
   const [savedComparisons, setSavedComparisons] = useState(() => loadCompareScenarios())
@@ -159,6 +171,8 @@ export default function ComparePage() {
 
     setScenarioA(sharedState.scenarioA)
     setScenarioB(sharedState.scenarioB)
+    setScenarioALabel(sharedState.scenarioALabel || 'Scenario A')
+    setScenarioBLabel(sharedState.scenarioBLabel || 'Scenario B')
     setActivePreset('')
   }, [location.search])
 
@@ -182,6 +196,8 @@ export default function ComparePage() {
   function applyPreset(preset) {
     setScenarioA(preset.scenarioA)
     setScenarioB(preset.scenarioB)
+    setScenarioALabel(`${preset.label.split(' vs ')[0] || 'Scenario A'}`)
+    setScenarioBLabel(`${preset.label.split(' vs ')[1] || 'Scenario B'}`)
     setActivePreset(preset.label)
   }
 
@@ -194,6 +210,8 @@ export default function ComparePage() {
       id: existingIndex >= 0 ? savedComparisons[existingIndex].id : `${Date.now()}`,
       name,
       updatedAt: new Date().toISOString(),
+      scenarioALabel,
+      scenarioBLabel,
       scenarioA,
       scenarioB,
     }
@@ -211,6 +229,8 @@ export default function ComparePage() {
   function handleLoadComparison(savedComparison) {
     setScenarioA(savedComparison.scenarioA)
     setScenarioB(savedComparison.scenarioB)
+    setScenarioALabel(savedComparison.scenarioALabel || 'Scenario A')
+    setScenarioBLabel(savedComparison.scenarioBLabel || 'Scenario B')
     setComparisonName(savedComparison.name)
     setActivePreset('')
   }
@@ -228,7 +248,10 @@ export default function ComparePage() {
 
   async function handleCopySummary() {
     try {
-      const summary = buildCompareSummary(comparison)
+      const summary = buildCompareSummary(comparison, {
+        scenarioA: scenarioALabel,
+        scenarioB: scenarioBLabel,
+      })
       await navigator.clipboard.writeText(summary)
       setShareFeedback('Summary copied')
     } catch {
@@ -238,7 +261,10 @@ export default function ComparePage() {
 
   async function handleCopyShareLink() {
     try {
-      const encodedState = encodeCompareState({ scenarioA, scenarioB }, cruiseCostInitialState)
+      const encodedState = encodeCompareState(
+        { scenarioA, scenarioB, scenarioALabel, scenarioBLabel },
+        cruiseCostInitialState,
+      )
       const shareUrl = buildCompareShareUrl(encodedState)
       await navigator.clipboard.writeText(shareUrl)
       setShareFeedback('Share link copied')
@@ -249,8 +275,8 @@ export default function ComparePage() {
 
   const mainTakeaway =
     comparison.totalDifference === 0
-      ? 'Both versions land at about the same total, so the decision comes down to how you want to spend the money.'
-      : `${comparison.moreExpensiveScenario} costs about ${formatCurrency(Math.abs(comparison.totalDifference))} more overall.`
+      ? `${scenarioALabel} and ${scenarioBLabel} land at about the same total, so the decision comes down to where you want the money going.`
+      : `${comparison.totalDifference > 0 ? scenarioBLabel : scenarioALabel} costs about ${formatCurrency(comparison.absoluteTotalDifference)} more overall.`
 
   return (
     <div className="container page-stack">
@@ -313,14 +339,18 @@ export default function ComparePage() {
       <div className="two-column-layout compare-layout">
         <ScenarioSection
           title="Scenario A"
-          label="Use this side for your first version of the trip."
+          helper="Use this side for your first version of the trip."
+          scenarioLabel={scenarioALabel}
+          onLabelChange={(event) => setScenarioALabel(event.target.value || 'Scenario A')}
           form={scenarioA}
           onChange={handleScenarioChange(setScenarioA)}
           results={resultsA}
         />
         <ScenarioSection
           title="Scenario B"
-          label="Use this side for the version you want to compare against it."
+          helper="Use this side for the version you want to compare against it."
+          scenarioLabel={scenarioBLabel}
+          onLabelChange={(event) => setScenarioBLabel(event.target.value || 'Scenario B')}
           form={scenarioB}
           onChange={handleScenarioChange(setScenarioB)}
           results={resultsB}
@@ -330,8 +360,16 @@ export default function ComparePage() {
       <section className="card reality-card">
         <div className="verdict-kicker">Difference summary</div>
         <div className="verdict-copy">
-          <p>{comparison.interpretation}</p>
-          <p>{comparison.driverNote}</p>
+          <p>
+            {comparison.totalDifference === 0
+              ? `${scenarioALabel} and ${scenarioBLabel} are effectively tied on total cost.`
+              : `${comparison.totalDifference > 0 ? scenarioBLabel : scenarioALabel} is about ${formatCurrency(comparison.absoluteTotalDifference)} more expensive overall.`}
+          </p>
+          <p>
+            {comparison.driverNote
+              .replaceAll('Scenario A', scenarioALabel)
+              .replaceAll('Scenario B', scenarioBLabel)}
+          </p>
         </div>
         <div className="verdict-highlight">
           <span>Main takeaway</span>
@@ -340,21 +378,21 @@ export default function ComparePage() {
         <div className="stats-grid">
           <article className="stat-card stat-card-emphasized">
             <span className="stat-label">Trip total gap</span>
-            <strong className="stat-value">{formatCurrency(Math.abs(comparison.totalDifference))}</strong>
+            <strong className="stat-value">{formatCurrency(comparison.absoluteTotalDifference)}</strong>
             <small className="stat-helper">
               {comparison.totalDifference === 0
                 ? 'Both scenarios are tied on total cost.'
-                : `${comparison.moreExpensiveScenario} is the pricier version.`}
+                : `${comparison.totalDifference > 0 ? scenarioBLabel : scenarioALabel} is the pricier version.`}
             </small>
           </article>
           <article className="stat-card">
             <span className="stat-label">Nightly gap</span>
-            <strong className="stat-value">{formatCurrency(Math.abs(comparison.costPerNightDifference))}</strong>
+            <strong className="stat-value">{formatCurrency(comparison.absoluteCostPerNightDifference)}</strong>
             <small className="stat-helper">How much the trip changes when you spread the real total across each night.</small>
           </article>
           <article className="stat-card">
             <span className="stat-label">Add-ons gap</span>
-            <strong className="stat-value">{formatCurrency(Math.abs(comparison.addOnsDifference))}</strong>
+            <strong className="stat-value">{formatCurrency(comparison.absoluteAddOnsDifference)}</strong>
             <small className="stat-helper">Shows how much of the gap is coming from extras instead of the fare.</small>
           </article>
         </div>
@@ -365,12 +403,9 @@ export default function ComparePage() {
                 <span className="driver-rank">{index + 1}</span>
                 <div className="driver-copy">
                   <strong>{line.label}</strong>
-                  <span>{line.direction}</span>
+                  <span>{line.higherIn.replace('Scenario A', scenarioALabel).replace('Scenario B', scenarioBLabel)}</span>
                 </div>
-                <strong className="driver-value">
-                  {line.value >= 0 ? '+' : '-'}
-                  {formatCurrency(Math.abs(line.value))}
-                </strong>
+                <strong className="driver-value">+{formatCurrency(line.amount)}</strong>
               </article>
             ))}
           </div>
