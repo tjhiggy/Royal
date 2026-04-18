@@ -29,6 +29,13 @@ export const toolCards = [
     ctaLabel: 'Compare trips',
   },
   {
+    title: 'The Key Calculator',
+    description: 'Check whether The Key is actually worth the price based on the perks you would use.',
+    to: '/tools/the-key',
+    badge: 'Live',
+    ctaLabel: 'Check The Key',
+  },
+  {
     title: 'Port Day Ideas',
     description: 'Future route for quick excursion and port planning prompts.',
     badge: 'Soon',

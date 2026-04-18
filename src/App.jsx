@@ -8,6 +8,7 @@ import DrinkPackagePage from './pages/DrinkPackagePage'
 import HomePage from './pages/HomePage'
 import PackingPage from './pages/PackingPage'
 import PlannerPage from './pages/PlannerPage'
+import TheKeyPage from './pages/TheKeyPage'
 import ToolsPage from './pages/ToolsPage'
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/changelog" element={<ChangelogPage />} />
         <Route path="/tools/drink-package" element={<DrinkPackagePage />} />
         <Route path="/tools/cruise-cost" element={<CruiseCostPage />} />
+        <Route path="/tools/the-key" element={<TheKeyPage />} />
         <Route path="/packing" element={<PackingPage />} />
         <Route path="/planner" element={<PlannerPage />} />
         <Route path="/about" element={<AboutPage />} />

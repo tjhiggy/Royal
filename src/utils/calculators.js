@@ -61,6 +61,90 @@ export function calculateDrinkPackage(form) {
   }
 }
 
+export function calculateTheKey(form) {
+  const nights = Number(form.cruiseNights) || 0
+  const keyPricePerDay = Number(form.theKeyPricePerDay) || 0
+  const keyTotal = nights * keyPricePerDay
+
+  const wifiValuePerDay =
+    !form.wifiNeeded ? 0 : Number(form.numberOfDevices) >= 2 ? 30 : 20
+  const wifiValue = nights * wifiValuePerDay
+  const lunchValue = form.embarkationLunch ? 25 : 0
+
+  const perkValueMap = {
+    low: 0,
+    medium: 10,
+    high: 25,
+  }
+
+  const seatingValueMap = {
+    low: 0,
+    medium: 10,
+    high: 20,
+  }
+
+  const priorityBoardingValue = perkValueMap[form.priorityBoardingImportance] ?? 0
+  const reservedSeatingValue = seatingValueMap[form.reservedSeatingImportance] ?? 0
+  const skipLineValue = perkValueMap[form.skipLineImportance] ?? 0
+
+  const estimatedValueUsed =
+    wifiValue + lunchValue + priorityBoardingValue + reservedSeatingValue + skipLineValue
+  const difference = keyTotal - estimatedValueUsed
+  const netValue = estimatedValueUsed - keyTotal
+
+  let recommendation = 'Skip it'
+  if (estimatedValueUsed > keyTotal * 1.08) {
+    recommendation = 'Worth it'
+  } else if (Math.abs(difference) <= Math.max(keyTotal * 0.08, 20)) {
+    recommendation = 'Borderline'
+  }
+
+  const valueDrivers = [
+    { label: 'WiFi value', value: wifiValue },
+    { label: 'Embarkation lunch', value: lunchValue },
+    { label: 'Priority boarding', value: priorityBoardingValue },
+    { label: 'Reserved seating', value: reservedSeatingValue },
+    { label: 'Skip-the-line perks', value: skipLineValue },
+  ]
+    .filter((item) => item.value > 0)
+    .sort((left, right) => right.value - left.value)
+
+  const mainDriver = valueDrivers[0] ?? null
+  const suggestions = []
+
+  if (!form.wifiNeeded) {
+    suggestions.push('The Key gets more reasonable if you already planned to pay for WiFi.')
+  }
+  if (!form.embarkationLunch) {
+    suggestions.push('Taking the embarkation lunch adds some value back to the package.')
+  }
+  if ((perkValueMap[form.priorityBoardingImportance] ?? 0) === 0) {
+    suggestions.push('If priority boarding matters more to you than it does now, The Key looks a little less overpriced.')
+  }
+  if ((perkValueMap[form.skipLineImportance] ?? 0) === 0) {
+    suggestions.push('The skip-the-line perks only help if that convenience actually matters to you.')
+  }
+  if (!suggestions.length) {
+    suggestions.push('This already includes most of the value levers, so the answer mainly comes down to whether that convenience is worth the price.')
+  }
+
+  return {
+    keyTotal,
+    estimatedValueUsed,
+    difference,
+    netValue,
+    recommendation,
+    wifiValue,
+    lunchValue,
+    priorityBoardingValue,
+    reservedSeatingValue,
+    skipLineValue,
+    valueDrivers,
+    mainDriver,
+    suggestions: suggestions.slice(0, 3),
+  }
+}
+
 export function calculateCruiseCost(form) {
   const fare = Number(form.cruiseFare) || 0
   const categoryDefinitions = [
