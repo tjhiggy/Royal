@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import SiteLayout from './components/SiteLayout'
 import AboutPage from './pages/AboutPage'
+import ChangelogPage from './pages/ChangelogPage'
 import ComparePage from './pages/ComparePage'
 import CruiseCostPage from './pages/CruiseCostPage'
 import DrinkPackagePage from './pages/DrinkPackagePage'
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/tools" element={<ToolsPage />} />
         <Route path="/compare" element={<ComparePage />} />
+        <Route path="/changelog" element={<ChangelogPage />} />
         <Route path="/tools/drink-package" element={<DrinkPackagePage />} />
         <Route path="/tools/cruise-cost" element={<CruiseCostPage />} />
         <Route path="/packing" element={<PackingPage />} />
