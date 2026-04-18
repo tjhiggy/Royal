@@ -1,8 +1,26 @@
 export const releaseInfo = {
-  currentVersion: 'v1.3.0',
+  currentVersion: 'v1.4.1',
   updatedDate: '2026-04-18',
-  buildId: 'share-and-key',
+  buildId: 'release-backfill',
   changelogEntries: [
+    {
+      version: 'v1.4.1',
+      date: '2026-04-18',
+      changes: [
+        'Backfilled release tracking for the visible footer version metadata and changelog page.',
+        'Backfilled release tracking for the About page rewrite so the release history matches the shipped site.',
+        'Confirmed that Decision Summary has not been built yet and remains outstanding work.',
+      ],
+    },
+    {
+      version: 'v1.4.0',
+      date: '2026-04-18',
+      changes: [
+        'Added copy-summary support on Compare for quickly sharing the important decision points.',
+        'Added share-link support on Compare with restore-from-URL behavior and graceful invalid-link handling.',
+        'Added lightweight success feedback for Compare sharing actions.',
+      ],
+    },
     {
       version: 'v1.3.0',
       date: '2026-04-18',
@@ -10,6 +28,8 @@ export const releaseInfo = {
         'Added The Key Calculator with verdict, value drivers, and simple worth-it guidance.',
         'Added save, load, and delete support for Compare scenarios using localStorage only.',
         'Added share summary and share-link support for Compare, including restore-from-URL behavior.',
+        'Added visible version information in the footer and a dedicated changelog page.',
+        'Rewrote the About page with clearer purpose and stronger site-aligned tone.',
       ],
     },
     {
