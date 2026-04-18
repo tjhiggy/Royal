@@ -145,6 +145,99 @@ export function calculateTheKey(form) {
   }
 }
 
+export function calculateWifiRecommendation(form) {
+  const nights = Math.max(Number(form.cruiseNights) || 0, 0)
+  const wifiPricePerDevicePerDay = Math.max(Number(form.wifiPricePerDevicePerDay) || 0, 0)
+  const peopleCount = Math.max(Number(form.peopleCount) || 1, 1)
+  const deviceCount = Math.max(Number(form.deviceCount) || 1, 1)
+  const usageType = form.usageType || 'moderate'
+  const willingToShare = Boolean(form.willingToShare)
+
+  const oneDeviceCost = nights * wifiPricePerDevicePerDay
+  const twoDeviceCost = oneDeviceCost * 2
+  const noWifiCost = 0
+
+  const usageScoreMap = {
+    light: 0,
+    moderate: 1,
+    heavy: 2,
+  }
+
+  const demandScore =
+    (usageScoreMap[usageType] ?? 1) +
+    (deviceCount > 1 ? 1 : 0) +
+    (peopleCount > 1 ? 1 : 0) -
+    (willingToShare ? 1 : 0)
+
+  let recommendation = 'Skip WiFi'
+  let recommendedPlan = 'no-wifi'
+
+  if (demandScore > 2) {
+    recommendation = 'Buy 2 devices'
+    recommendedPlan = 'two-device'
+  } else if (demandScore > 0) {
+    recommendation = willingToShare && peopleCount > 1 ? 'Buy 1 device and share' : 'Buy 1 device'
+    recommendedPlan = 'one-device'
+  }
+
+  const estimatedWastedSpend =
+    recommendedPlan === 'no-wifi' ? oneDeviceCost : recommendedPlan === 'one-device' ? twoDeviceCost - oneDeviceCost : 0
+
+  const differences = {
+    oneVsNone: oneDeviceCost - noWifiCost,
+    twoVsOne: twoDeviceCost - oneDeviceCost,
+    twoVsNone: twoDeviceCost - noWifiCost,
+  }
+
+  let verdict = 'Worth it'
+  if (recommendedPlan === 'no-wifi') {
+    verdict = 'Skip it'
+  } else if (recommendedPlan === 'one-device' && usageType === 'moderate') {
+    verdict = 'Borderline'
+  }
+
+  const insightLines = []
+  if (recommendedPlan === 'no-wifi') {
+    insightLines.push('Your usage looks light enough that paying for internet is probably more habit than need.')
+  }
+  if (recommendedPlan === 'one-device') {
+    insightLines.push(
+      willingToShare
+        ? 'Most of your usage can probably be covered by one shared device.'
+        : 'One device covers the basics without paying for more internet than you will use.',
+    )
+  }
+  if (recommendedPlan === 'two-device') {
+    insightLines.push('Heavy usage or multiple active devices makes extra internet more reasonable here.')
+  }
+  if (deviceCount > 1 && willingToShare) {
+    insightLines.push('Sharing logins is doing a lot of the money-saving work in this recommendation.')
+  }
+  if (deviceCount > 1 && !willingToShare) {
+    insightLines.push('Not sharing devices pushes the math toward paying for more than one plan.')
+  }
+
+  const wastedSpendMessage =
+    recommendedPlan === 'one-device'
+      ? `A second device would likely add about ${formatCurrency(differences.twoVsOne)} in wasted spend.`
+      : recommendedPlan === 'no-wifi'
+        ? `Buying even one device plan would likely add about ${formatCurrency(differences.oneVsNone)} in unnecessary spend.`
+        : 'A second device looks reasonable for this setup.'
+
+  return {
+    recommendation,
+    verdict,
+    recommendedPlan,
+    oneDeviceCost,
+    twoDeviceCost,
+    noWifiCost,
+    differences,
+    estimatedWastedSpend,
+    insightLines,
+    wastedSpendMessage,
+  }
+}
+
 export function calculateCruiseCost(form) {
   const fare = Number(form.cruiseFare) || 0
   const categoryDefinitions = [
@@ -154,6 +247,7 @@ export function calculateCruiseCost(form) {
     ['wifi', 'WiFi'],
     ['dining', 'Dining'],
     ['excursions', 'Excursions'],
+    ['theKey', 'The Key'],
     ['hotel', 'Hotel'],
     ['flights', 'Flights'],
     ['parking', 'Parking'],
@@ -250,6 +344,110 @@ export function calculateCruiseCost(form) {
     status,
     summaryLines: summaryLines.slice(0, 3),
     quickWin,
+  }
+}
+
+export function calculateDealEvaluator(form) {
+  const baseResults = calculateCruiseCost({
+    cruiseFare: form.baseFare,
+    taxesAndFees: form.taxesAndFees,
+    drinkPackage: form.drinkPackage,
+    wifi: form.wifi,
+    dining: form.specialtyDining,
+    excursions: form.excursions,
+    theKey: form.theKey,
+    hotel: form.hotel,
+    flights: form.flights,
+    parking: form.parkingTransport,
+    travelExtras: 0,
+    miscellaneous: 0,
+    travelerCount: 1,
+    cruiseNights: form.cruiseNights,
+  })
+
+  const travelSubtotal =
+    (Number(form.flights) || 0) +
+    (Number(form.hotel) || 0) +
+    (Number(form.parkingTransport) || 0)
+  const addOnsOnlySubtotal =
+    (Number(form.drinkPackage) || 0) +
+    (Number(form.wifi) || 0) +
+    (Number(form.excursions) || 0) +
+    (Number(form.specialtyDining) || 0) +
+    (Number(form.theKey) || 0)
+
+  const total = baseResults.grandTotal
+  const addOnsShare = total ? (addOnsOnlySubtotal / total) * 100 : 0
+  const travelShare = total ? (travelSubtotal / total) * 100 : 0
+  const baseFareShare = total ? ((Number(form.baseFare) || 0) / total) * 100 : 0
+
+  const costDrivers = [
+    { key: 'baseFare', label: 'Base fare', value: Number(form.baseFare) || 0 },
+    { key: 'taxesAndFees', label: 'Taxes and fees', value: Number(form.taxesAndFees) || 0 },
+    { key: 'drinkPackage', label: 'Drink package', value: Number(form.drinkPackage) || 0 },
+    { key: 'wifi', label: 'WiFi', value: Number(form.wifi) || 0 },
+    { key: 'excursions', label: 'Excursions', value: Number(form.excursions) || 0 },
+    { key: 'specialtyDining', label: 'Specialty dining', value: Number(form.specialtyDining) || 0 },
+    { key: 'theKey', label: 'The Key', value: Number(form.theKey) || 0 },
+    { key: 'flights', label: 'Flights', value: Number(form.flights) || 0 },
+    { key: 'hotel', label: 'Hotel', value: Number(form.hotel) || 0 },
+    { key: 'parkingTransport', label: 'Parking / transport', value: Number(form.parkingTransport) || 0 },
+  ]
+    .filter((item) => item.value > 0)
+    .sort((left, right) => right.value - left.value)
+    .slice(0, 3)
+
+  let verdict = 'Solid deal'
+  const verdictLines = []
+
+  if (addOnsShare > 55) {
+    verdict = 'Add-on heavy'
+    verdictLines.push('Most of the damage is happening after the fare, not in the fare itself.')
+  } else if (baseResults.costPerNight >= 450) {
+    verdict = 'Not a cheap cruise'
+    verdictLines.push('Once you spread the real trip total across each night, this is expensive.')
+  } else if (addOnsShare < 30 && travelShare < 20) {
+    verdict = 'Solid deal'
+    verdictLines.push('The extras and travel are not hijacking the budget.')
+  } else {
+    verdict = 'Mixed deal'
+    verdictLines.push('The fare may look fine, but the surrounding costs are doing enough damage to matter.')
+  }
+
+  if (travelShare >= 25) {
+    verdictLines.push('Travel is eating a meaningful chunk of the budget before you even get on the ship.')
+  } else if (addOnsShare >= 40) {
+    verdictLines.push('The add-ons are doing more of the budget damage than most people expect.')
+  } else {
+    verdictLines.push('This is more balanced than the average cruise checkout spiral.')
+  }
+
+  const quickWins = []
+  if ((Number(form.drinkPackage) || 0) > 0) {
+    quickWins.push(`Cutting the drink package saves about ${formatCurrency(Number(form.drinkPackage) || 0)}.`)
+  }
+  if ((Number(form.theKey) || 0) > 0) {
+    quickWins.push(`Skipping The Key saves about ${formatCurrency(Number(form.theKey) || 0)}.`)
+  }
+  if (travelSubtotal >= total * 0.25) {
+    quickWins.push('Travel is pricey enough that flights, hotel, or transport are worth rechecking before anything else.')
+  }
+  if ((Number(form.excursions) || 0) + (Number(form.specialtyDining) || 0) >= total * 0.15) {
+    quickWins.push('Excursions and specialty dining are big enough to trim without changing the sailing itself.')
+  }
+
+  return {
+    ...baseResults,
+    total,
+    travelSubtotal,
+    addOnsOnlySubtotal,
+    addOnsShare,
+    travelShare,
+    baseFareShare,
+    costDrivers,
+    verdict,
+    verdictLines: verdictLines.slice(0, 2),
+    quickWins: quickWins.slice(0, 3),
   }
 }
 

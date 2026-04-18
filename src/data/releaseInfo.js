@@ -1,8 +1,26 @@
 export const releaseInfo = {
-  currentVersion: 'v1.4.1',
+  currentVersion: 'v1.6.0',
   updatedDate: '2026-04-18',
-  buildId: 'release-backfill',
+  buildId: 'deal-evaluator',
   changelogEntries: [
+    {
+      version: 'v1.6.0',
+      date: '2026-04-18',
+      changes: [
+        'Added the Deal Evaluator to judge whether a cruise is actually a deal once fare, add-ons, and travel are included.',
+        'Added a verdict, reality breakdown, add-on pressure, biggest cost drivers, and quick wins for deal decisions.',
+        'Added the Deal Evaluator to the live tools list.',
+      ],
+    },
+    {
+      version: 'v1.5.0',
+      date: '2026-04-18',
+      changes: [
+        'Added the WiFi Calculator to help decide between no WiFi, one device, or two devices.',
+        'Added a WiFi verdict, cost comparison, wasted-spend guidance, and practical usage insights.',
+        'Added the WiFi Calculator to the live tools list.',
+      ],
+    },
     {
       version: 'v1.4.1',
       date: '2026-04-18',
