@@ -8,6 +8,13 @@ export const featureList = [
 
 export const toolCards = [
   {
+    title: 'Dining Explorer',
+    description: 'Pick a ship and see what dining is included, what costs extra, and where the fine print gets sneaky.',
+    to: '/dining',
+    badge: 'Live',
+    ctaLabel: 'Explore dining',
+  },
+  {
     title: 'Drink Package Calculator',
     description: 'See if the package actually saves money based on what you drink, not what cruise marketing hopes.',
     to: '/tools/drink-package',

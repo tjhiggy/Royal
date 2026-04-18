@@ -647,6 +647,68 @@ a.info-card:hover {
   gap: 0.75rem;
 }
 
+.dining-selector-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: end;
+  margin-top: 1rem;
+}
+
+.dining-selector-field {
+  flex: 1;
+  min-width: min(100%, 320px);
+}
+
+.dining-selector-toggle {
+  max-width: 360px;
+}
+
+.dining-page-headline {
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+}
+
+.dining-layout {
+  align-items: start;
+}
+
+.venue-grid {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.venue-item-card {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.95rem 1rem;
+  border-radius: 16px;
+  background: rgba(11, 56, 92, 0.04);
+  border: 1px solid rgba(11, 56, 92, 0.06);
+}
+
+.venue-item-card strong {
+  color: var(--navy-dark);
+}
+
+.venue-item-card span {
+  color: var(--text-soft);
+  line-height: 1.4;
+}
+
+.venue-item-hybrid {
+  background:
+    linear-gradient(180deg, rgba(184, 115, 21, 0.1), rgba(184, 115, 21, 0.02)),
+    rgba(255, 255, 255, 0.7);
+  border-color: rgba(184, 115, 21, 0.18);
+}
+
+.dining-ship-notes {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
 .save-comparison-bar {
   display: flex;
   flex-wrap: wrap;
@@ -1015,7 +1077,8 @@ a.info-card:hover {
 
   .save-comparison-bar,
   .saved-comparison-item,
-  .saved-comparison-actions {
+  .saved-comparison-actions,
+  .dining-selector-row {
     flex-direction: column;
     align-items: flex-start;
   }

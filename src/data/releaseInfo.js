@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v1.7.0',
+  currentVersion: 'v1.8.0',
   updatedDate: '2026-04-18',
-  buildId: 'royal-ship-dataset',
+  buildId: 'dining-explorer',
   changelogEntries: [
+    {
+      version: 'v1.8.0',
+      date: '2026-04-18',
+      changes: [
+        'Added the Dining Explorer page powered by the canonical Royal ship dining dataset.',
+        'Added ship selection with active ships by default and optional future-ship visibility.',
+        'Added clear complimentary, specialty, and hybrid dining sections with ship-level notes and summary insight.',
+      ],
+    },
     {
       version: 'v1.7.0',
       date: '2026-04-18',
