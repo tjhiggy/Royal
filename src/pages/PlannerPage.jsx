@@ -108,14 +108,14 @@ export default function PlannerPage() {
     <div className="container page-stack">
       <PageHero
         eyebrow="Planner"
-        title="Keep the trip details, to-dos, and notes in one place."
-        description="Everything saves in your browser automatically. No backend, no login wall, no fake productivity theater."
+        title="Keep your cruise details in one place"
+        description="Save the trip details, notes, and booking to-dos without juggling tabs, screenshots, and random notes."
       />
 
       <section className="card">
         <SectionHeader
           title="Trip Details"
-          description="These fields cover the core trip details and keep the planner clean enough to expand later without performing surgery on the page."
+          description="Keep the core trip details here so you can find them without digging."
         />
         <div className="form-grid">
           {plannerFields.map((field) => (
@@ -150,7 +150,7 @@ export default function PlannerPage() {
       <section className="card">
         <SectionHeader
           title="Planning Checklist"
-          description="Flip these on as you lock things down so the page becomes a quick status board instead of another pile of vague intentions."
+          description="Check these off as you book things so the page stays useful."
         />
         <div className="toggle-grid planner-grid">
           {taskLabels.map(([key, label, helper]) => (
@@ -165,7 +165,7 @@ export default function PlannerPage() {
           ))}
         </div>
         <button className="button button-danger" type="button" onClick={handleClearPlanner}>
-          Clear planner
+          Reset planner
         </button>
       </section>
     </div>

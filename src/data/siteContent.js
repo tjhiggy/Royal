@@ -1,22 +1,32 @@
 export const featureList = [
-  'Quick calculators for drink package math and full trip budgeting',
-  'Packing list generator that adapts to weather, nights, and excursion types',
-  'Planner workspace that saves your trip details in the browser',
-  'Simple structure built to grow into guides, port ideas, and more tools later',
+  'See the real trip total before drinks, WiFi, excursions, and travel quietly wreck the budget',
+  'Check whether the drink package saves money or just sounds good in the booking flow',
+  'Compare two trip versions side by side before you pay for the more expensive one by accident',
+  'Build a packing list that matches your sailing length, weather, and port plans',
+  'Keep trip details in one browser-saved planner instead of scattering them across notes and tabs',
 ]
 
 export const toolCards = [
   {
     title: 'Drink Package Calculator',
-    description: 'Compare package pricing with pay-as-you-go spending and spot the break-even point.',
+    description: 'See if the package actually saves money based on what you drink, not what cruise marketing hopes.',
     to: '/tools/drink-package',
     badge: 'Live',
+    ctaLabel: 'Check the package math',
   },
   {
     title: 'Cruise Cost Calculator',
-    description: 'Roll up fare, extras, and travel costs into one sane total before the budget ambushes you.',
+    description: 'Add fare, extras, and travel costs so you can see the real trip price before you book.',
     to: '/tools/cruise-cost',
     badge: 'Live',
+    ctaLabel: 'Check real cost',
+  },
+  {
+    title: 'Compare Scenarios',
+    description: 'Put two trip versions side by side and see which choice is quietly making the total worse.',
+    to: '/compare',
+    badge: 'Live',
+    ctaLabel: 'Compare trips',
   },
   {
     title: 'Port Day Ideas',

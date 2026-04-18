@@ -96,6 +96,10 @@ export function calculateCruiseCost(form) {
   ]
     .filter((category) => category.value > 0)
     .sort((left, right) => right.value - left.value)
+  const biggestAddOnDrivers = addOnCategories
+    .filter((category) => category.value > 0)
+    .sort((left, right) => right.value - left.value)
+    .slice(0, 3)
   const biggestCostDrivers = sortedDrivers.slice(0, 3)
   const topAddOnDriver = addOnCategories
     .filter((category) => category.value > 0)
@@ -146,6 +150,7 @@ export function calculateCruiseCost(form) {
   })
 
   return {
+    fare,
     grandTotal,
     addOnsSubtotal: addOns,
     costPerPerson: grandTotal / travelerCount,
@@ -154,11 +159,64 @@ export function calculateCruiseCost(form) {
     extrasShare: grandTotal ? (addOns / grandTotal) * 100 : 0,
     travelCosts,
     travelShare,
+    addOnCategories,
+    biggestAddOnDrivers,
     biggestCostDrivers,
     dominantDriver,
     status,
     summaryLines: summaryLines.slice(0, 3),
     quickWin,
+  }
+}
+
+export function compareCruiseCostScenarios(scenarioA, scenarioB) {
+  const totalDifference = scenarioB.grandTotal - scenarioA.grandTotal
+  const costPerNightDifference = scenarioB.costPerNight - scenarioA.costPerNight
+  const addOnsDifference = scenarioB.addOnsSubtotal - scenarioA.addOnsSubtotal
+
+  const moreExpensiveScenario =
+    totalDifference > 0 ? 'Scenario B' : totalDifference < 0 ? 'Scenario A' : 'Neither scenario'
+
+  const categoryDifferences = [
+    { key: 'cruiseFare', label: 'Cruise fare', value: scenarioB.fare - scenarioA.fare },
+    ...scenarioA.addOnCategories.map((categoryA) => {
+      const categoryB = scenarioB.addOnCategories.find((candidate) => candidate.key === categoryA.key)
+      return {
+        key: categoryA.key,
+        label: categoryA.label,
+        value: (categoryB?.value ?? 0) - categoryA.value,
+      }
+    }),
+  ]
+    .filter((category) => category.value !== 0)
+    .sort((left, right) => Math.abs(right.value) - Math.abs(left.value))
+
+  const biggestDifference = categoryDifferences[0] ?? null
+  const topDifferenceLines = categoryDifferences.slice(0, 3).map((category) => ({
+    ...category,
+    direction: category.value > 0 ? 'higher in Scenario B' : 'higher in Scenario A',
+  }))
+
+  let interpretation = 'The two scenarios land in almost the same place overall.'
+  if (moreExpensiveScenario !== 'Neither scenario') {
+    interpretation = `${moreExpensiveScenario} is more expensive overall by about ${formatCurrency(Math.abs(totalDifference))}.`
+  }
+
+  let driverNote = 'No single line item is creating a major gap between the two.'
+  if (biggestDifference) {
+    driverNote = `${biggestDifference.label} is the main driver, with about ${formatCurrency(Math.abs(biggestDifference.value))} more in ${
+      biggestDifference.value > 0 ? 'Scenario B' : 'Scenario A'
+    }.`
+  }
+
+  return {
+    totalDifference,
+    costPerNightDifference,
+    addOnsDifference,
+    moreExpensiveScenario,
+    interpretation,
+    driverNote,
+    topDifferenceLines,
   }
 }
 
@@ -180,11 +238,11 @@ function costPerNightBand(costPerNight) {
 
 function buildCruiseQuickWin({ fare, addOns, travelCosts, grandTotal, topAddOnDriver, addOnCategories }) {
   if (topAddOnDriver && topAddOnDriver.value >= grandTotal * 0.12) {
-    return `Quick win: cutting ${topAddOnDriver.label.toLowerCase()} would reduce the total by about ${formatCurrency(topAddOnDriver.value)}.`
+    return `Cutting ${topAddOnDriver.label.toLowerCase()} would lower the total by about ${formatCurrency(topAddOnDriver.value)}.`
   }
 
   if (travelCosts >= grandTotal * 0.28) {
-    return `Quick win: travel costs are high enough that changing flights, hotel, or transfer plans could materially move the budget.`
+    return 'Travel is expensive enough here that changing flights, hotel, or transfers could move the total more than trimming small onboard extras.'
   }
 
   const diningAndExcursions = addOnCategories
@@ -192,14 +250,14 @@ function buildCruiseQuickWin({ fare, addOns, travelCosts, grandTotal, topAddOnDr
     .reduce((total, category) => total + category.value, 0)
 
   if (diningAndExcursions >= grandTotal * 0.15) {
-    return `Quick win: excursions and specialty dining are large enough to be worth trimming before you touch the base fare.`
+    return 'Excursions and specialty dining are large enough to trim before you mess with the sailing itself.'
   }
 
   if (addOns > fare && addOns > 0) {
-    return 'Quick win: the cleanest savings are probably in the extras, not the cabin price.'
+    return 'The easiest savings are probably in the add-ons, not the cabin fare.'
   }
 
-  return 'Quick win: there is no single obvious budget fix here, so compare the add-ons before cutting the sailing itself.'
+  return 'There is no single obvious budget fix here, so compare the add-ons before cutting the sailing itself.'
 }
 
 export function generatePackingList(form) {

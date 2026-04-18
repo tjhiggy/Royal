@@ -115,13 +115,13 @@ const priceFields = [
     label: 'Bottled water price',
     name: 'bottledWaterPrice',
     min: '0',
-    helper: 'Default is about $3.50 each.',
+    helper: 'Default is about $4 each.',
   },
   {
     label: 'Soda or mocktail price',
     name: 'sodaMocktailPrice',
     min: '0',
-    helper: 'Default is about $3.50 each.',
+    helper: 'Default is about $4 each.',
   },
 ]
 
@@ -155,24 +155,25 @@ export default function DrinkPackagePage() {
     results.recommendation === 'Worth it'
       ? [
           `${outcomeMessage}`,
-          'Your current pace is high enough for the package to earn its keep.',
+          'You are drinking enough for the package to make sense.',
         ]
       : results.recommendation === 'Borderline'
         ? [
             `${outcomeMessage}`,
-            'This one is close, so convenience may matter more than squeezing every last dollar.',
+            'This is close enough that convenience could decide it.',
           ]
         : [
             `${outcomeMessage}`,
-            'You are not drinking enough per day to make the package the smart buy.',
+            'You are not drinking enough to make the package the smart buy.',
           ]
 
+  const roundedBreakEvenDrinks = Math.max(Math.round(results.breakEvenDrinks), 0)
+  const roundedBreakEvenAlcoholicDrinks = Math.max(Math.round(results.breakEvenAlcoholicDrinks), 0)
+  const roundedCurrentAlcoholicDrinks = Math.max(Math.round(Number(form.alcoholicDrinksPerDay) || 0), 0)
   const worthItInsight =
     results.extraAlcoholicDrinksNeeded > 0.05
-      ? `To make this worth it, you would need roughly ${results.breakEvenAlcoholicDrinks.toFixed(1)} alcoholic drinks per day instead of ${Number(
-          form.alcoholicDrinksPerDay,
-        ).toFixed(1)}.`
-      : `You are already close to the break-even pace, which is why this lands in ${results.recommendation.toLowerCase()}.`
+      ? `To make this worth it, you would need about ${roundedBreakEvenAlcoholicDrinks} alcoholic drinks per day instead of ${roundedCurrentAlcoholicDrinks}.`
+      : `You are already near the break-even pace, which is why this lands in ${results.recommendation.toLowerCase()}.`
 
   return (
     <div className="container page-stack">
@@ -283,7 +284,7 @@ export default function DrinkPackagePage() {
           </div>
           <div className="break-even-item">
             <span>Alcohol-only equivalent</span>
-            <strong>{results.breakEvenDrinks.toFixed(1)} drinks/day</strong>
+            <strong>{roundedBreakEvenDrinks} drinks/day</strong>
           </div>
         </div>
       </section>

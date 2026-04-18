@@ -68,14 +68,14 @@ export default function PackingPage() {
     <div className="container page-stack">
       <PageHero
         eyebrow="Packing"
-        title="Generate a cruise packing list that fits the trip."
-        description="Set the basics, flip on the excursion types, and get a grouped checklist you can actually use. There is also a print-friendly view because paper is not dead, it is just quieter."
+        title="Build a packing list that matches the trip"
+        description="Set the basics, flip on the excursion types, and get a checklist that actually fits the sailing."
       />
 
       <section className="card">
         <SectionHeader
           title="Trip Details"
-          description="These trip details shape the checklist and keep the generator easy to tune later without turning it into a monster."
+          description="These details shape the checklist without turning the page into a packing dissertation."
         />
         <div className="form-grid">
           {packingFields.map(([name, label, helper]) => (
@@ -108,7 +108,7 @@ export default function PackingPage() {
       <section className="page-section">
         <SectionHeader
           title="Checklist"
-          description="Check items off as you prep. The print stylesheet strips the extra chrome so the paper version stays useful."
+          description="Check items off as you prep. Print it if that works better for you."
         />
         <div className="packing-sections">
           {sections.map((section) => (

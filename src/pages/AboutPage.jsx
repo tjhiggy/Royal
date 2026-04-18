@@ -5,15 +5,15 @@ export default function AboutPage() {
     <div className="container page-stack">
       <PageHero
         eyebrow="About"
-        title="Royal is an independent planning tool for Royal Caribbean travelers."
-        description="It is built to simplify decisions, organize cruise planning, and give travelers a calmer way to compare costs, prep smarter, and keep details in one place."
+        title="Royal is an independent planning tool for Royal Caribbean trips"
+        description="It helps you check real costs, compare choices, and keep the trip details in one place without the usual planning mess."
       />
 
       <section className="card prose-card">
         <p>
-          This project is a hobby site MVP, not an official Royal Caribbean product. The point is simple: trim friction,
-          surface the boring but useful math, and keep cruise planning from turning into a scavenger hunt across tabs,
-          screenshots, and half-remembered notes.
+          Royal is a hobby project, not an official Royal Caribbean product. The goal is simple: pull the useful math,
+          planning details, and decision points into one place so cruise planning does not turn into a scavenger hunt
+          across tabs, screenshots, and half-remembered notes.
         </p>
       </section>
     </div>

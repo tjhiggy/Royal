@@ -7,8 +7,8 @@ export default function ToolsPage() {
     <div className="container page-stack">
       <PageHero
         eyebrow="Tools"
-        title="Cruise calculators that are useful on day one."
-        description="The live tools focus on price clarity and trip planning. The placeholders are there so the site can grow without turning into a tangled mess later."
+        title="Use the calculators before the cruise math gets sloppy"
+        description="Start with the live tools that answer the expensive questions first, then use the rest as the site grows."
       />
 
       <section className="card-grid">

@@ -9,15 +9,15 @@ export default function HomePage() {
     <div className="container page-stack">
       <PageHero
         eyebrow="Cruise planning without the spreadsheet spiral"
-        title="Plan your Royal Caribbean trip without guessing, overspending, or forgetting the obvious."
-        description="Royal is a clean cruise planning hub with practical calculators, a smart packing generator, and a trip planner that actually remembers your work."
+        title="Plan your Royal Caribbean cruise without guessing the cost"
+        description="Most cruise prices look cheap until you add drinks, WiFi, excursions, and travel. Royal shows you what the trip actually costs and whether the upgrades are worth it."
         actions={
           <>
-            <Link className="button button-primary" to="/tools">
-              Explore tools
+            <Link className="button button-primary" to="/tools/cruise-cost">
+              Check your real cost
             </Link>
-            <Link className="button button-secondary" to="/planner">
-              Open planner
+            <Link className="button button-secondary" to="/tools/drink-package">
+              Is the drink package worth it?
             </Link>
           </>
         }
@@ -25,8 +25,8 @@ export default function HomePage() {
 
       <section className="page-section">
         <SectionHeader
-          title="Start Here"
-          description="The MVP focuses on the core pain points most cruise planners hit first: budget, package value, packing, and remembering all the logistics."
+          title="Start with these before you book anything"
+          description="Most people make these calls half-blind, then act surprised when the total gets ugly."
         />
         <div className="card-grid">
           {toolCards.slice(0, 3).map((card) => (
@@ -36,7 +36,14 @@ export default function HomePage() {
       </section>
 
       <section className="page-section">
-        <SectionHeader title="Included in Version 1" description="Useful now, easy to extend later." />
+        <SectionHeader
+          title="Why this exists"
+          description="Cruise pricing is fragmented by design. The fare looks manageable, then drinks, WiFi, excursions, gratuities, and travel pile on. Royal pulls those costs into one place so you can make the expensive decisions with your eyes open."
+        />
+      </section>
+
+      <section className="page-section">
+        <SectionHeader title="Use these now" description="Start with the money decisions, then clean up the rest of the trip." />
         <div className="feature-list">
           {featureList.map((feature) => (
             <article key={feature} className="card feature-card">

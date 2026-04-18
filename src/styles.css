@@ -619,6 +619,34 @@ a.info-card:hover {
   line-height: 1.45;
 }
 
+.compare-layout {
+  align-items: start;
+}
+
+.compare-scenario-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.compare-scenario-label {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  font-weight: 700;
+}
+
+.compare-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.95rem 1rem;
+}
+
+.compare-summary {
+  display: grid;
+  gap: 0.75rem;
+}
+
 .advanced-header {
   display: flex;
   gap: 1rem;
@@ -806,6 +834,7 @@ a.info-card:hover {
 .driver-value {
   color: var(--navy-dark);
   text-align: right;
+  white-space: nowrap;
 }
 
 .quick-win-copy {
@@ -881,7 +910,8 @@ a.info-card:hover {
   }
 
   .two-column-layout,
-  .form-grid {
+  .form-grid,
+  .compare-form-grid {
     grid-template-columns: 1fr;
   }
 

@@ -5,6 +5,7 @@ export default function InfoCard({
   description,
   to,
   badge,
+  ctaLabel,
   muted = false,
 }) {
   const body = (
@@ -14,7 +15,7 @@ export default function InfoCard({
         {badge ? <span className={`status-pill ${muted ? 'status-muted' : ''}`}>{badge}</span> : null}
       </div>
       <p>{description}</p>
-      {to ? <span className="card-link">Open tool</span> : <span className="card-link">Planned for later</span>}
+      {to ? <span className="card-link">{ctaLabel ?? 'Use this tool'}</span> : <span className="card-link">{ctaLabel ?? 'Coming soon'}</span>}
     </>
   )
 

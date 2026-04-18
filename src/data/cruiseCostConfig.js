@@ -1,0 +1,33 @@
+export const cruiseCostInitialState = {
+  cruiseFare: 2200,
+  taxesAndFees: 420,
+  prepaidGratuities: 250,
+  drinkPackage: 950,
+  wifi: 175,
+  dining: 200,
+  excursions: 450,
+  hotel: 220,
+  flights: 640,
+  parking: 120,
+  travelExtras: 120,
+  miscellaneous: 100,
+  travelerCount: 2,
+  cruiseNights: 7,
+}
+
+export const cruiseCostFields = [
+  ['cruiseFare', 'Cruise fare', 'Base cabin fare before the add-ons pile on.'],
+  ['taxesAndFees', 'Taxes and fees', 'Port charges and required fees.'],
+  ['prepaidGratuities', 'Prepaid gratuities', 'Include them here if you plan to prepay.'],
+  ['drinkPackage', 'Drink package', 'Total package cost for the trip.'],
+  ['wifi', 'WiFi', 'Internet package cost for everyone covered.'],
+  ['dining', 'Dining', 'Specialty dining, tastings, and similar extras.'],
+  ['excursions', 'Excursions', 'Tours, beach clubs, or booked activities.'],
+  ['hotel', 'Hotel', 'Pre-cruise or post-cruise hotel spend.'],
+  ['flights', 'Flights', 'Airfare or major travel tickets.'],
+  ['parking', 'Parking', 'Port parking or related ground costs.'],
+  ['travelExtras', 'Travel extras', 'Transfers, gas, tips, baggage fees, and similar bits.'],
+  ['miscellaneous', 'Miscellaneous', 'Anything else that absolutely will not stay at zero.'],
+  ['travelerCount', 'Traveler count', 'Used for the per-person view.', '1'],
+  ['cruiseNights', 'Cruise nights', 'Used for the per-night view.', '1'],
+]
