@@ -1,8 +1,25 @@
 export const releaseInfo = {
-  currentVersion: 'v1.6.0',
+  currentVersion: 'v1.6.2',
   updatedDate: '2026-04-18',
-  buildId: 'deal-evaluator',
+  buildId: 'deal-evaluator-polish',
   changelogEntries: [
+    {
+      version: 'v1.6.2',
+      date: '2026-04-18',
+      changes: [
+        'Strengthened the Deal Evaluator verdict with clearer explanation of the real trip cost.',
+        'Added add-on pressure interpretation, nightly range comparison, and more actionable quick wins.',
+        'Improved Deal Evaluator wording so it reads more like a decision tool and less like a calculator dump.',
+      ],
+    },
+    {
+      version: 'v1.6.1',
+      date: '2026-04-18',
+      changes: [
+        'Removed the unused Port Day Ideas placeholder from the tools list.',
+        'Cleaned the tools catalog so only intentional live tools and remaining planned entries stay visible.',
+      ],
+    },
     {
       version: 'v1.6.0',
       date: '2026-04-18',

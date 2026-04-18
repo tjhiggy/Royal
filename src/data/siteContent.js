@@ -49,9 +49,4 @@ export const toolCards = [
     badge: 'Live',
     ctaLabel: 'Evaluate the deal',
   },
-  {
-    title: 'Port Day Ideas',
-    description: 'Future route for quick excursion and port planning prompts.',
-    badge: 'Soon',
-  },
 ]

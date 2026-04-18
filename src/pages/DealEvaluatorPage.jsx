@@ -154,13 +154,16 @@ export default function DealEvaluatorPage() {
               <span>Add-ons share of total</span>
               <strong>{results.addOnsShare.toFixed(0)}%</strong>
             </div>
+            <div className="explanation-item">
+              <span>{results.addOnPressureMessage}</span>
+            </div>
           </div>
         </section>
 
         <section className="card">
           <SectionHeader
             title="Biggest cost drivers"
-            description="These are the top categories doing the most damage."
+            description="This is where your money is actually going."
           />
           <div className="driver-list">
             {results.costDrivers.map((driver, index) => (
@@ -176,6 +179,25 @@ export default function DealEvaluatorPage() {
           </div>
         </section>
       </div>
+
+      <section className="card">
+        <SectionHeader
+          title="How this compares"
+          description="This puts the nightly cost into a range that is easier to judge at a glance."
+        />
+        <div className="explanation-list">
+          <div className="explanation-item">
+            <span>Cost per night</span>
+            <strong>{formatCurrency(results.costPerNight)}</strong>
+          </div>
+          <div className="explanation-item">
+            <span>{results.nightlyBand.lines[0]}</span>
+          </div>
+          <div className="explanation-item">
+            <span>{results.nightlyBand.lines[1]}</span>
+          </div>
+        </div>
+      </section>
 
       <ResultPanel
         title="Supporting numbers"
@@ -196,7 +218,11 @@ export default function DealEvaluatorPage() {
         <div className="explanation-list">
           {results.quickWins.map((win) => (
             <div key={win} className="explanation-item">
-              <span>{win}</span>
+              <span>
+                <strong>{win.title}</strong>
+                <br />
+                {win.detail}
+              </span>
             </div>
           ))}
         </div>

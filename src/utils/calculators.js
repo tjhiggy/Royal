@@ -348,6 +348,14 @@ export function calculateCruiseCost(form) {
 }
 
 export function calculateDealEvaluator(form) {
+  const ADD_ON_HEAVY_THRESHOLD = 55
+  const ADD_ON_MAJOR_THRESHOLD = 40
+  const HIGH_COST_PER_NIGHT_THRESHOLD = 450
+  const SOLID_DEAL_ADD_ON_THRESHOLD = 30
+  const SOLID_DEAL_TRAVEL_THRESHOLD = 20
+  const TRAVEL_HEAVY_THRESHOLD = 25
+  const DINING_EXCURSION_THRESHOLD = 0.15
+
   const baseResults = calculateCruiseCost({
     cruiseFare: form.baseFare,
     taxesAndFees: form.taxesAndFees,
@@ -400,41 +408,58 @@ export function calculateDealEvaluator(form) {
   let verdict = 'Solid deal'
   const verdictLines = []
 
-  if (addOnsShare > 55) {
+  if (addOnsShare > ADD_ON_HEAVY_THRESHOLD) {
     verdict = 'Add-on heavy'
-    verdictLines.push('Most of the damage is happening after the fare, not in the fare itself.')
-  } else if (baseResults.costPerNight >= 450) {
+    verdictLines.push(`The base fare looks manageable, but the real trip cost is ${formatCurrency(total)}.`)
+    verdictLines.push('Most of your spend is coming from add-ons and travel.')
+  } else if (baseResults.costPerNight >= HIGH_COST_PER_NIGHT_THRESHOLD) {
     verdict = 'Not a cheap cruise'
-    verdictLines.push('Once you spread the real trip total across each night, this is expensive.')
-  } else if (addOnsShare < 30 && travelShare < 20) {
+    verdictLines.push(`The base fare looks lower than the real trip cost, which lands at ${formatCurrency(total)}.`)
+    verdictLines.push('This is not a cheap cruise once the extras and travel get involved.')
+  } else if (addOnsShare < SOLID_DEAL_ADD_ON_THRESHOLD && travelShare < SOLID_DEAL_TRAVEL_THRESHOLD) {
     verdict = 'Solid deal'
-    verdictLines.push('The extras and travel are not hijacking the budget.')
+    verdictLines.push(`The real trip cost is ${formatCurrency(total)}, and the extras are not hijacking it.`)
+    verdictLines.push('This still looks like a solid deal once the full trip is priced honestly.')
   } else {
     verdict = 'Mixed deal'
-    verdictLines.push('The fare may look fine, but the surrounding costs are doing enough damage to matter.')
-  }
-
-  if (travelShare >= 25) {
-    verdictLines.push('Travel is eating a meaningful chunk of the budget before you even get on the ship.')
-  } else if (addOnsShare >= 40) {
-    verdictLines.push('The add-ons are doing more of the budget damage than most people expect.')
-  } else {
-    verdictLines.push('This is more balanced than the average cruise checkout spiral.')
+    verdictLines.push(`The base fare may look fine, but the real trip cost reaches ${formatCurrency(total)}.`)
+    verdictLines.push('Nothing is totally out of control, but this is not the bargain the fare tries to suggest.')
   }
 
   const quickWins = []
   if ((Number(form.drinkPackage) || 0) > 0) {
-    quickWins.push(`Cutting the drink package saves about ${formatCurrency(Number(form.drinkPackage) || 0)}.`)
+    quickWins.push({
+      title: `Skip the drink package -> save about ${formatCurrency(Number(form.drinkPackage) || 0)}`,
+      detail: 'This is one of the biggest drivers in your total cost.',
+    })
   }
   if ((Number(form.theKey) || 0) > 0) {
-    quickWins.push(`Skipping The Key saves about ${formatCurrency(Number(form.theKey) || 0)}.`)
+    quickWins.push({
+      title: `Skip The Key -> save about ${formatCurrency(Number(form.theKey) || 0)}`,
+      detail: 'If you are already questioning the deal, this is usually an easy cut.',
+    })
   }
-  if (travelSubtotal >= total * 0.25) {
-    quickWins.push('Travel is pricey enough that flights, hotel, or transport are worth rechecking before anything else.')
+  if (travelSubtotal >= total * TRAVEL_HEAVY_THRESHOLD / 100) {
+    quickWins.push({
+      title: 'Recheck travel first',
+      detail: 'Flights, hotel, or transport are large enough to move the budget more than small onboard cuts.',
+    })
   }
-  if ((Number(form.excursions) || 0) + (Number(form.specialtyDining) || 0) >= total * 0.15) {
-    quickWins.push('Excursions and specialty dining are big enough to trim without changing the sailing itself.')
+  if ((Number(form.excursions) || 0) + (Number(form.specialtyDining) || 0) >= total * DINING_EXCURSION_THRESHOLD) {
+    quickWins.push({
+      title: 'Trim excursions or specialty dining',
+      detail: 'Those extras are big enough to cut without changing the sailing itself.',
+    })
   }
+
+  let addOnPressureMessage = 'Add-ons are under control for this trip.'
+  if (addOnsShare > ADD_ON_HEAVY_THRESHOLD) {
+    addOnPressureMessage = 'Add-ons are driving most of your total. This is an add-on heavy trip.'
+  } else if (addOnsShare >= ADD_ON_MAJOR_THRESHOLD) {
+    addOnPressureMessage = 'Add-ons are a major part of your cost.'
+  }
+
+  const nightlyBand = getDealNightlyBand(baseResults.costPerNight)
 
   return {
     ...baseResults,
@@ -447,7 +472,37 @@ export function calculateDealEvaluator(form) {
     costDrivers,
     verdict,
     verdictLines: verdictLines.slice(0, 2),
+    addOnPressureMessage,
+    nightlyBand,
     quickWins: quickWins.slice(0, 3),
+  }
+}
+
+function getDealNightlyBand(costPerNight) {
+  if (costPerNight < 300) {
+    return {
+      label: 'Budget range',
+      lines: ['This lands in the budget range.', 'This still looks like a lower-cost trip per night.'],
+    }
+  }
+
+  if (costPerNight < 600) {
+    return {
+      label: 'Typical range',
+      lines: ['This lands in a typical range for a cruise.', 'It is not a steal, but it is not wildly inflated either.'],
+    }
+  }
+
+  if (costPerNight < 900) {
+    return {
+      label: 'Higher-end',
+      lines: ['This is on the higher end for a typical cruise.', 'This is not a budget trip.'],
+    }
+  }
+
+  return {
+    label: 'Premium',
+    lines: ['This is in premium territory on a per-night basis.', 'You are well past budget-trip math here.'],
   }
 }
 
