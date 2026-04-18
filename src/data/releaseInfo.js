@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v1.8.0',
+  currentVersion: 'v1.8.1',
   updatedDate: '2026-04-18',
-  buildId: 'dining-explorer',
+  buildId: 'dining-explorer-polish',
   changelogEntries: [
+    {
+      version: 'v1.8.1',
+      date: '2026-04-18',
+      changes: [
+        'Sharpened the Dining Explorer verdict language so it gives a clearer recommendation about specialty dining.',
+        'Added an included-vs-paid reality summary, stronger fine-print framing, and next-step links from the Dining page.',
+        'Improved dining profile completeness for common included venues like Cafe Promenade and Solarium Bistro where appropriate.',
+      ],
+    },
     {
       version: 'v1.8.0',
       date: '2026-04-18',

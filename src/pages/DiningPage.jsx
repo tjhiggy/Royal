@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import PageHero from '../components/PageHero'
 import SectionHeader from '../components/SectionHeader'
 import { activeRoyalShips, futureRoyalShips, royalShipsBySlug } from '../data/royalShips'
@@ -16,42 +17,59 @@ function buildShipInsight(ship) {
   const complimentaryCount = ship.complimentaryDining.length
   const specialtyCount = ship.specialtyDining.length
   const hybridCount = ship.hybridDining.length
+  const includedLead = complimentaryCount - specialtyCount
+
+  if (specialtyCount >= complimentaryCount + 2) {
+    return {
+      verdict: 'This ship leans more on paid dining options',
+      reality: [
+        'You can still eat well without paying extra, but the premium venues do more of the heavy lifting here.',
+        'If specialty dining matters to you, this ship makes that decision more relevant.',
+      ],
+      lines: [
+        'There are more paid dining draws here than on the ships with the strongest included lineup.',
+        'Look closely at the specialty list before pretending you will be satisfied with the base plan alone.',
+      ],
+    }
+  }
 
   if (hybridCount >= 5 && specialtyCount >= complimentaryCount) {
     return {
-      label: 'Several important caveats',
+      verdict: 'Specialty dining is optional, but the fine print matters',
+      reality: [
+        'Most meals can still come from included venues, but several dining rules need a quick reality check.',
+        'This is the kind of ship where people get tripped up by caveats, not by a lack of food.',
+      ],
       lines: [
-        'This ship has a strong venue mix, but the fine print matters more than usual.',
-        'Check the hybrid notes before assuming a venue is fully included or package-friendly.',
+        'The venue mix is solid, but inclusion is not always as clean as people assume.',
+        'Check the fine print before treating every borderline venue like it is fully covered.',
       ],
     }
   }
 
-  if (specialtyCount > complimentaryCount) {
+  if (includedLead >= 3) {
     return {
-      label: 'Specialty-heavy lineup',
-      lines: [
-        'There is a lot to eat here, but more of the headline venues land in the extra-cost bucket.',
-        'This is not the ship to pick if you want the broadest included dining with the fewest catches.',
+      verdict: 'You do not need a dining package here',
+      reality: [
+        'Most of your meals can come from included venues without feeling stuck with scraps.',
+        'Specialty dining is a nice extra here, not a requirement to eat well.',
       ],
-    }
-  }
-
-  if (complimentaryCount >= specialtyCount + 3) {
-    return {
-      label: 'Strong included dining',
       lines: [
-        'You have a healthy included lineup before paying for specialty restaurants.',
-        'That makes this ship easier to enjoy without turning every dinner into an upcharge decision.',
+        'This ship gives you enough included variety that a dining package should be a want, not a reflex purchase.',
+        'If you buy specialty meals here, it should be because you want the experience, not because the included lineup is weak.',
       ],
     }
   }
 
   return {
-    label: 'Balanced dining mix',
+    verdict: 'Specialty dining is optional, not essential',
+    reality: [
+      'Most travelers can lean on complimentary dining for the bulk of the trip.',
+      'Paid venues are there for variety, not because the included options are falling apart.',
+    ],
     lines: [
-      'This ship sits in the middle. You get a solid included base, plus enough specialty spots to tempt you.',
-      'Read the hybrid rules so you know where the pricing gets slippery.',
+      'This ship lands in the middle with a respectable included base and enough paid options to tempt people.',
+      'You do not need a dining package by default, but you should still read the fine print section.',
     ],
   }
 }
@@ -158,7 +176,7 @@ export default function DiningPage() {
             />
             <span className="toggle-copy">
               <strong>Include future ships</strong>
-              <small>Shows ships like Legend and Hero, clearly marked as future.</small>
+              <small>Future ship dining data can change before launch.</small>
             </span>
           </label>
         </div>
@@ -172,7 +190,7 @@ export default function DiningPage() {
               <div>
                 <h2 className="verdict-headline dining-page-headline">{selectedShip.shipName}</h2>
                 <div className="verdict-copy">
-                  <p>{insight.label}</p>
+                  <p>{insight.verdict}</p>
                   {insight.lines.map((line) => (
                     <p key={line}>{line}</p>
                   ))}
@@ -183,6 +201,42 @@ export default function DiningPage() {
               >
                 {selectedShip.status}
               </span>
+            </div>
+          </section>
+
+          <section className="card">
+            <SectionHeader
+              title="Included vs paid reality"
+              description="The fast answer before you start reading every venue like it is a legal document."
+            />
+            <div className="reality-copy dining-reality-copy">
+              {insight.reality.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+          </section>
+
+          <section className="card">
+            <SectionHeader
+              title="Next step"
+              description="Use the ship view here, then move to the money decision that matters next."
+            />
+            <div className="card-grid dining-next-step-grid">
+              <article className="card info-card muted-card dining-next-step-card">
+                <div className="card-topline">
+                  <h3>Dining Package Calculator</h3>
+                  <span className="status-pill status-muted">Soon</span>
+                </div>
+                <p>Not live yet. This ship data is already set up to support it when we build the real package math.</p>
+              </article>
+              <Link className="card info-card dining-next-step-card" to="/compare">
+                <div className="card-topline">
+                  <h3>Compare trip versions</h3>
+                  <span className="status-pill">Live</span>
+                </div>
+                <p>Compare one trip with more paid add-ons against a leaner version before the budget gets stupid.</p>
+                <span className="card-link">Compare scenarios</span>
+              </Link>
             </div>
           </section>
 
@@ -234,8 +288,8 @@ export default function DiningPage() {
 
           <section className="card callout-card">
             <SectionHeader
-              title="Important Notes / Hybrid Rules"
-              description="This is the part Royal makes fuzzier than it needs to be."
+              title="Dining fine print that matters"
+              description="This is where people get surprised, over-assume, and then argue with the bill later."
             />
             <VenueList venues={selectedShip.hybridDining} hybrid />
             {selectedShip.notes.length ? (

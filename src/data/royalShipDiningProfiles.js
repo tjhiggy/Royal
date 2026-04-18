@@ -78,8 +78,10 @@ export const diningProfiles = {
   oasisModern: {
     complimentaryDining: [
       venue('Boardwalk Dog House'),
+      venue('Cafe Promenade'),
       venue('Dining Room'),
       venue('Park Cafe'),
+      venue('Solarium Bistro'),
       venue("Sorrento's"),
       venue('Windjammer'),
     ],
@@ -102,9 +104,11 @@ export const diningProfiles = {
   oasisAmped: {
     complimentaryDining: [
       venue('Boardwalk Dog House'),
+      venue('Cafe Promenade'),
       venue('Dining Room'),
       venue('El Loco Fresh'),
       venue('Park Cafe'),
+      venue('Solarium Bistro'),
       venue("Sorrento's"),
       venue('Windjammer'),
     ],
@@ -127,9 +131,11 @@ export const diningProfiles = {
   utopia: {
     complimentaryDining: [
       venue('Boardwalk Dog House'),
+      venue('Cafe Promenade'),
       venue('Dining Room'),
       venue('El Loco Fresh'),
       venue('Park Cafe'),
+      venue('Solarium Bistro'),
       venue("Sorrento's"),
       venue('Spare Tire'),
       venue('Windjammer'),
@@ -154,8 +160,10 @@ export const diningProfiles = {
   quantumBase: {
     complimentaryDining: [
       venue('Cafe @ Two70'),
+      venue('Cafe Promenade'),
       venue('Dining Room'),
       venue('Dog House'),
+      venue('Solarium Bistro'),
       venue("Sorrento's"),
       venue('Windjammer'),
     ],
@@ -199,6 +207,7 @@ export const diningProfiles = {
   },
   freedomAmped: {
     complimentaryDining: [
+      venue('Cafe Promenade'),
       venue('Dining Room'),
       venue('El Loco Fresh'),
       venue("Sorrento's"),
@@ -219,6 +228,7 @@ export const diningProfiles = {
   },
   freedomClassic: {
     complimentaryDining: [
+      venue('Cafe Promenade'),
       venue('Dining Room'),
       venue("Sorrento's"),
       venue('Windjammer'),
@@ -237,6 +247,7 @@ export const diningProfiles = {
   },
   voyagerAmped: {
     complimentaryDining: [
+      venue('Cafe Promenade'),
       venue('Dining Room'),
       venue('El Loco Fresh'),
       venue("Sorrento's"),
@@ -257,6 +268,7 @@ export const diningProfiles = {
   },
   voyagerClassic: {
     complimentaryDining: [
+      venue('Cafe Promenade'),
       venue('Dining Room'),
       venue("Sorrento's"),
       venue('Windjammer'),
