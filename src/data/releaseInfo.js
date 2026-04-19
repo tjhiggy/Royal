@@ -1,8 +1,26 @@
 export const releaseInfo = {
-  currentVersion: 'v1.12.0',
+  currentVersion: 'v1.14.0',
   updatedDate: '2026-04-19',
-  buildId: 'calculator-share-summaries',
+  buildId: 'smart-calculator-presets',
   changelogEntries: [
+    {
+      version: 'v1.14.0',
+      date: '2026-04-19',
+      changes: [
+        'Added smart preset buttons to Cruise Cost Calculator, Deal Evaluator, and Drink Package Calculator.',
+        'Standardized presets around Couple, Family, Budget traveler, and Vacation mode trip profiles.',
+        'Made preset selection visible while clearing it after manual edits so user changes are not treated as locked presets.',
+      ],
+    },
+    {
+      version: 'v1.13.0',
+      date: '2026-04-19',
+      changes: [
+        'Added Guided Mode at /start and /guided to walk users through cruise planning decisions step by step.',
+        'Reused existing calculator logic for deal, cost, drink package, WiFi, The Key, and scenario comparison results.',
+        'Added a final guided summary with total cost, verdict, biggest cost drivers, and suggested cuts.',
+      ],
+    },
     {
       version: 'v1.12.0',
       date: '2026-04-19',

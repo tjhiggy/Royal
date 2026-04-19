@@ -22,8 +22,80 @@ const initialState = {
   parkingTransport: 120,
 }
 
+const dealPresets = [
+  {
+    label: 'Couple (moderate)',
+    description: 'Two-adult trip with normal packages and travel costs.',
+    values: {
+      cruiseNights: 7,
+      baseFare: 2400,
+      taxesAndFees: 460,
+      drinkPackage: 950,
+      wifi: 180,
+      excursions: 450,
+      specialtyDining: 250,
+      theKey: 0,
+      flights: 650,
+      hotel: 220,
+      parkingTransport: 120,
+    },
+  },
+  {
+    label: 'Family (2 adults + 2 kids)',
+    description: 'Higher fare, bigger excursion spend, and fewer premium adult add-ons.',
+    values: {
+      cruiseNights: 7,
+      baseFare: 4200,
+      taxesAndFees: 760,
+      drinkPackage: 900,
+      wifi: 240,
+      excursions: 850,
+      specialtyDining: 180,
+      theKey: 0,
+      flights: 1200,
+      hotel: 320,
+      parkingTransport: 160,
+    },
+  },
+  {
+    label: 'Budget traveler',
+    description: 'Low add-ons, drive-to-port energy, and fewer self-inflicted wounds.',
+    values: {
+      cruiseNights: 5,
+      baseFare: 1500,
+      taxesAndFees: 320,
+      drinkPackage: 0,
+      wifi: 0,
+      excursions: 150,
+      specialtyDining: 0,
+      theKey: 0,
+      flights: 0,
+      hotel: 0,
+      parkingTransport: 120,
+    },
+  },
+  {
+    label: 'Vacation mode',
+    description: 'The full send: drinks, dining, excursions, and travel all joining the party.',
+    values: {
+      cruiseNights: 7,
+      baseFare: 3200,
+      taxesAndFees: 560,
+      drinkPackage: 1250,
+      wifi: 280,
+      excursions: 900,
+      specialtyDining: 500,
+      theKey: 532,
+      flights: 850,
+      hotel: 350,
+      parkingTransport: 180,
+    },
+  },
+]
+
 export default function DealEvaluatorPage() {
   const [form, setForm] = useState(initialState)
+  const [activePreset, setActivePreset] = useState('')
   const results = useMemo(() => calculateDealEvaluator(form), [form])
   const statusClassName =
     results.verdict === 'Solid deal'
@@ -35,6 +107,12 @@ export default function DealEvaluatorPage() {
   function handleChange(event) {
     const { name, value } = event.target
     setForm((current) => ({ ...current, [name]: value }))
+    setActivePreset('')
+  }
+
+  function applyPreset(preset) {
+    setForm((current) => ({ ...current, ...preset.values }))
+    setActivePreset(preset.label)
   }
 
   return (
@@ -44,6 +122,27 @@ export default function DealEvaluatorPage() {
         title="Deal Evaluator"
         description="Check whether a cruise is actually a good deal once the real trip cost shows up."
       />
+
+      <section className="card">
+        <SectionHeader
+          title="Smart presets"
+          description="Start from a realistic trip profile, then edit the messy details. Because your trip will absolutely have messy details."
+        />
+        <div className="preset-grid">
+          {dealPresets.map((preset) => (
+            <button
+              key={preset.label}
+              type="button"
+              className={`preset-card ${activePreset === preset.label ? 'preset-card-active' : ''}`}
+              aria-pressed={activePreset === preset.label}
+              onClick={() => applyPreset(preset)}
+            >
+              <strong>{preset.label}</strong>
+              <span>{preset.description}</span>
+            </button>
+          ))}
+        </div>
+      </section>
 
       <div className="two-column-layout">
         <section className="card">

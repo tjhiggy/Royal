@@ -8,6 +8,7 @@ import DealEvaluatorPage from './pages/DealEvaluatorPage'
 import DiningPage from './pages/DiningPage'
 import DiningPackagePage from './pages/DiningPackagePage'
 import DrinkPackagePage from './pages/DrinkPackagePage'
+import GuidedModePage from './pages/GuidedModePage'
 import HomePage from './pages/HomePage'
 import PackingPage from './pages/PackingPage'
 import PlannerPage from './pages/PlannerPage'
@@ -20,6 +21,8 @@ export default function App() {
     <Routes>
       <Route element={<SiteLayout />}>
         <Route path="/" element={<HomePage />} />
+        <Route path="/start" element={<GuidedModePage />} />
+        <Route path="/guided" element={<GuidedModePage />} />
         <Route path="/tools" element={<ToolsPage />} />
         <Route path="/compare" element={<ComparePage />} />
         <Route path="/dining" element={<DiningPage />} />

@@ -10,8 +10,92 @@ import { calculateCruiseCost } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
 import { appendShareUrl } from '../utils/share'
 
+const cruiseCostPresets = [
+  {
+    label: 'Couple (moderate)',
+    description: 'Two adults, balanced extras, and a normal amount of vacation optimism.',
+    values: {
+      cruiseFare: 2400,
+      taxesAndFees: 460,
+      prepaidGratuities: 260,
+      drinkPackage: 950,
+      wifi: 180,
+      dining: 250,
+      excursions: 450,
+      hotel: 220,
+      flights: 650,
+      parking: 100,
+      travelExtras: 120,
+      miscellaneous: 100,
+      travelerCount: 2,
+      cruiseNights: 7,
+    },
+  },
+  {
+    label: 'Family (2 adults + 2 kids)',
+    description: 'Four travelers, more excursions, less bar math. Sanity sold separately.',
+    values: {
+      cruiseFare: 4200,
+      taxesAndFees: 760,
+      prepaidGratuities: 520,
+      drinkPackage: 900,
+      wifi: 240,
+      dining: 180,
+      excursions: 850,
+      hotel: 320,
+      flights: 1200,
+      parking: 140,
+      travelExtras: 220,
+      miscellaneous: 250,
+      travelerCount: 4,
+      cruiseNights: 7,
+    },
+  },
+  {
+    label: 'Budget traveler',
+    description: 'Lean extras, fewer splurges, and fewer ways for checkout to mug you.',
+    values: {
+      cruiseFare: 1500,
+      taxesAndFees: 320,
+      prepaidGratuities: 180,
+      drinkPackage: 0,
+      wifi: 0,
+      dining: 0,
+      excursions: 150,
+      hotel: 0,
+      flights: 0,
+      parking: 120,
+      travelExtras: 80,
+      miscellaneous: 75,
+      travelerCount: 2,
+      cruiseNights: 5,
+    },
+  },
+  {
+    label: 'Vacation mode',
+    description: 'Packages, flights, excursions, and the budget wearing sunglasses indoors.',
+    values: {
+      cruiseFare: 3200,
+      taxesAndFees: 560,
+      prepaidGratuities: 320,
+      drinkPackage: 1250,
+      wifi: 280,
+      dining: 500,
+      excursions: 900,
+      hotel: 350,
+      flights: 850,
+      parking: 140,
+      travelExtras: 220,
+      miscellaneous: 250,
+      travelerCount: 2,
+      cruiseNights: 7,
+    },
+  },
+]
+
 export default function CruiseCostPage() {
   const [form, setForm] = useState(cruiseCostInitialState)
+  const [activePreset, setActivePreset] = useState('')
   const results = useMemo(() => calculateCruiseCost(form), [form])
   const statusClassName =
     results.status === 'Add-on heavy'
@@ -24,6 +108,12 @@ export default function CruiseCostPage() {
   function handleChange(event) {
     const { name, value } = event.target
     setForm((current) => ({ ...current, [name]: value }))
+    setActivePreset('')
+  }
+
+  function applyPreset(preset) {
+    setForm((current) => ({ ...current, ...preset.values }))
+    setActivePreset(preset.label)
   }
 
   return (
@@ -39,6 +129,26 @@ export default function CruiseCostPage() {
           title="Cost Inputs"
           description="Keep the fare and each extra separate so the total tells the truth instead of brochure fiction."
         />
+        <div className="preset-block">
+          <div className="preset-copy">
+            <strong>Smart presets</strong>
+            <span>Pick a realistic starting point, then edit anything that does not match your trip.</span>
+          </div>
+          <div className="preset-grid">
+            {cruiseCostPresets.map((preset) => (
+              <button
+                key={preset.label}
+                type="button"
+                className={`preset-card ${activePreset === preset.label ? 'preset-card-active' : ''}`}
+                aria-pressed={activePreset === preset.label}
+                onClick={() => applyPreset(preset)}
+              >
+                <strong>{preset.label}</strong>
+                <span>{preset.description}</span>
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="form-grid">
           {cruiseCostFields.map(([name, label, helper, min = '0']) => (
             <FormField

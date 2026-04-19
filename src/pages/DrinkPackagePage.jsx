@@ -23,19 +23,11 @@ const initialState = {
 
 const presets = [
   {
-    label: 'Light Drinker',
-    description: 'A couple drinks, one coffee, and a pretty modest daily tab.',
+    label: 'Couple (moderate)',
+    description: 'A balanced pace for adults who are enjoying the ship without becoming a roaming bar tab.',
     values: {
-      alcoholicDrinksPerDay: 2,
-      specialtyCoffeesPerDay: 1,
-      bottledWatersPerDay: 1,
-      sodasMocktailsPerDay: 0,
-    },
-  },
-  {
-    label: 'Average Cruiser',
-    description: 'A realistic middle lane for someone enjoying the trip without going overboard.',
-    values: {
+      cruiseNights: 7,
+      packagePricePerPersonPerDay: 80,
       alcoholicDrinksPerDay: 4,
       specialtyCoffeesPerDay: 1,
       bottledWatersPerDay: 2,
@@ -43,9 +35,35 @@ const presets = [
     },
   },
   {
-    label: 'Vacation Mode',
+    label: 'Family (2 adults + 2 kids)',
+    description: 'Lower adult drink pace with more waters, sodas, and kid-adjacent chaos.',
+    values: {
+      cruiseNights: 7,
+      packagePricePerPersonPerDay: 80,
+      alcoholicDrinksPerDay: 2,
+      specialtyCoffeesPerDay: 1,
+      bottledWatersPerDay: 3,
+      sodasMocktailsPerDay: 3,
+    },
+  },
+  {
+    label: 'Budget traveler',
+    description: 'A couple paid drinks and enough restraint to annoy the upsell machine.',
+    values: {
+      cruiseNights: 5,
+      packagePricePerPersonPerDay: 80,
+      alcoholicDrinksPerDay: 1,
+      specialtyCoffeesPerDay: 0,
+      bottledWatersPerDay: 1,
+      sodasMocktailsPerDay: 0,
+    },
+  },
+  {
+    label: 'Vacation mode',
     description: 'Cocktails are flowing, coffees are involved, and the bar staff knows your face.',
     values: {
+      cruiseNights: 7,
+      packagePricePerPersonPerDay: 90,
       alcoholicDrinksPerDay: 6,
       specialtyCoffeesPerDay: 2,
       bottledWatersPerDay: 2,
@@ -129,21 +147,20 @@ const priceFields = [
 export default function DrinkPackagePage() {
   const [form, setForm] = useState(initialState)
   const [showAdvancedPricing, setShowAdvancedPricing] = useState(false)
+  const [activePreset, setActivePreset] = useState('')
 
   const results = useMemo(() => calculateDrinkPackage(form), [form])
 
   function handleChange(event) {
     const { name, value } = event.target
     setForm((current) => ({ ...current, [name]: value }))
+    setActivePreset('')
   }
 
-  function applyPreset(values) {
-    setForm((current) => ({ ...current, ...values }))
+  function applyPreset(preset) {
+    setForm((current) => ({ ...current, ...preset.values }))
+    setActivePreset(preset.label)
   }
-
-  const activePreset = presets.find((preset) =>
-    Object.entries(preset.values).every(([key, value]) => Number(form[key]) === value),
-  )?.label
 
   const outcomeMessage =
     results.netSavings > 0
@@ -202,7 +219,7 @@ export default function DrinkPackagePage() {
                   type="button"
                   className={`preset-card ${activePreset === preset.label ? 'preset-card-active' : ''}`}
                   aria-pressed={activePreset === preset.label}
-                  onClick={() => applyPreset(preset.values)}
+                  onClick={() => applyPreset(preset)}
                 >
                   <strong>{preset.label}</strong>
                   <span>{preset.description}</span>

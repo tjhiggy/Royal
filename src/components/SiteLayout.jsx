@@ -4,6 +4,7 @@ import Footer from './Footer'
 
 const navItems = [
   { label: 'Home', to: '/' },
+  { label: 'Start', to: '/start' },
   { label: 'Tools', to: '/tools' },
   { label: 'Compare', to: '/compare' },
   { label: 'Dining', to: '/dining' },
