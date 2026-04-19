@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom'
+import DecisionProgress from './DecisionProgress'
 import Footer from './Footer'
 
 const navItems = [
@@ -39,6 +40,8 @@ export default function SiteLayout() {
           </nav>
         </div>
       </header>
+
+      <DecisionProgress />
 
       <main className="site-main">
         <Outlet />

@@ -1,8 +1,35 @@
 export const releaseInfo = {
-  currentVersion: 'v1.10.0',
-  updatedDate: '2026-04-18',
-  buildId: 'dining-package-calculator',
+  currentVersion: 'v1.12.0',
+  updatedDate: '2026-04-19',
+  buildId: 'calculator-share-summaries',
   changelogEntries: [
+    {
+      version: 'v1.12.0',
+      date: '2026-04-19',
+      changes: [
+        'Added Copy summary and Copy link actions to Deal Evaluator, Cruise Cost Calculator, and Compare.',
+        'Standardized share summaries with short verdict, cost, driver, and site-link text.',
+        'Kept Compare share links dynamic so copied links can restore the two scenarios from the URL.',
+      ],
+    },
+    {
+      version: 'v1.11.1',
+      date: '2026-04-19',
+      changes: [
+        'Rewrote the homepage hero around avoiding cruise overpayment.',
+        'Added a compact Where people get burned section for common package and fare traps.',
+        'Tightened homepage card descriptions and CTA wording so the page explains the value faster.',
+      ],
+    },
+    {
+      version: 'v1.11.0',
+      date: '2026-04-19',
+      changes: [
+        'Refactored the homepage around a guided decision flow instead of a flat tool list.',
+        'Added a lightweight sitewide decision progress indicator for deal, cost, upgrade, and compare steps.',
+        'Added next-step CTA blocks across the core calculators so each tool points to the next practical decision.',
+      ],
+    },
     {
       version: 'v1.10.0',
       date: '2026-04-18',

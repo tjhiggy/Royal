@@ -1,11 +1,14 @@
 import { useMemo, useState } from 'react'
+import DecisionNextStep from '../components/DecisionNextStep'
 import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
 import SectionHeader from '../components/SectionHeader'
+import ShareActions from '../components/ShareActions'
 import { cruiseCostFields, cruiseCostInitialState } from '../data/cruiseCostConfig'
 import { calculateCruiseCost } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
+import { appendShareUrl } from '../utils/share'
 
 export default function CruiseCostPage() {
   const [form, setForm] = useState(cruiseCostInitialState)
@@ -67,6 +70,15 @@ export default function CruiseCostPage() {
         </div>
       </section>
 
+      <ShareActions
+        summary={() => appendShareUrl([
+          `${results.status}.`,
+          `Base fare: ${formatCurrency(Number(form.cruiseFare) || 0)}`,
+          `Real trip cost: ${formatCurrency(results.grandTotal)}`,
+          `Biggest add-on driver: ${results.biggestAddOnDrivers[0]?.label ?? 'No major add-on'}`,
+        ])}
+      />
+
       <div className="two-column-layout">
         <section className="card">
           <SectionHeader
@@ -117,6 +129,17 @@ export default function CruiseCostPage() {
         note={`Base fare is ${results.fareShare.toFixed(0)}% of the total, add-ons are ${results.extrasShare.toFixed(0)}%, and travel alone is ${results.travelShare.toFixed(
           0,
         )}%. That is the real split.`}
+      />
+
+      <DecisionNextStep
+        title="Next: test the upgrades"
+        description="Now that the real total is visible, check which packages deserve to stay in the budget and which ones are just cruise math cosplay."
+        links={[
+          { to: '/tools/drink-package', label: 'Check drinks' },
+          { to: '/tools/dining-package', label: 'Check dining' },
+          { to: '/tools/wifi', label: 'Check WiFi' },
+          { to: '/tools/the-key', label: 'Check The Key' },
+        ]}
       />
     </div>
   )

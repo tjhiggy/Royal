@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
 import SectionHeader from '../components/SectionHeader'
+import ShareActions from '../components/ShareActions'
 import { cruiseCostFields, cruiseCostInitialState } from '../data/cruiseCostConfig'
 import { calculateCruiseCost, compareCruiseCostScenarios } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
@@ -157,7 +158,6 @@ export default function ComparePage() {
   const [activePreset, setActivePreset] = useState('')
   const [comparisonName, setComparisonName] = useState('')
   const [savedComparisons, setSavedComparisons] = useState(() => loadCompareScenarios())
-  const [shareFeedback, setShareFeedback] = useState('')
 
   const resultsA = useMemo(() => calculateCruiseCost(scenarioA), [scenarioA])
   const resultsB = useMemo(() => calculateCruiseCost(scenarioB), [scenarioB])
@@ -175,15 +175,6 @@ export default function ComparePage() {
     setScenarioBLabel(sharedState.scenarioBLabel || 'Scenario B')
     setActivePreset('')
   }, [location.search])
-
-  useEffect(() => {
-    if (!shareFeedback) {
-      return
-    }
-
-    const timeoutId = window.setTimeout(() => setShareFeedback(''), 2200)
-    return () => window.clearTimeout(timeoutId)
-  }, [shareFeedback])
 
   function handleScenarioChange(setter) {
     return (event) => {
@@ -246,31 +237,19 @@ export default function ComparePage() {
     saveCompareScenarios(nextComparisons)
   }
 
-  async function handleCopySummary() {
-    try {
-      const summary = buildCompareSummary(comparison, {
-        scenarioA: scenarioALabel,
-        scenarioB: scenarioBLabel,
-      })
-      await navigator.clipboard.writeText(summary)
-      setShareFeedback('Summary copied')
-    } catch {
-      setShareFeedback('Could not copy summary')
-    }
+  function getCompareLink() {
+    const encodedState = encodeCompareState(
+      { scenarioA, scenarioB, scenarioALabel, scenarioBLabel },
+      cruiseCostInitialState,
+    )
+    return buildCompareShareUrl(encodedState)
   }
 
-  async function handleCopyShareLink() {
-    try {
-      const encodedState = encodeCompareState(
-        { scenarioA, scenarioB, scenarioALabel, scenarioBLabel },
-        cruiseCostInitialState,
-      )
-      const shareUrl = buildCompareShareUrl(encodedState)
-      await navigator.clipboard.writeText(shareUrl)
-      setShareFeedback('Share link copied')
-    } catch {
-      setShareFeedback('Could not copy link')
-    }
+  function getCompareSummary() {
+    return buildCompareSummary(comparison, {
+      scenarioA: scenarioALabel,
+      scenarioB: scenarioBLabel,
+    }, getCompareLink())
   }
 
   const mainTakeaway =
@@ -326,14 +305,8 @@ export default function ComparePage() {
           <button type="button" className="button button-primary" onClick={handleSaveComparison}>
             Save comparison
           </button>
-          <button type="button" className="button button-ghost" onClick={handleCopySummary}>
-            Copy summary
-          </button>
-          <button type="button" className="button button-ghost" onClick={handleCopyShareLink}>
-            Copy share link
-          </button>
+          <ShareActions summary={getCompareSummary} getLink={getCompareLink} compact />
         </div>
-        {shareFeedback ? <p className="share-feedback">{shareFeedback}</p> : null}
       </section>
 
       <div className="two-column-layout compare-layout">

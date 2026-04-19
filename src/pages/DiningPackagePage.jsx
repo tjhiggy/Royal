@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
 import SectionHeader from '../components/SectionHeader'
@@ -284,6 +285,12 @@ export default function DiningPackagePage() {
           </div>
         </section>
       </div>
+
+      <DecisionNextStep
+        title="Next: compare the trip versions"
+        description="If dining changes the budget, compare the package version against the leaner version before the checkout page starts acting charming."
+        links={[{ to: '/compare', label: 'Compare scenarios' }]}
+      />
     </div>
   )
 }

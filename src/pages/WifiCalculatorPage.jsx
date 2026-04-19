@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
 import SectionHeader from '../components/SectionHeader'
@@ -224,6 +225,12 @@ export default function WifiCalculatorPage() {
           </div>
         </section>
       </div>
+
+      <DecisionNextStep
+        title="Next: compare the trip versions"
+        description="If WiFi changes the plan, compare one-device, two-device, or no-WiFi versions before paying for imaginary productivity."
+        links={[{ to: '/compare', label: 'Compare scenarios' }]}
+      />
     </div>
   )
 }

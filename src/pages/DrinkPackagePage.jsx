@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import DecisionNextStep from '../components/DecisionNextStep'
 import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
@@ -335,6 +336,12 @@ export default function DrinkPackagePage() {
           </div>
         </div>
       </section>
+
+      <DecisionNextStep
+        title="Next: compare the trip versions"
+        description="Once the drink package verdict is clear, compare the trip with and without it. Feelings are cute. Totals are better."
+        links={[{ to: '/compare', label: 'Compare scenarios' }]}
+      />
     </div>
   )
 }

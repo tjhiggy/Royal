@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
 import SectionHeader from '../components/SectionHeader'
@@ -257,6 +258,12 @@ export default function TheKeyPage() {
           </div>
         </section>
       </div>
+
+      <DecisionNextStep
+        title="Next: compare the trip versions"
+        description="If The Key survives the math, compare the full trip with and without it. VIP vibes do not get a free pass."
+        links={[{ to: '/compare', label: 'Compare scenarios' }]}
+      />
     </div>
   )
 }

@@ -1,9 +1,12 @@
 import { useMemo, useState } from 'react'
+import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
 import SectionHeader from '../components/SectionHeader'
+import ShareActions from '../components/ShareActions'
 import { calculateDealEvaluator } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
+import { appendShareUrl } from '../utils/share'
 
 const initialState = {
   cruiseNights: 7,
@@ -125,6 +128,15 @@ export default function DealEvaluatorPage() {
         </div>
       </section>
 
+      <ShareActions
+        summary={() => appendShareUrl([
+          `${results.verdict}.`,
+          `Base fare: ${formatCurrency(Number(form.baseFare) || 0)}`,
+          `Real trip cost: ${formatCurrency(results.total)}`,
+          `Biggest driver: ${results.costDrivers[0]?.label ?? 'No major add-on'}`,
+        ])}
+      />
+
       <section className="card callout-card">
         <SectionHeader
           title="Reality breakdown"
@@ -233,6 +245,12 @@ export default function DealEvaluatorPage() {
           ))}
         </div>
       </section>
+
+      <DecisionNextStep
+        title="Next: price the real trip"
+        description="If the deal survives the first sniff test, run the full cost next. That is where the quiet little add-ons stop being quiet."
+        links={[{ to: '/tools/cruise-cost', label: 'Open Cruise Cost Calculator' }]}
+      />
     </div>
   )
 }

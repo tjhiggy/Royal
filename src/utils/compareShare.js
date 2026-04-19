@@ -1,4 +1,5 @@
 import { formatCurrency } from './formatters'
+import { appendShareUrl } from './share'
 
 const COMPARE_SHARE_PARAM = 'cmp'
 
@@ -8,7 +9,7 @@ function sanitizeScenario(scenario, template) {
   )
 }
 
-export function buildCompareSummary(comparison, labels = { scenarioA: 'Scenario A', scenarioB: 'Scenario B' }) {
+export function buildCompareSummary(comparison, labels = { scenarioA: 'Scenario A', scenarioB: 'Scenario B' }, shareUrl) {
   const scenarioAName = labels.scenarioA || 'Scenario A'
   const scenarioBName = labels.scenarioB || 'Scenario B'
   const totalLine =
@@ -20,12 +21,12 @@ export function buildCompareSummary(comparison, labels = { scenarioA: 'Scenario 
     ? `Main driver: ${driver.label} (+${formatCurrency(driver.amount)} in ${driver.higherIn.replace('Scenario A', scenarioAName).replace('Scenario B', scenarioBName)})`
     : 'Main driver: no single line item is creating a major gap'
 
-  return [
+  return appendShareUrl([
     totalLine,
     driverLine,
     `Nightly difference: about ${formatCurrency(comparison.absoluteCostPerNightDifference)}`,
     `Add-ons gap: about ${formatCurrency(comparison.absoluteAddOnsDifference)}`,
-  ].join('\n')
+  ], shareUrl)
 }
 
 export function encodeCompareState({ scenarioA, scenarioB, scenarioALabel, scenarioBLabel }, template) {
