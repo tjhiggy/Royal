@@ -112,9 +112,54 @@ img {
   isolation: isolate;
 }
 
-.site-header {
+.top-banner {
   position: sticky;
   top: 0;
+  z-index: 60;
+  background:
+    linear-gradient(90deg, rgba(103, 213, 255, 0.08), rgba(255, 123, 109, 0.06)),
+    rgba(5, 13, 23, 0.92);
+  border-bottom: 1px solid rgba(126, 171, 223, 0.1);
+  backdrop-filter: blur(14px);
+}
+
+.top-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 2.25rem;
+  color: var(--text-soft);
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+
+.top-banner-dismiss {
+  border: 1px solid rgba(126, 171, 223, 0.14);
+  border-radius: 999px;
+  background: rgba(91, 168, 255, 0.08);
+  color: var(--text-faint);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.28rem 0.65rem;
+}
+
+.top-banner-dismiss:hover {
+  color: var(--text);
+  border-color: rgba(103, 213, 255, 0.28);
+}
+
+.top-banner-dismiss:focus-visible {
+  outline: 3px solid rgba(103, 213, 255, 0.4);
+  outline-offset: 2px;
+}
+
+.site-header {
+  position: sticky;
+  top: 2.25rem;
   z-index: 50;
   backdrop-filter: blur(16px);
   background: rgba(8, 18, 31, 0.82);
@@ -123,7 +168,7 @@ img {
 
 .decision-progress {
   position: sticky;
-  top: 5rem;
+  top: 7.25rem;
   z-index: 40;
   background: rgba(7, 16, 28, 0.78);
   backdrop-filter: blur(14px);
@@ -604,6 +649,34 @@ a.decision-flow-card:hover::before {
   box-shadow: 0 0 0 4px rgba(255, 123, 109, 0.12);
 }
 
+.recent-trip-list {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.recent-trip-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  min-height: 100%;
+}
+
+.recent-trip-card div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.recent-trip-card span,
+.recent-trip-card small {
+  color: var(--text-soft);
+}
+
+.recent-trip-card:hover {
+  transform: translateY(-3px);
+}
+
 .preset-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -847,6 +920,52 @@ a.info-card:hover {
 .brutal-summary-lines strong {
   font-size: clamp(1.05rem, 2vw, 1.3rem);
   line-height: 1.25;
+}
+
+.forgotten-costs-card {
+  background:
+    radial-gradient(circle at top left, rgba(255, 123, 109, 0.1), transparent 34%),
+    var(--surface);
+  border-color: rgba(240, 177, 75, 0.18);
+}
+
+.forgotten-cost-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  margin-top: 1rem;
+}
+
+.forgotten-cost-item {
+  display: grid;
+  gap: 0.85rem;
+  align-content: space-between;
+  padding: 1rem;
+  border: 1px solid rgba(126, 171, 223, 0.12);
+  border-radius: 18px;
+  background: rgba(8, 19, 32, 0.48);
+}
+
+.forgotten-cost-missing {
+  border-color: rgba(255, 123, 109, 0.28);
+  background:
+    linear-gradient(180deg, rgba(255, 123, 109, 0.08), rgba(91, 168, 255, 0.03)),
+    rgba(8, 19, 32, 0.62);
+}
+
+.forgotten-cost-copy {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.forgotten-cost-copy span {
+  color: var(--text-soft);
+  line-height: 1.4;
+}
+
+.forgotten-cost-button {
+  width: fit-content;
+  padding: 0.65rem 0.9rem;
 }
 
 .guided-shell {
@@ -1705,6 +1824,15 @@ a.info-card:hover {
 
   .decision-progress {
     position: static;
+  }
+
+  .site-header {
+    top: 0;
+  }
+
+  .top-banner-inner {
+    justify-content: space-between;
+    text-align: left;
   }
 
   .decision-progress-inner,

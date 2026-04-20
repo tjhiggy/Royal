@@ -1,8 +1,35 @@
 export const releaseInfo = {
-  currentVersion: 'v1.19.0',
+  currentVersion: 'v1.22.0',
   updatedDate: '2026-04-19',
-  buildId: 'trip-snapshot-dashboard',
+  buildId: 'recent-trips',
   changelogEntries: [
+    {
+      version: 'v1.22.0',
+      date: '2026-04-19',
+      changes: [
+        'Added Recent trips localStorage support for Deal Evaluator, Cruise Cost Calculator, and Compare.',
+        'Added a Continue where you left off section to the homepage showing the last three calculator sessions.',
+        'Added reload links so saved calculator state can be restored from recent sessions without backend storage.',
+      ],
+    },
+    {
+      version: 'v1.21.0',
+      date: '2026-04-19',
+      changes: [
+        'Added a Costs people forget section to the Cruise Cost Calculator.',
+        'Added quick-add buttons for gratuities, parking, hotel, excursions, and onboard miscellaneous spend.',
+        'Highlighted $0 forgotten-cost categories so missing budget items are harder to ignore.',
+      ],
+    },
+    {
+      version: 'v1.20.0',
+      date: '2026-04-19',
+      changes: [
+        'Added a slim persistent top banner warning that most people underestimate cruise cost by 30–60%.',
+        'Added localStorage dismissal so the banner stays hidden after users dismiss it.',
+        'Styled the banner to fit the dark theme without taking over the page.',
+      ],
+    },
     {
       version: 'v1.19.0',
       date: '2026-04-19',

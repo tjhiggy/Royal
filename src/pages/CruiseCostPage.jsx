@@ -1,7 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import BrutalSummary from '../components/BrutalSummary'
 import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
+import ForgottenCosts from '../components/ForgottenCosts'
 import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
@@ -11,6 +13,7 @@ import { cruiseCostFields, cruiseCostInitialState } from '../data/cruiseCostConf
 import { calculateCruiseCost } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
 import { appendShareUrl } from '../utils/share'
+import { getRecentTripById, saveRecentTrip } from '../utils/storage'
 
 const cruiseCostPresets = [
   {
@@ -96,6 +99,8 @@ const cruiseCostPresets = [
 ]
 
 export default function CruiseCostPage() {
+  const location = useLocation()
+  const sessionId = useRef(`cost-${Date.now()}`)
   const [form, setForm] = useState(cruiseCostInitialState)
   const [activePreset, setActivePreset] = useState('')
   const results = useMemo(() => calculateCruiseCost(form), [form])
@@ -125,6 +130,33 @@ export default function CruiseCostPage() {
     setForm((current) => ({ ...current, ...preset.values }))
     setActivePreset(preset.label)
   }
+
+  function quickAddForgottenCost(name, amount) {
+    setForm((current) => ({ ...current, [name]: amount }))
+    setActivePreset('')
+  }
+
+  useEffect(() => {
+    const recentId = new URLSearchParams(location.search).get('recent')
+    const recentTrip = recentId ? getRecentTripById(recentId) : null
+
+    if (recentTrip?.tool === 'cruise-cost' && recentTrip.data?.form) {
+      sessionId.current = recentTrip.id
+      setForm({ ...cruiseCostInitialState, ...recentTrip.data.form })
+      setActivePreset('')
+    }
+  }, [location.search])
+
+  useEffect(() => {
+    saveRecentTrip({
+      id: sessionId.current,
+      tool: 'cruise-cost',
+      toolLabel: 'Cost Calculator',
+      label: `${results.status} • ${formatCurrency(results.grandTotal)}`,
+      path: '/tools/cruise-cost',
+      data: { form },
+    })
+  }, [form, results.grandTotal, results.status])
 
   return (
     <div className="container page-stack">
@@ -174,6 +206,8 @@ export default function CruiseCostPage() {
           ))}
         </div>
       </section>
+
+      <ForgottenCosts form={form} onQuickAdd={quickAddForgottenCost} />
 
       <section className="card reality-card">
         <div className="verdict-kicker">Reality check</div>

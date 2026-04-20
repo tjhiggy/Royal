@@ -1,8 +1,16 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import PageHero from '../components/PageHero'
 import SectionHeader from '../components/SectionHeader'
+import { loadRecentTrips } from '../utils/storage'
 
 export default function HomePage() {
+  const [recentTrips, setRecentTrips] = useState([])
+
+  useEffect(() => {
+    setRecentTrips(loadRecentTrips())
+  }, [])
+
   return (
     <div className="container page-stack">
       <PageHero
@@ -20,6 +28,26 @@ export default function HomePage() {
           </>
         }
       />
+
+      {recentTrips.length ? (
+        <section className="page-section">
+          <SectionHeader
+            title="Continue where you left off"
+            description="Your last calculator sessions from this browser. No account required, because we are not monsters."
+          />
+          <div className="recent-trip-list">
+            {recentTrips.map((trip) => (
+              <Link key={trip.id} className="card recent-trip-card" to={`${trip.path}?recent=${trip.id}`}>
+                <div>
+                  <strong>{trip.label}</strong>
+                  <span>{trip.toolLabel}</span>
+                </div>
+                <small>Updated {new Date(trip.updatedAt).toLocaleDateString()}</small>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="page-section">
         <SectionHeader

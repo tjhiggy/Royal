@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import BrutalSummary from '../components/BrutalSummary'
 import CoachingMessage from '../components/CoachingMessage'
@@ -15,7 +15,7 @@ import {
   encodeCompareState,
   getCompareShareState,
 } from '../utils/compareShare'
-import { loadCompareScenarios, saveCompareScenarios } from '../utils/storage'
+import { getRecentTripById, loadCompareScenarios, saveCompareScenarios, saveRecentTrip } from '../utils/storage'
 
 const comparePresets = [
   {
@@ -153,6 +153,7 @@ function ScenarioSection({ title, helper, scenarioLabel, onLabelChange, form, on
 
 export default function ComparePage() {
   const location = useLocation()
+  const sessionId = useRef(`compare-${Date.now()}`)
   const [scenarioA, setScenarioA] = useState(cruiseCostInitialState)
   const [scenarioB, setScenarioB] = useState(scenarioBInitialState)
   const [scenarioALabel, setScenarioALabel] = useState('Scenario A')
@@ -177,6 +178,32 @@ export default function ComparePage() {
     setScenarioBLabel(sharedState.scenarioBLabel || 'Scenario B')
     setActivePreset('')
   }, [location.search])
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const recentId = params.get('recent')
+    const recentTrip = recentId ? getRecentTripById(recentId) : null
+
+    if (recentTrip?.tool === 'compare' && recentTrip.data?.scenarioA && recentTrip.data?.scenarioB) {
+      sessionId.current = recentTrip.id
+      setScenarioA({ ...cruiseCostInitialState, ...recentTrip.data.scenarioA })
+      setScenarioB({ ...scenarioBInitialState, ...recentTrip.data.scenarioB })
+      setScenarioALabel(recentTrip.data.scenarioALabel || 'Scenario A')
+      setScenarioBLabel(recentTrip.data.scenarioBLabel || 'Scenario B')
+      setActivePreset('')
+    }
+  }, [location.search])
+
+  useEffect(() => {
+    saveRecentTrip({
+      id: sessionId.current,
+      tool: 'compare',
+      toolLabel: 'Compare',
+      label: `${scenarioALabel} vs ${scenarioBLabel} • ${formatCurrency(comparison.absoluteTotalDifference)} gap`,
+      path: '/compare',
+      data: { scenarioA, scenarioB, scenarioALabel, scenarioBLabel },
+    })
+  }, [comparison.absoluteTotalDifference, scenarioA, scenarioALabel, scenarioB, scenarioBLabel])
 
   function handleScenarioChange(setter) {
     return (event) => {

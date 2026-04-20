@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import DecisionProgress from './DecisionProgress'
 import Footer from './Footer'
+import TopBanner from './TopBanner'
 
 const navItems = [
   { label: 'Home', to: '/' },
@@ -17,6 +18,7 @@ const navItems = [
 export default function SiteLayout() {
   return (
     <div className="site-shell">
+      <TopBanner />
       <header className="site-header">
         <div className="container nav-bar">
           <NavLink className="brand" to="/">

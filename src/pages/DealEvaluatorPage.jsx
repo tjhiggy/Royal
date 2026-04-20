@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import BrutalSummary from '../components/BrutalSummary'
 import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
@@ -9,6 +10,7 @@ import ShareActions from '../components/ShareActions'
 import { calculateDealEvaluator } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
 import { appendShareUrl } from '../utils/share'
+import { getRecentTripById, saveRecentTrip } from '../utils/storage'
 
 const initialState = {
   cruiseNights: 7,
@@ -96,6 +98,8 @@ const dealPresets = [
 ]
 
 export default function DealEvaluatorPage() {
+  const location = useLocation()
+  const sessionId = useRef(`deal-${Date.now()}`)
   const [form, setForm] = useState(initialState)
   const [activePreset, setActivePreset] = useState('')
   const results = useMemo(() => calculateDealEvaluator(form), [form])
@@ -124,6 +128,28 @@ export default function DealEvaluatorPage() {
     setForm((current) => ({ ...current, ...preset.values }))
     setActivePreset(preset.label)
   }
+
+  useEffect(() => {
+    const recentId = new URLSearchParams(location.search).get('recent')
+    const recentTrip = recentId ? getRecentTripById(recentId) : null
+
+    if (recentTrip?.tool === 'deal-evaluator' && recentTrip.data?.form) {
+      sessionId.current = recentTrip.id
+      setForm({ ...initialState, ...recentTrip.data.form })
+      setActivePreset('')
+    }
+  }, [location.search])
+
+  useEffect(() => {
+    saveRecentTrip({
+      id: sessionId.current,
+      tool: 'deal-evaluator',
+      toolLabel: 'Deal Evaluator',
+      label: `${results.verdict} • ${formatCurrency(results.total)}`,
+      path: '/tools/deal-evaluator',
+      data: { form },
+    })
+  }, [form, results.total, results.verdict])
 
   return (
     <div className="container page-stack">
