@@ -1,8 +1,53 @@
 export const releaseInfo = {
-  currentVersion: 'v1.14.0',
+  currentVersion: 'v1.19.0',
   updatedDate: '2026-04-19',
-  buildId: 'smart-calculator-presets',
+  buildId: 'trip-snapshot-dashboard',
   changelogEntries: [
+    {
+      version: 'v1.19.0',
+      date: '2026-04-19',
+      changes: [
+        'Added the Trip Snapshot page at /snapshot as a consolidated final-answer dashboard.',
+        'Reused existing calculator and dining strategy logic for cost, deal, upgrade, dining, driver, and quick-win outputs.',
+        'Added Snapshot to navigation and stacked dashboard sections for fast review.',
+      ],
+    },
+    {
+      version: 'v1.18.0',
+      date: '2026-04-19',
+      changes: [
+        'Added subtle CSS-only ocean texture, gradient overlays, and ship silhouette atmosphere to the dark theme.',
+        'Added lightweight icon badges to tool cards and section headers without adding dependencies.',
+        'Improved card hover states with slight lift, stronger border response, and subtle cyan glow.',
+      ],
+    },
+    {
+      version: 'v1.17.0',
+      date: '2026-04-19',
+      changes: [
+        'Added Dining Strategy insights to Dining Explorer based on ship class and dining mix.',
+        'Added simple dining package guidance using specialty venue count, complimentary depth, and caveat-heavy profiles.',
+        'Kept the strategy logic lightweight so Dining Explorer stays a planning aid instead of pretending to be a restaurant oracle.',
+      ],
+    },
+    {
+      version: 'v1.16.0',
+      date: '2026-04-19',
+      changes: [
+        'Added Brutal Summary cards to Deal Evaluator, Cruise Cost Calculator, and Compare.',
+        'Added blunt shareable summary lines with copy summary and copy link actions.',
+        'Added screenshot-friendly styling for the final summary cards without adding backend storage.',
+      ],
+    },
+    {
+      version: 'v1.15.0',
+      date: '2026-04-19',
+      changes: [
+        'Added contextual coaching callouts across the major calculators and Compare page.',
+        'Added short opinionated messages for add-on pressure, premium nightly cost, weak package value, WiFi overbuying, and scenario cost gaps.',
+        'Kept coaching blocks limited to one concise message per page so the UI stays useful instead of shouty.',
+      ],
+    },
     {
       version: 'v1.14.0',
       date: '2026-04-19',

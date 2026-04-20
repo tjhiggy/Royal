@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react'
+import BrutalSummary from '../components/BrutalSummary'
+import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
@@ -103,6 +105,14 @@ export default function DealEvaluatorPage() {
       : results.verdict === 'Mixed deal'
         ? 'status-borderline'
         : 'status-skip-it'
+  const coachingMessage =
+    results.costPerNight >= 900
+      ? 'This is a premium-priced sailing once everything is included.'
+      : results.addOnsShare > 55
+        ? 'The add-ons are doing more damage than the fare wants you to notice.'
+        : results.travelShare >= 25
+          ? 'Travel costs are big enough to change whether this deal is actually good.'
+          : 'This deal is not automatically bad, but the full trip total gets the final vote.'
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -236,6 +246,8 @@ export default function DealEvaluatorPage() {
         ])}
       />
 
+      <CoachingMessage message={coachingMessage} />
+
       <section className="card callout-card">
         <SectionHeader
           title="Reality breakdown"
@@ -349,6 +361,15 @@ export default function DealEvaluatorPage() {
         title="Next: price the real trip"
         description="If the deal survives the first sniff test, run the full cost next. That is where the quiet little add-ons stop being quiet."
         links={[{ to: '/tools/cruise-cost', label: 'Open Cruise Cost Calculator' }]}
+      />
+
+      <BrutalSummary
+        lines={[
+          `${results.verdict}.`,
+          `Base fare: ${formatCurrency(Number(form.baseFare) || 0)}`,
+          `Real cost: ${formatCurrency(results.total)}`,
+          `Biggest mistake: ${results.costDrivers[0]?.label ?? 'No obvious mistake'}`,
+        ]}
       />
     </div>
   )

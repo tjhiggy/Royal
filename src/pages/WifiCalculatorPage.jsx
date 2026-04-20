@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
@@ -58,6 +59,14 @@ export default function WifiCalculatorPage() {
             'Buy 2 devices',
             'Your usage looks heavy enough that paying for extra internet is more defensible here.',
           ]
+  const coachingMessage =
+    results.recommendedPlan === 'no-wifi'
+      ? 'Your usage is light enough that WiFi may be pure habit spend.'
+      : results.recommendedPlan === 'one-device' && form.willingToShare
+        ? 'Sharing one device is doing real savings work here.'
+        : results.recommendedPlan === 'two-device'
+          ? 'Multiple active devices make the second plan easier to defend.'
+          : 'One device is the safer middle ground before you overbuy internet.'
 
   return (
     <div className="container page-stack">
@@ -178,6 +187,8 @@ export default function WifiCalculatorPage() {
           <strong>{results.wastedSpendMessage}</strong>
         </div>
       </section>
+
+      <CoachingMessage message={coachingMessage} />
 
       <ResultPanel
         title="WiFi option costs"

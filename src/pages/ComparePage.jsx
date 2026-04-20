@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import BrutalSummary from '../components/BrutalSummary'
+import CoachingMessage from '../components/CoachingMessage'
 import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
 import SectionHeader from '../components/SectionHeader'
@@ -256,6 +258,14 @@ export default function ComparePage() {
     comparison.totalDifference === 0
       ? `${scenarioALabel} and ${scenarioBLabel} land at about the same total, so the decision comes down to where you want the money going.`
       : `${comparison.totalDifference > 0 ? scenarioBLabel : scenarioALabel} costs about ${formatCurrency(comparison.absoluteTotalDifference)} more overall.`
+  const coachingMessage =
+    comparison.absoluteTotalDifference === 0
+      ? 'These scenarios cost the same, so compare comfort, timing, and hassle instead.'
+      : comparison.absoluteAddOnsDifference >= comparison.absoluteTotalDifference * 0.6
+        ? 'The gap is mostly add-ons, which means this is a choice, not fate.'
+        : comparison.topDifferenceLines[0]
+          ? `${comparison.topDifferenceLines[0].label} is the biggest swing. Start there.`
+          : 'No single line item is driving the difference.'
 
   return (
     <div className="container page-stack">
@@ -385,6 +395,8 @@ export default function ComparePage() {
         ) : null}
       </section>
 
+      <CoachingMessage message={coachingMessage} />
+
       <section className="card">
         <SectionHeader
           title="Saved comparisons"
@@ -421,6 +433,18 @@ export default function ComparePage() {
           <p>No saved comparisons yet. Save one when you find a version worth coming back to.</p>
         )}
       </section>
+
+      <BrutalSummary
+        lines={[
+          comparison.totalDifference === 0
+            ? 'These scenarios are basically tied.'
+            : `${comparison.totalDifference > 0 ? scenarioBLabel : scenarioALabel} costs more.`,
+          `Total gap: ${formatCurrency(comparison.absoluteTotalDifference)}`,
+          `Nightly gap: ${formatCurrency(comparison.absoluteCostPerNightDifference)}`,
+          `Biggest mistake: ${comparison.topDifferenceLines[0]?.label ?? 'No obvious mistake'}`,
+        ]}
+        getLink={getCompareLink}
+      />
     </div>
   )
 }

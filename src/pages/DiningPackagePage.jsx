@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
@@ -71,6 +72,12 @@ export default function DiningPackagePage() {
     results.recommendation === 'Worth it'
       ? 'This only works if you actually use the specialty meals instead of buying the package for theoretical maximum value.'
       : `You need about ${roundedBreakEvenMeals} specialty meals to break even, and your current plan looks closer to ${roundedMealUsage}.`
+  const coachingMessage =
+    roundedMealUsage < roundedBreakEvenMeals
+      ? 'You are not planning enough specialty meals to make this package behave.'
+      : Number(form.portDays) > Number(form.seaDays) && Number(form.specialtyLunchesPlanned) > 0
+        ? 'Port-heavy trips make specialty lunches easier to overcount.'
+        : 'The package only wins if these meals are real plans, not menu-daydreaming.'
 
   return (
     <div className="container page-stack">
@@ -226,6 +233,8 @@ export default function DiningPackagePage() {
         </div>
         <p className="verdict-insight">{worthItInsight}</p>
       </section>
+
+      <CoachingMessage message={coachingMessage} />
 
       <ResultPanel
         title="Supporting numbers"

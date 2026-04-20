@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import PageHero from '../components/PageHero'
 import SectionHeader from '../components/SectionHeader'
 import { activeRoyalShips, futureRoyalShips, royalShipsBySlug } from '../data/royalShips'
+import { buildDiningStrategy } from '../utils/diningStrategy'
 
 const sortedActiveShips = [...activeRoyalShips].sort((left, right) =>
   left.shipName.localeCompare(right.shipName),
@@ -159,6 +160,7 @@ export default function DiningPage() {
     null
 
   const insight = selectedShip ? buildShipInsight(selectedShip) : null
+  const diningStrategy = selectedShip ? buildDiningStrategy(selectedShip) : null
   const hybridGroups = selectedShip
     ? splitHybridVenues(selectedShip.hybridDining)
     : { includedWithCaveat: [], extraOrNuance: [] }
@@ -250,6 +252,28 @@ export default function DiningPage() {
               {insight.reality.map((line) => (
                 <p key={line}>{line}</p>
               ))}
+            </div>
+          </section>
+
+          <section className="card dining-strategy-card">
+            <SectionHeader
+              title="Dining Strategy"
+              description="The practical move for this ship, not just a venue inventory with nicer shoes."
+            />
+            <div className="verdict-highlight dining-strategy-highlight">
+              <span>Strategy</span>
+              <strong>{diningStrategy.headline}</strong>
+            </div>
+            <div className="explanation-list">
+              {diningStrategy.strategyLines.map((line) => (
+                <div key={line} className="explanation-item">
+                  <span>{line}</span>
+                </div>
+              ))}
+              <div className="explanation-item">
+                <span>Should you buy a dining package?</span>
+                <strong>{diningStrategy.packageVerdict}</strong>
+              </div>
             </div>
           </section>
 

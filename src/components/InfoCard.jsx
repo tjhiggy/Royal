@@ -6,12 +6,16 @@ export default function InfoCard({
   to,
   badge,
   ctaLabel,
+  icon,
   muted = false,
 }) {
   const body = (
     <>
       <div className="card-topline">
-        <h3>{title}</h3>
+        <div className="info-card-title-row">
+          <span className="tool-icon" aria-hidden="true">{icon ?? title.slice(0, 1)}</span>
+          <h3>{title}</h3>
+        </div>
         {badge ? <span className={`status-pill ${muted ? 'status-muted' : ''}`}>{badge}</span> : null}
       </div>
       <p>{description}</p>

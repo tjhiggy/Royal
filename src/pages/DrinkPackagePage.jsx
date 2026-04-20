@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
 import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
@@ -192,6 +193,12 @@ export default function DrinkPackagePage() {
     results.extraAlcoholicDrinksNeeded > 0.05
       ? `To make this worth it, you would need about ${roundedBreakEvenAlcoholicDrinks} alcoholic drinks per day instead of ${roundedCurrentAlcoholicDrinks}.`
       : `You are already near the break-even pace, which is why this lands in ${results.recommendation.toLowerCase()}.`
+  const coachingMessage =
+    roundedCurrentAlcoholicDrinks < roundedBreakEvenAlcoholicDrinks
+      ? 'You are not drinking enough to justify this package.'
+      : results.recommendation === 'Worth it'
+        ? 'Your current drink pace is high enough that the package can actually work.'
+        : 'You are close enough that convenience, not savings, is doing the selling.'
 
   return (
     <div className="container page-stack">
@@ -306,6 +313,8 @@ export default function DrinkPackagePage() {
           </div>
         </div>
       </section>
+
+      <CoachingMessage message={coachingMessage} />
 
       <ResultPanel
         title="Supporting numbers"

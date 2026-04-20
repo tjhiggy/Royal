@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
@@ -88,6 +89,14 @@ export default function TheKeyPage() {
     results.mainDriver
       ? `${results.mainDriver.label} is doing the most work in the value estimate.`
       : 'Most of the bundled perks are not adding enough real value for this trip.'
+  const coachingMessage =
+    results.recommendation === 'Skip it'
+      ? 'The Key is mostly selling status here, not usable value.'
+      : results.mainDriver?.label === 'WiFi value'
+        ? 'WiFi is carrying this package. If you would not buy internet, The Key gets shaky fast.'
+        : results.recommendation === 'Borderline'
+          ? 'This is close enough that convenience has to matter to you personally.'
+          : 'The perks you selected are strong enough to make The Key defensible.'
 
   return (
     <div className="container page-stack">
@@ -210,6 +219,8 @@ export default function TheKeyPage() {
         </div>
         <p className="verdict-insight">{insight}</p>
       </section>
+
+      <CoachingMessage message={coachingMessage} />
 
       <ResultPanel
         title="The Key summary"

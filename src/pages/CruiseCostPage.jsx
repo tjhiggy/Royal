@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react'
+import BrutalSummary from '../components/BrutalSummary'
+import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
 import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
@@ -105,6 +107,14 @@ export default function CruiseCostPage() {
         : results.status === 'Fare-first'
           ? 'status-worth-it'
           : 'status-muted'
+  const coachingMessage =
+    results.addOnsSubtotal > results.fare && results.fare > 0
+      ? 'You are spending more on extras than the cruise itself.'
+      : results.travelShare >= 28
+        ? 'Getting there is eating a serious chunk of the trip budget.'
+        : results.costPerNight >= 600
+          ? 'This is premium-priced once the real total is included.'
+          : 'Nothing is wildly out of line, but the add-ons still deserve suspicion.'
   function handleChange(event) {
     const { name, value } = event.target
     setForm((current) => ({ ...current, [name]: value }))
@@ -189,6 +199,8 @@ export default function CruiseCostPage() {
         ])}
       />
 
+      <CoachingMessage message={coachingMessage} />
+
       <div className="two-column-layout">
         <section className="card">
           <SectionHeader
@@ -249,6 +261,15 @@ export default function CruiseCostPage() {
           { to: '/tools/dining-package', label: 'Check dining' },
           { to: '/tools/wifi', label: 'Check WiFi' },
           { to: '/tools/the-key', label: 'Check The Key' },
+        ]}
+      />
+
+      <BrutalSummary
+        lines={[
+          `${results.status}.`,
+          `Base fare: ${formatCurrency(Number(form.cruiseFare) || 0)}`,
+          `Real cost: ${formatCurrency(results.grandTotal)}`,
+          `Biggest mistake: ${results.biggestAddOnDrivers[0]?.label ?? 'No obvious mistake'}`,
         ]}
       />
     </div>

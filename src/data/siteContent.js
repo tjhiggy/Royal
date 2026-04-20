@@ -9,6 +9,7 @@ export const featureList = [
 export const toolCards = [
   {
     title: 'Deal Evaluator',
+    icon: '$',
     description: 'See whether a cruise is actually a deal once the fare, extras, and travel all tell the truth.',
     to: '/tools/deal-evaluator',
     badge: 'Live',
@@ -16,6 +17,7 @@ export const toolCards = [
   },
   {
     title: 'Cruise Cost Calculator',
+    icon: '#',
     description: 'Add fare, extras, and travel costs so you can see the real trip price before you book.',
     to: '/tools/cruise-cost',
     badge: 'Live',
@@ -23,6 +25,7 @@ export const toolCards = [
   },
   {
     title: 'Drink Package Calculator',
+    icon: '%',
     description: 'See if the package actually saves money based on what you drink, not what cruise marketing hopes.',
     to: '/tools/drink-package',
     badge: 'Live',
@@ -30,6 +33,7 @@ export const toolCards = [
   },
   {
     title: 'Dining Explorer',
+    icon: 'D',
     description: 'Pick a ship and see what dining is included, what costs extra, and where the fine print gets sneaky.',
     to: '/dining',
     badge: 'Live',
@@ -37,6 +41,7 @@ export const toolCards = [
   },
   {
     title: 'Dining Package Calculator',
+    icon: 'P',
     description: 'Check whether the Unlimited Dining Package actually saves money based on meals you will really use.',
     to: '/tools/dining-package',
     badge: 'Live',
@@ -44,6 +49,7 @@ export const toolCards = [
   },
   {
     title: 'Compare Scenarios',
+    icon: 'A/B',
     description: 'Put two trip versions side by side and see which choice is quietly making the total worse.',
     to: '/compare',
     badge: 'Live',
@@ -51,6 +57,7 @@ export const toolCards = [
   },
   {
     title: 'The Key Calculator',
+    icon: 'K',
     description: 'Check whether The Key is actually worth the price based on the perks you would use.',
     to: '/tools/the-key',
     badge: 'Live',
@@ -58,6 +65,7 @@ export const toolCards = [
   },
   {
     title: 'WiFi Calculator',
+    icon: 'W',
     description: 'Figure out whether you should skip WiFi, buy one device, or pay for more.',
     to: '/tools/wifi',
     badge: 'Live',

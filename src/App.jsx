@@ -14,6 +14,7 @@ import PackingPage from './pages/PackingPage'
 import PlannerPage from './pages/PlannerPage'
 import TheKeyPage from './pages/TheKeyPage'
 import ToolsPage from './pages/ToolsPage'
+import TripSnapshotPage from './pages/TripSnapshotPage'
 import WifiCalculatorPage from './pages/WifiCalculatorPage'
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/guided" element={<GuidedModePage />} />
         <Route path="/tools" element={<ToolsPage />} />
         <Route path="/compare" element={<ComparePage />} />
+        <Route path="/snapshot" element={<TripSnapshotPage />} />
         <Route path="/dining" element={<DiningPage />} />
         <Route path="/changelog" element={<ChangelogPage />} />
         <Route path="/tools/dining-package" element={<DiningPackagePage />} />
