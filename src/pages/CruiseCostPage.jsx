@@ -152,7 +152,7 @@ export default function CruiseCostPage() {
       id: sessionId.current,
       tool: 'cruise-cost',
       toolLabel: 'Cost Calculator',
-      label: `${results.status} • ${formatCurrency(results.grandTotal)}`,
+      label: `${results.status} | ${formatCurrency(results.grandTotal)}`,
       path: '/tools/cruise-cost',
       data: { form },
     })

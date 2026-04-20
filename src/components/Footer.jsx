@@ -3,9 +3,13 @@ import { releaseInfo } from '../data/releaseInfo'
 
 const footerLinks = [
   { label: 'Home', to: '/' },
+  { label: 'Start', to: '/start' },
   { label: 'Tools', to: '/tools' },
   { label: 'Compare', to: '/compare' },
+  { label: 'Snapshot', to: '/snapshot' },
   { label: 'Dining', to: '/dining' },
+  { label: 'Packing', to: '/packing' },
+  { label: 'Planner', to: '/planner' },
   { label: 'About', to: '/about' },
 ]
 

@@ -56,9 +56,9 @@ export default function HomePage() {
         />
         <div className="card burn-card">
           <ul className="burn-list">
-            <li>Drink packages that don’t pay off</li>
-            <li>WiFi plans you don’t need</li>
-            <li>Dining packages you won’t use</li>
+            <li>Drink packages that do not pay off</li>
+            <li>WiFi plans you do not need</li>
+            <li>Dining packages you will not use</li>
             <li>Cheap fares hiding expensive trips</li>
           </ul>
         </div>
@@ -116,6 +116,14 @@ export default function HomePage() {
             </div>
             <p>Put two trip versions side by side.</p>
             <span className="card-link">Compare trip versions</span>
+          </Link>
+          <Link className="card info-card" to="/snapshot">
+            <div className="card-topline">
+              <h3>Trip Snapshot</h3>
+              <span className="status-pill">Live</span>
+            </div>
+            <p>Review the latest saved calculator outputs in one place.</p>
+            <span className="card-link">View final answer</span>
           </Link>
           <Link className="card info-card" to="/planner">
             <div className="card-topline">

@@ -199,7 +199,7 @@ export default function ComparePage() {
       id: sessionId.current,
       tool: 'compare',
       toolLabel: 'Compare',
-      label: `${scenarioALabel} vs ${scenarioBLabel} • ${formatCurrency(comparison.absoluteTotalDifference)} gap`,
+      label: `${scenarioALabel} vs ${scenarioBLabel} | ${formatCurrency(comparison.absoluteTotalDifference)} gap`,
       path: '/compare',
       data: { scenarioA, scenarioB, scenarioALabel, scenarioBLabel },
     })

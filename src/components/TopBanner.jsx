@@ -21,7 +21,7 @@ export default function TopBanner() {
   return (
     <div className="top-banner">
       <div className="container top-banner-inner">
-        <span>Most people underestimate their cruise cost by 30–60%</span>
+        <span>Most people underestimate their cruise cost by 30-60%</span>
         <button type="button" className="top-banner-dismiss" onClick={dismissBanner} aria-label="Dismiss banner">
           Dismiss
         </button>

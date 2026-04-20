@@ -1341,6 +1341,12 @@ a.info-card:hover {
   margin: 0.4rem 0;
 }
 
+.snapshot-source-note {
+  margin-top: 0.8rem;
+  color: var(--text-soft);
+  font-size: 0.94rem;
+}
+
 .snapshot-top-stats {
   margin: 0;
 }

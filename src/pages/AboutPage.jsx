@@ -7,7 +7,7 @@ export default function AboutPage() {
       <PageHero
         eyebrow="About"
         title="Built to help you not overpay for a cruise"
-        description="Cruise pricing looks simple until drinks, WiFi, excursions, gratuities, flights, and hotel costs start piling on. Royal exists to show the real cost before the booking flow gets cute."
+        description="Cruise pricing looks simple until drinks, WiFi, excursions, gratuities, flights, and hotel costs start piling on. This site shows the real cost before the booking flow gets cute."
       />
 
       <section className="card prose-card">

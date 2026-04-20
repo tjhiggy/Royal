@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v1.22.0',
-  updatedDate: '2026-04-19',
-  buildId: 'recent-trips',
+  currentVersion: 'v1.23.0',
+  updatedDate: '2026-04-20',
+  buildId: 'site-polish-pass',
   changelogEntries: [
+    {
+      version: 'v1.23.0',
+      date: '2026-04-20',
+      changes: [
+        'Ran a sitewide clarity and polish pass across navigation, footer, homepage copy, recent-session labels, and Snapshot.',
+        'Updated Snapshot to use the latest local calculator sessions when available instead of only showing sample defaults.',
+        'Fixed visible special-character rendering issues in homepage, banner, recent-trip labels, and changelog copy.',
+      ],
+    },
     {
       version: 'v1.22.0',
       date: '2026-04-19',
@@ -25,7 +34,7 @@ export const releaseInfo = {
       version: 'v1.20.0',
       date: '2026-04-19',
       changes: [
-        'Added a slim persistent top banner warning that most people underestimate cruise cost by 30–60%.',
+        'Added a slim persistent top banner warning that most people underestimate cruise cost by 30-60%.',
         'Added localStorage dismissal so the banner stays hidden after users dismiss it.',
         'Styled the banner to fit the dark theme without taking over the page.',
       ],

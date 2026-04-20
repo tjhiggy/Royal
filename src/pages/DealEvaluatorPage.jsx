@@ -145,7 +145,7 @@ export default function DealEvaluatorPage() {
       id: sessionId.current,
       tool: 'deal-evaluator',
       toolLabel: 'Deal Evaluator',
-      label: `${results.verdict} • ${formatCurrency(results.total)}`,
+      label: `${results.verdict} | ${formatCurrency(results.total)}`,
       path: '/tools/deal-evaluator',
       data: { form },
     })

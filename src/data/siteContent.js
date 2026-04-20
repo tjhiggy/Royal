@@ -56,6 +56,14 @@ export const toolCards = [
     ctaLabel: 'Compare trips',
   },
   {
+    title: 'Trip Snapshot',
+    icon: 'S',
+    description: 'Pull the latest local calculator sessions into one final-answer view.',
+    to: '/snapshot',
+    badge: 'Live',
+    ctaLabel: 'View snapshot',
+  },
+  {
     title: 'The Key Calculator',
     icon: 'K',
     description: 'Check whether The Key is actually worth the price based on the perks you would use.',

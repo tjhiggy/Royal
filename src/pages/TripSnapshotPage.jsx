@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from 'react'
 import PageHero from '../components/PageHero'
 import SectionHeader from '../components/SectionHeader'
 import { cruiseCostInitialState } from '../data/cruiseCostConfig'
@@ -8,9 +9,11 @@ import {
   calculateDrinkPackage,
   calculateTheKey,
   calculateWifiRecommendation,
+  compareCruiseCostScenarios,
 } from '../utils/calculators'
 import { buildDiningStrategy } from '../utils/diningStrategy'
 import { formatCurrency } from '../utils/formatters'
+import { loadPlannerState, loadRecentTrips } from '../utils/storage'
 
 const snapshotDrinkInputs = {
   cruiseNights: cruiseCostInitialState.cruiseNights,
@@ -46,6 +49,10 @@ const snapshotKeyInputs = {
   skipLineImportance: 'low',
 }
 
+const snapshotPlannerDefaults = {
+  shipName: '',
+}
+
 function SnapshotMetric({ label, value, helper }) {
   return (
     <article className="stat-card stat-card-emphasized">
@@ -69,26 +76,109 @@ function SnapshotList({ items }) {
   )
 }
 
+function buildDealFormFromCost(costForm) {
+  return {
+    cruiseNights: costForm.cruiseNights,
+    baseFare: costForm.cruiseFare,
+    taxesAndFees: costForm.taxesAndFees,
+    drinkPackage: costForm.drinkPackage,
+    wifi: costForm.wifi,
+    excursions: costForm.excursions,
+    specialtyDining: costForm.dining,
+    theKey: costForm.theKey,
+    flights: costForm.flights,
+    hotel: costForm.hotel,
+    parkingTransport: costForm.parking,
+  }
+}
+
+function findRecentTrip(recentTrips, tool) {
+  return recentTrips.find((trip) => trip.tool === tool) ?? null
+}
+
 export default function TripSnapshotPage() {
-  const costResults = calculateCruiseCost(cruiseCostInitialState)
-  const dealResults = calculateDealEvaluator({
-    cruiseNights: cruiseCostInitialState.cruiseNights,
-    baseFare: cruiseCostInitialState.cruiseFare,
-    taxesAndFees: cruiseCostInitialState.taxesAndFees,
-    drinkPackage: cruiseCostInitialState.drinkPackage,
-    wifi: cruiseCostInitialState.wifi,
-    excursions: cruiseCostInitialState.excursions,
-    specialtyDining: cruiseCostInitialState.dining,
-    theKey: cruiseCostInitialState.theKey,
-    flights: cruiseCostInitialState.flights,
-    hotel: cruiseCostInitialState.hotel,
-    parkingTransport: cruiseCostInitialState.parking,
-  })
-  const drinkResults = calculateDrinkPackage(snapshotDrinkInputs)
-  const wifiResults = calculateWifiRecommendation(snapshotWifiInputs)
-  const keyResults = calculateTheKey(snapshotKeyInputs)
-  const snapshotShip = royalShipsBySlug['wonder-of-the-seas'] ?? activeRoyalShips[0]
+  const [recentTrips, setRecentTrips] = useState([])
+  const [plannerState, setPlannerState] = useState(snapshotPlannerDefaults)
+
+  useEffect(() => {
+    setRecentTrips(loadRecentTrips())
+    setPlannerState(loadPlannerState(snapshotPlannerDefaults))
+  }, [])
+
+  const latestCostTrip = findRecentTrip(recentTrips, 'cruise-cost')
+  const latestDealTrip = findRecentTrip(recentTrips, 'deal-evaluator')
+  const latestCompareTrip = findRecentTrip(recentTrips, 'compare')
+
+  const costForm = useMemo(
+    () => ({
+      ...cruiseCostInitialState,
+      ...(latestCostTrip?.data?.form ?? {}),
+    }),
+    [latestCostTrip],
+  )
+
+  const dealForm = useMemo(
+    () => ({
+      ...buildDealFormFromCost(costForm),
+      ...(latestDealTrip?.data?.form ?? {}),
+    }),
+    [costForm, latestDealTrip],
+  )
+
+  const compareSnapshot = useMemo(() => {
+    if (!latestCompareTrip?.data?.scenarioA || !latestCompareTrip?.data?.scenarioB) {
+      return null
+    }
+
+    const scenarioA = {
+      ...cruiseCostInitialState,
+      ...latestCompareTrip.data.scenarioA,
+    }
+    const scenarioB = {
+      ...cruiseCostInitialState,
+      ...latestCompareTrip.data.scenarioB,
+    }
+    const resultsA = calculateCruiseCost(scenarioA)
+    const resultsB = calculateCruiseCost(scenarioB)
+    const comparison = compareCruiseCostScenarios(resultsA, resultsB)
+    const scenarioALabel = latestCompareTrip.data.scenarioALabel || 'Scenario A'
+    const scenarioBLabel = latestCompareTrip.data.scenarioBLabel || 'Scenario B'
+
+    return {
+      comparison,
+      scenarioALabel,
+      scenarioBLabel,
+      pricierLabel:
+        comparison.totalDifference === 0
+          ? 'Neither scenario'
+          : comparison.totalDifference > 0
+            ? scenarioBLabel
+            : scenarioALabel,
+    }
+  }, [latestCompareTrip])
+
+  const costResults = useMemo(() => calculateCruiseCost(costForm), [costForm])
+  const dealResults = useMemo(() => calculateDealEvaluator(dealForm), [dealForm])
+  const drinkResults = useMemo(() => calculateDrinkPackage({
+    ...snapshotDrinkInputs,
+    cruiseNights: costForm.cruiseNights,
+  }), [costForm.cruiseNights])
+  const wifiResults = useMemo(() => calculateWifiRecommendation({
+    ...snapshotWifiInputs,
+    cruiseNights: costForm.cruiseNights,
+    peopleCount: costForm.travelerCount,
+  }), [costForm.cruiseNights, costForm.travelerCount])
+  const keyResults = useMemo(() => calculateTheKey({
+    ...snapshotKeyInputs,
+    cruiseNights: costForm.cruiseNights,
+  }), [costForm.cruiseNights])
+  const plannedShipName = plannerState.shipName.trim().toLowerCase()
+  const plannerShipMatch = plannedShipName
+    ? Object.values(royalShipsBySlug).find((ship) => ship.shipName.toLowerCase() === plannedShipName)
+    : null
+  const snapshotShip = plannerShipMatch ?? royalShipsBySlug['wonder-of-the-seas'] ?? activeRoyalShips[0]
   const diningStrategy = buildDiningStrategy(snapshotShip)
+  const isUsingRecentData = Boolean(latestCostTrip || latestDealTrip || latestCompareTrip)
 
   const upgradeVerdicts = [
     { label: 'Drink package', value: drinkResults.recommendation },
@@ -122,9 +212,18 @@ export default function TripSnapshotPage() {
           <span className="verdict-kicker">Final answer</span>
           <h2>{dealResults.verdict}</h2>
           <p>{dealResults.verdictLines[0]}</p>
+          <p className="snapshot-source-note">
+            {isUsingRecentData
+              ? 'Using your latest saved calculator sessions from this browser.'
+              : 'Using sample trip defaults until you run a calculator session.'}
+          </p>
         </div>
         <div className="stats-grid snapshot-top-stats">
-          <SnapshotMetric label="Total trip cost" value={formatCurrency(costResults.grandTotal)} helper="Using the shared cruise cost defaults" />
+          <SnapshotMetric
+            label="Total trip cost"
+            value={formatCurrency(costResults.grandTotal)}
+            helper={latestCostTrip ? 'Latest local cost session' : 'Sample cost defaults'}
+          />
           <SnapshotMetric label="Cost per night" value={formatCurrency(costResults.costPerNight)} helper="Real total spread across the sailing" />
         </div>
       </section>
@@ -137,10 +236,36 @@ export default function TripSnapshotPage() {
         <SnapshotList items={upgradeVerdicts} />
       </section>
 
+      {compareSnapshot ? (
+        <section className="card">
+          <SectionHeader
+            title="Latest scenario comparison"
+            description="The most recent Compare result saved in this browser."
+          />
+          <div className="verdict-highlight">
+            <span>Main takeaway</span>
+            <strong>
+              {compareSnapshot.comparison.totalDifference === 0
+                ? `${compareSnapshot.scenarioALabel} and ${compareSnapshot.scenarioBLabel} are basically tied.`
+                : `${compareSnapshot.pricierLabel} costs about ${formatCurrency(compareSnapshot.comparison.absoluteTotalDifference)} more.`}
+            </strong>
+          </div>
+          <div className="stats-grid">
+            <SnapshotMetric label="Total gap" value={formatCurrency(compareSnapshot.comparison.absoluteTotalDifference)} />
+            <SnapshotMetric label="Nightly gap" value={formatCurrency(compareSnapshot.comparison.absoluteCostPerNightDifference)} />
+            <SnapshotMetric label="Add-ons gap" value={formatCurrency(compareSnapshot.comparison.absoluteAddOnsDifference)} />
+          </div>
+        </section>
+      ) : null}
+
       <section className="card dining-strategy-card">
         <SectionHeader
           title="Dining strategy"
-          description={`Using ${snapshotShip.shipName} as the current dining profile.`}
+          description={
+            plannerShipMatch
+              ? `Using ${snapshotShip.shipName} from your Planner as the dining profile.`
+              : `Using ${snapshotShip.shipName} as a sample dining profile. Add an exact ship name in Planner for a tighter snapshot.`
+          }
         />
         <div className="verdict-highlight dining-strategy-highlight">
           <span>Strategy</span>

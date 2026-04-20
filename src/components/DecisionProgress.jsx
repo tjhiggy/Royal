@@ -6,7 +6,7 @@ const steps = [
     label: 'Deal',
     title: 'Is this a good deal?',
     to: '/tools/deal-evaluator',
-    paths: ['/tools/deal-evaluator'],
+    paths: ['/start', '/guided', '/tools/deal-evaluator'],
   },
   {
     number: 2,
@@ -24,10 +24,10 @@ const steps = [
   },
   {
     number: 4,
-    label: 'Compare',
-    title: 'Refine the plan',
-    to: '/compare',
-    paths: ['/compare', '/planner'],
+    label: 'Decide',
+    title: 'Compare and finalize',
+    to: '/snapshot',
+    paths: ['/compare', '/snapshot', '/planner'],
   },
 ]
 
