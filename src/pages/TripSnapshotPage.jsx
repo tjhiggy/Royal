@@ -56,6 +56,7 @@ export default function TripSnapshotPage() {
   const shareUrl = () => getCurrentShareUrl()
   const fullSummary = () => buildSnapshotSummaryText(snapshot, shareUrl())
   const shortSummary = () => buildSnapshotShortShareText(snapshot, shareUrl())
+  const [bestQuickWin, ...otherQuickWins] = snapshot.quickWins
 
   return (
     <div className="container page-stack">
@@ -63,19 +64,11 @@ export default function TripSnapshotPage() {
         eyebrow="Snapshot"
         title="Before you book"
         description="The final checkpoint: real cost, deal verdict, upgrade calls, biggest drivers, and the cuts worth making."
-        actions={
-          <ShareActions
-            summary={fullSummary}
-            shortSummary={shortSummary}
-            getLink={shareUrl}
-            compact
-          />
-        }
       />
 
       <section className="card snapshot-hero-card">
-        <div>
-          <span className="verdict-kicker">Main verdict</span>
+        <div className="snapshot-verdict-panel">
+          <span className="verdict-kicker">Final answer</span>
           <h2>{snapshot.mainVerdict}</h2>
           <p>{snapshot.mainLine}</p>
           <div className="verdict-highlight snapshot-warning">
@@ -83,6 +76,18 @@ export default function TripSnapshotPage() {
             <strong>{snapshot.mainWarning}</strong>
           </div>
           <p className="snapshot-source-note">{snapshot.sourceLine}</p>
+          <div className="snapshot-share-card">
+            <div>
+              <strong>Share this call</strong>
+              <span>Copy the clean version for whoever has to approve this bill.</span>
+            </div>
+            <ShareActions
+              summary={fullSummary}
+              shortSummary={shortSummary}
+              getLink={shareUrl}
+              compact
+            />
+          </div>
         </div>
 
         {snapshot.keyMetrics.length ? (
@@ -95,6 +100,14 @@ export default function TripSnapshotPage() {
           <div className="card callout-card snapshot-empty-card">
             <strong>No real trip total yet.</strong>
             <p>Run Deal Evaluator or Cruise Cost Calculator first. Snapshot gets much sharper once it has actual cost data.</p>
+            <div className="snapshot-empty-actions">
+              <Link className="button button-primary" to="/tools/deal-evaluator">
+                Start with deal check
+              </Link>
+              <Link className="button button-secondary" to="/tools/cruise-cost">
+                Add real trip cost
+              </Link>
+            </div>
           </div>
         )}
       </section>
@@ -190,15 +203,34 @@ export default function TripSnapshotPage() {
             title="Quick wins"
             description="The best savings moves based on the data Snapshot has right now."
           />
+          <div className="verdict-highlight snapshot-best-win">
+            <span>Best savings move</span>
+            <strong>{bestQuickWin}</strong>
+          </div>
           <div className="explanation-list">
-            {snapshot.quickWins.map((win) => (
+            {otherQuickWins.map((win) => (
               <div key={win} className="explanation-item">
                 <span>{win}</span>
               </div>
             ))}
           </div>
         </section>
-      ) : null}
+      ) : (
+        <section className="card callout-card snapshot-empty-card">
+          <SectionHeader
+            title="Quick wins"
+            description="No savings moves yet because Snapshot does not have enough cost or upgrade data."
+          />
+          <div className="snapshot-empty-actions">
+            <Link className="button button-primary" to="/tools/cruise-cost">
+              Add trip costs
+            </Link>
+            <Link className="button button-secondary" to="/tools/drink-package">
+              Check upgrades
+            </Link>
+          </div>
+        </section>
+      )}
 
       {snapshot.nextSteps.length ? (
         <section className="page-section">

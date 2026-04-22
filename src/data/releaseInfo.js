@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v1.25.0',
+  currentVersion: 'v1.25.1',
   updatedDate: '2026-04-22',
-  buildId: 'snapshot-share-system',
+  buildId: 'snapshot-polish',
   changelogEntries: [
+    {
+      version: 'v1.25.1',
+      date: '2026-04-22',
+      changes: [
+        'Polished Trip Snapshot hierarchy so the main verdict, warning, and share actions read as one final-answer block.',
+        'Improved empty Snapshot states with direct next-step actions instead of passive placeholder text.',
+        'Made Quick wins more scannable by elevating the single best savings move above supporting cuts.',
+      ],
+    },
     {
       version: 'v1.25.0',
       date: '2026-04-22',
