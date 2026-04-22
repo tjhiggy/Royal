@@ -13,7 +13,7 @@ import { cruiseCostFields, cruiseCostInitialState } from '../data/cruiseCostConf
 import { calculateCruiseCost } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
 import { appendShareUrl } from '../utils/share'
-import { getRecentTripById, saveRecentTrip } from '../utils/storage'
+import { getRecentTripById, saveRecentTrip, saveSnapshotToolState } from '../utils/storage'
 
 const cruiseCostPresets = [
   {
@@ -182,6 +182,7 @@ export default function CruiseCostPage() {
       path: '/tools/cruise-cost',
       data: { form },
     })
+    saveSnapshotToolState('cost', { form })
   }, [form, results.grandTotal, results.status])
 
   return (

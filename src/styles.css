@@ -1412,6 +1412,31 @@ a.info-card:hover {
   font-size: 0.94rem;
 }
 
+.snapshot-warning {
+  margin-top: 1rem;
+  border-color: rgba(240, 177, 75, 0.18);
+  background: rgba(240, 177, 75, 0.08);
+}
+
+.snapshot-empty-card {
+  align-self: stretch;
+}
+
+.snapshot-verdict-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  margin-top: 1rem;
+}
+
+.snapshot-upgrade-card p {
+  color: var(--text-soft);
+}
+
+.snapshot-prompt-card {
+  min-height: 100%;
+}
+
 .snapshot-top-stats {
   margin: 0;
 }

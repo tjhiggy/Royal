@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
@@ -6,6 +6,7 @@ import ResultPanel from '../components/ResultPanel'
 import SectionHeader from '../components/SectionHeader'
 import { calculateTheKey } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
+import { saveSnapshotToolState } from '../utils/storage'
 
 const initialState = {
   cruiseNights: 7,
@@ -59,6 +60,10 @@ function SelectField({ label, name, value, onChange, helper, options }) {
 export default function TheKeyPage() {
   const [form, setForm] = useState(initialState)
   const results = useMemo(() => calculateTheKey(form), [form])
+
+  useEffect(() => {
+    saveSnapshotToolState('key', { form })
+  }, [form])
 
   function handleChange(event) {
     const { name, value, type, checked } = event.target

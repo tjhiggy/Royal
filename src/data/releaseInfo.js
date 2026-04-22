@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v1.24.0',
+  currentVersion: 'v1.25.0',
   updatedDate: '2026-04-22',
-  buildId: 'decision-flow-polish',
+  buildId: 'snapshot-share-system',
   changelogEntries: [
+    {
+      version: 'v1.25.0',
+      date: '2026-04-22',
+      changes: [
+        'Rebuilt Trip Snapshot as the final-answer page for deal, cost, upgrade, dining, comparison, driver, and quick-win outputs.',
+        'Added local Snapshot aggregation so major calculators can publish their latest inputs without backend storage.',
+        'Added reusable Snapshot summary builders with Copy summary, Copy share text, and Copy link actions.',
+      ],
+    },
     {
       version: 'v1.24.0',
       date: '2026-04-22',

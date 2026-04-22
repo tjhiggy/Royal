@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import PageHero from '../components/PageHero'
 import SectionHeader from '../components/SectionHeader'
 import { activeRoyalShips, futureRoyalShips, royalShipsBySlug } from '../data/royalShips'
 import { buildDiningStrategy } from '../utils/diningStrategy'
+import { saveSnapshotToolState } from '../utils/storage'
 
 const sortedActiveShips = [...activeRoyalShips].sort((left, right) =>
   left.shipName.localeCompare(right.shipName),
@@ -164,6 +165,12 @@ export default function DiningPage() {
   const hybridGroups = selectedShip
     ? splitHybridVenues(selectedShip.hybridDining)
     : { includedWithCaveat: [], extraOrNuance: [] }
+
+  useEffect(() => {
+    if (selectedShip?.shipSlug) {
+      saveSnapshotToolState('dining', { shipSlug: selectedShip.shipSlug })
+    }
+  }, [selectedShip])
 
   return (
     <div className="container page-stack">

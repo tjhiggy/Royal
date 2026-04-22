@@ -15,7 +15,7 @@ import {
   encodeCompareState,
   getCompareShareState,
 } from '../utils/compareShare'
-import { getRecentTripById, loadCompareScenarios, saveCompareScenarios, saveRecentTrip } from '../utils/storage'
+import { getRecentTripById, loadCompareScenarios, saveCompareScenarios, saveRecentTrip, saveSnapshotToolState } from '../utils/storage'
 
 const comparePresets = [
   {
@@ -204,6 +204,7 @@ export default function ComparePage() {
       path: '/compare',
       data: { scenarioA, scenarioB, scenarioALabel, scenarioBLabel },
     })
+    saveSnapshotToolState('compare', { scenarioA, scenarioB, scenarioALabel, scenarioBLabel })
   }, [comparison.absoluteTotalDifference, scenarioA, scenarioALabel, scenarioB, scenarioBLabel])
 
   function handleScenarioChange(setter) {

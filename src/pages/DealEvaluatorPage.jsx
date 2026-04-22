@@ -10,7 +10,7 @@ import ShareActions from '../components/ShareActions'
 import { calculateDealEvaluator } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
 import { appendShareUrl } from '../utils/share'
-import { getRecentTripById, saveRecentTrip } from '../utils/storage'
+import { getRecentTripById, saveRecentTrip, saveSnapshotToolState } from '../utils/storage'
 
 const initialState = {
   cruiseNights: 7,
@@ -149,6 +149,7 @@ export default function DealEvaluatorPage() {
       path: '/tools/deal-evaluator',
       data: { form },
     })
+    saveSnapshotToolState('deal', { form })
   }, [form, results.total, results.verdict])
 
   return (

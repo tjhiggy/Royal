@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
 import FormField from '../components/FormField'
@@ -7,6 +7,7 @@ import ResultPanel from '../components/ResultPanel'
 import SectionHeader from '../components/SectionHeader'
 import { calculateDrinkPackage } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
+import { saveSnapshotToolState } from '../utils/storage'
 
 const initialState = {
   cruiseNights: 7,
@@ -151,6 +152,10 @@ export default function DrinkPackagePage() {
   const [activePreset, setActivePreset] = useState('')
 
   const results = useMemo(() => calculateDrinkPackage(form), [form])
+
+  useEffect(() => {
+    saveSnapshotToolState('drink', { form })
+  }, [form])
 
   function handleChange(event) {
     const { name, value } = event.target
