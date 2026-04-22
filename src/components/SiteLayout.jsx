@@ -22,10 +22,10 @@ export default function SiteLayout() {
       <header className="site-header">
         <div className="container nav-bar">
           <NavLink className="brand" to="/">
-            <span className="brand-mark">R</span>
+            <span className="brand-mark">CDE</span>
             <span className="brand-copy">
               <span className="brand-title">Cruise Decision Engine</span>
-              <small>Royal Caribbean trip decision tools</small>
+              <small>Decision tools for Royal Caribbean trips</small>
             </span>
           </NavLink>
 

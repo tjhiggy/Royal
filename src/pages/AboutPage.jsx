@@ -18,6 +18,16 @@ export default function AboutPage() {
       </section>
 
       <section className="card prose-card">
+        <SectionHeader title="How to use it" />
+        <ul className="changelog-list">
+          <li>Start with Deal Evaluator before trusting a low fare.</li>
+          <li>Run Cruise Cost Calculator to expose the real trip total.</li>
+          <li>Check upgrades only after the main cost is visible.</li>
+          <li>Use Compare and Snapshot when you need the final call.</li>
+        </ul>
+      </section>
+
+      <section className="card prose-card">
         <SectionHeader title="What this site actually does" />
         <ul className="changelog-list">
           <li>Shows the real trip cost, not the brochure price.</li>
@@ -38,7 +48,7 @@ export default function AboutPage() {
 
       <section className="card prose-card">
         <p>
-          This is built to help you make expensive decisions with your eyes open.
+          The point is simple: make the expensive decisions before the expensive screen.
         </p>
       </section>
     </div>

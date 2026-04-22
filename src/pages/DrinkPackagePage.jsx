@@ -251,7 +251,7 @@ export default function DrinkPackagePage() {
           <div className="advanced-header">
             <div className="section-header">
               <h2>Advanced pricing adjustments</h2>
-              <p>Optional. Only touch these if onboard pricing differs from the defaults.</p>
+              <p>Optional. Leave this alone unless your onboard prices are different.</p>
             </div>
             <button
               type="button"
@@ -276,7 +276,7 @@ export default function DrinkPackagePage() {
             </div>
           ) : (
             <p className="advanced-collapsed-note">
-              Using the default onboard prices for alcohol, coffee, bottled water, and soda/mocktails.
+              Defaults are active. Open only if your prices differ.
             </p>
           )}
         </section>

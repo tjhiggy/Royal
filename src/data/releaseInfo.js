@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v1.23.0',
-  updatedDate: '2026-04-20',
-  buildId: 'site-polish-pass',
+  currentVersion: 'v1.24.0',
+  updatedDate: '2026-04-22',
+  buildId: 'decision-flow-polish',
   changelogEntries: [
+    {
+      version: 'v1.24.0',
+      date: '2026-04-22',
+      changes: [
+        'Reworked homepage hierarchy around the decision flow, common cost traps, and clearer next steps.',
+        'Standardized Tools page ordering and copy so calculators follow the deal, cost, upgrade, compare sequence.',
+        'Polished calculator messaging, Cruise Cost input grouping, Dining Explorer verdict clarity, Planner progress, Packing cards, footer, and brand treatment.',
+      ],
+    },
     {
       version: 'v1.23.0',
       date: '2026-04-20',

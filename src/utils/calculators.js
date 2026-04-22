@@ -690,10 +690,18 @@ function buildCruiseQuickWins({ fare, addOns, travelCosts, grandTotal, topAddOnD
     })
   }
 
-  if (travelCosts >= grandTotal * 0.28) {
+  const flightCost = addOnCategories.find((category) => category.key === 'flights')?.value ?? 0
+  const hotelCost = addOnCategories.find((category) => category.key === 'hotel')?.value ?? 0
+
+  if (flightCost > 0 && travelCosts >= grandTotal * 0.22) {
     quickWins.push({
-      title: `Trim travel costs -> save about ${formatCurrency(travelCosts)}`,
-      detail: 'Flights, hotel, parking, or transfers are big enough to matter more than small onboard cuts.',
+      title: `Drive instead of fly -> save about ${formatCurrency(flightCost)}`,
+      detail: 'Only realistic if the port is drivable, but airfare is big enough to test the idea.',
+    })
+  } else if (hotelCost > 0 && travelCosts >= grandTotal * 0.22) {
+    quickWins.push({
+      title: `Cut one hotel night -> save about ${formatCurrency(hotelCost)}`,
+      detail: 'If the schedule allows it, hotel spend is one of the cleaner travel cuts.',
     })
   }
 

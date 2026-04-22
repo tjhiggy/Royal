@@ -53,7 +53,7 @@ function buildShipInsight(ship) {
 
   if (specialtyCount >= complimentaryCount + 2) {
     return {
-      verdict: 'Specialty dining is worth a real look on this ship',
+      verdict: 'This ship makes specialty dining worth a serious look',
       reality: [
         'You can still eat without paying extra, but the stronger lineup sits on the paid side more than usual.',
         'If specialty dining matters to you, this is one of the ships where that choice deserves actual consideration.',
@@ -67,7 +67,7 @@ function buildShipInsight(ship) {
 
   if (extraOrNuance.length >= 4 && specialtyCount >= complimentaryCount) {
     return {
-      verdict: 'Specialty dining is optional, but the rules matter',
+      verdict: 'You can skip the package, but read the fine print first',
       reality: [
         'Most meals can still come from the included side, but several venues come with caveats or policy weirdness.',
         'This is the kind of ship where people get tripped up by exceptions, not by a lack of food.',
@@ -81,7 +81,7 @@ function buildShipInsight(ship) {
 
   if (includedLead >= 3 && includedWithCaveat.length <= 3) {
     return {
-      verdict: 'You probably do not need specialty dining here',
+      verdict: 'You probably do not need a dining package here',
       reality: [
         'Most of your meals can come from included venues without feeling like you settled.',
         'Specialty dining is a bonus here, not a fix for a weak food lineup.',
@@ -94,7 +94,7 @@ function buildShipInsight(ship) {
   }
 
   return {
-    verdict: 'Specialty dining is optional, not essential',
+    verdict: 'Specialty dining is optional, not essential here',
     reality: [
       'Most travelers can lean on included dining for the bulk of the trip.',
       'Paid venues are there for variety, not because the included options collapse without them.',
@@ -241,6 +241,11 @@ export default function DiningPage() {
             <div className="verification-note">
               Venue policies can change before launch and sometimes before your sailing. Always double-check the latest ship details before you spend around one dining assumption.
             </div>
+            <div className="dining-verdict-stats" aria-label="Dining mix summary">
+              <span>{selectedShip.complimentaryDining.length} included venues</span>
+              <span>{selectedShip.specialtyDining.length} specialty venues</span>
+              <span>{hybridGroups.includedWithCaveat.length + hybridGroups.extraOrNuance.length} caveats or watchouts</span>
+            </div>
           </section>
 
           <section className="card">
@@ -358,7 +363,7 @@ export default function DiningPage() {
           <section className="card callout-card">
             <SectionHeader
               title="Dining fine print that matters"
-              description="This is where people get surprised, over-assume, and then argue with the bill later."
+              description="Included does not always mean simple. This is the stuff to check before buying around one venue."
             />
             {hybridGroups.includedWithCaveat.length ? (
               <div className="dining-fine-print-group">

@@ -335,10 +335,10 @@ export default function DealEvaluatorPage() {
         </section>
       </div>
 
-      <section className="card">
+      <section className="card comparison-band-card">
         <SectionHeader
           title="How this compares"
-          description="This puts the nightly cost into a range that is easier to judge at a glance."
+          description="The nightly number is the fastest way to tell if a cheap-looking fare is lying."
         />
         <div className="explanation-list">
           <div className="explanation-item">

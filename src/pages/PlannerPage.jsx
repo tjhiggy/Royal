@@ -73,6 +73,8 @@ const plannerFields = [
 export default function PlannerPage() {
   // The planner state is loaded once from localStorage and then saved after each change.
   const [planner, setPlanner] = useState(() => loadPlannerState(defaultPlanner))
+  const completedTasks = Object.values(planner.tasks).filter(Boolean).length
+  const totalTasks = taskLabels.length
 
   useEffect(() => {
     savePlannerState(planner)
@@ -108,14 +110,25 @@ export default function PlannerPage() {
     <div className="container page-stack">
       <PageHero
         eyebrow="Planner"
-        title="Keep your cruise details in one place"
-        description="Save the trip details, notes, and booking to-dos without juggling tabs, screenshots, and random notes."
+        title="Run the trip from one control panel"
+        description="Save the ship, dates, notes, and booking tasks locally in this browser. No login, no mystery account, no spreadsheet guilt spiral."
       />
+
+      <section className="card planner-status-card">
+        <div>
+          <span className="verdict-kicker">Trip readiness</span>
+          <h2>{completedTasks} of {totalTasks} tasks handled</h2>
+          <p>Use this as a lightweight control panel after the money decisions are clear.</p>
+        </div>
+        <div className="planner-progress-track" aria-label={`${completedTasks} of ${totalTasks} planner tasks completed`}>
+          <span style={{ width: `${(completedTasks / totalTasks) * 100}%` }} />
+        </div>
+      </section>
 
       <section className="card">
         <SectionHeader
           title="Trip Details"
-          description="Keep the core trip details here so you can find them without digging."
+          description="These basics make Snapshot and your own brain less annoyed later."
         />
         <div className="form-grid">
           {plannerFields.map((field) => (
@@ -150,7 +163,7 @@ export default function PlannerPage() {
       <section className="card">
         <SectionHeader
           title="Planning Checklist"
-          description="Check these off as you book things so the page stays useful."
+          description="Check off the decisions that actually prevent last-minute scrambling."
         />
         <div className="toggle-grid planner-grid">
           {taskLabels.map(([key, label, helper]) => (

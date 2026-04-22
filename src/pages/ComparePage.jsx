@@ -85,6 +85,7 @@ const compactFieldNames = new Set([
   'wifi',
   'dining',
   'excursions',
+  'theKey',
   'hotel',
   'flights',
   'parking',
@@ -413,7 +414,7 @@ export default function ComparePage() {
                 <span className="driver-rank">{index + 1}</span>
                 <div className="driver-copy">
                   <strong>{line.label}</strong>
-                  <span>{line.higherIn.replace('Scenario A', scenarioALabel).replace('Scenario B', scenarioBLabel)}</span>
+                  <span>+{formatCurrency(line.amount)} in {line.higherIn.replace('Scenario A', scenarioALabel).replace('Scenario B', scenarioBLabel)}</span>
                 </div>
                 <strong className="driver-value">+{formatCurrency(line.amount)}</strong>
               </article>

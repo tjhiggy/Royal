@@ -27,6 +27,15 @@ const sectionTitles = {
   easyToForget: 'Easy-to-Forget Items',
 }
 
+const sectionMarkers = {
+  clothing: 'C',
+  toiletries: 'T',
+  travelDocuments: 'D',
+  cabinEssentials: 'K',
+  electronics: 'E',
+  easyToForget: '!',
+}
+
 const packingFields = [
   ['nights', 'Number of nights', 'Length of the sailing.'],
   ['formalNights', 'Formal nights count', 'Add as many dinner dress-up nights as you expect.'],
@@ -68,8 +77,8 @@ export default function PackingPage() {
     <div className="container page-stack">
       <PageHero
         eyebrow="Packing"
-        title="Build a packing list that matches the trip"
-        description="Set the basics, flip on the excursion types, and get a checklist that actually fits the sailing."
+        title="Pack for the sailing you are actually taking"
+        description="Set the trip basics and get a cruise-specific checklist instead of a generic beach list pretending to be useful."
       />
 
       <section className="card">
@@ -113,7 +122,13 @@ export default function PackingPage() {
         <div className="packing-sections">
           {sections.map((section) => (
             <article key={section.section} className="card packing-card">
-              <h3>{sectionTitles[section.section]}</h3>
+              <div className="packing-card-header">
+                <span className="tool-icon" aria-hidden="true">{sectionMarkers[section.section] ?? 'P'}</span>
+                <div>
+                  <h3>{sectionTitles[section.section]}</h3>
+                  <small>{section.items.length} items</small>
+                </div>
+              </div>
               <ul className="checklist">
                 {section.items.map((item) => {
                   const key = `${section.section}-${item}`

@@ -128,8 +128,8 @@ img {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  min-height: 2.25rem;
-  color: var(--text-soft);
+  min-height: 2.35rem;
+  color: var(--text);
   font-size: 0.86rem;
   font-weight: 800;
   letter-spacing: 0.01em;
@@ -296,14 +296,16 @@ img {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.85rem;
   font-weight: 700;
   color: var(--text);
+  border-radius: 18px;
+  padding: 0.2rem 0.35rem 0.2rem 0;
 }
 
 .brand-copy {
   display: grid;
-  gap: 0.08rem;
+  gap: 0.14rem;
   align-items: start;
 }
 
@@ -316,22 +318,25 @@ img {
 .brand small {
   display: block;
   color: var(--text-faint);
-  font-weight: 600;
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.01em;
+  text-transform: none;
   line-height: 1.2;
 }
 
 .brand-mark {
-  width: 2.9rem;
-  height: 2.9rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 18px;
   display: grid;
   place-items: center;
   background: linear-gradient(145deg, #0e2b4d, #2d7fda 78%, #67d5ff);
   color: white;
   box-shadow: var(--shadow);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
 }
 
 .nav-links {
@@ -566,6 +571,13 @@ img {
   overflow: hidden;
 }
 
+.decision-flow-card-primary {
+  border-color: rgba(103, 213, 255, 0.32);
+  background:
+    radial-gradient(circle at top left, rgba(103, 213, 255, 0.13), transparent 36%),
+    var(--surface);
+}
+
 .decision-flow-card::before {
   content: "";
   position: absolute;
@@ -618,6 +630,12 @@ a.decision-flow-card:hover::before {
 .burn-card {
   background:
     radial-gradient(circle at top left, rgba(255, 123, 109, 0.1), transparent 30%),
+    var(--surface);
+}
+
+.catch-card {
+  background:
+    linear-gradient(180deg, rgba(91, 168, 255, 0.08), rgba(91, 168, 255, 0.02)),
     var(--surface);
 }
 
@@ -681,6 +699,30 @@ a.decision-flow-card:hover::before {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
+}
+
+.input-group-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.15rem;
+}
+
+.input-group-card {
+  display: grid;
+  gap: 0.4rem;
+  padding: 1rem;
+  border-radius: 18px;
+  background: rgba(91, 168, 255, 0.045);
+  border: 1px solid rgba(126, 171, 223, 0.08);
+}
+
+.input-group-copy {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.input-group-copy p {
+  color: var(--text-soft);
 }
 
 .preset-block {
@@ -1222,6 +1264,14 @@ a.info-card:hover {
   background: rgba(11, 22, 35, 0.82);
   border-color: rgba(126, 171, 223, 0.1);
   box-shadow: var(--shadow-soft);
+  align-self: start;
+}
+
+.comparison-band-card {
+  border-color: rgba(103, 213, 255, 0.22);
+  background:
+    radial-gradient(circle at top right, rgba(103, 213, 255, 0.1), transparent 34%),
+    var(--surface);
 }
 
 .reality-card {
@@ -1323,6 +1373,21 @@ a.info-card:hover {
 
 .dining-strategy-highlight {
   margin: 1rem 0;
+}
+
+.dining-verdict-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.dining-verdict-stats span {
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(91, 168, 255, 0.08);
+  border: 1px solid rgba(126, 171, 223, 0.1);
+  color: var(--text-soft);
+  font-weight: 800;
 }
 
 .snapshot-hero-card {
@@ -1490,7 +1555,9 @@ a.info-card:hover {
 }
 
 .advanced-collapsed-note {
-  margin-top: 1rem;
+  margin-top: 0.7rem;
+  color: var(--text-soft);
+  font-size: 0.94rem;
 }
 
 .compact-form-grid {
@@ -1714,12 +1781,49 @@ a.info-card:hover {
   margin-bottom: 0.2rem;
 }
 
+.packing-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.packing-card-header small {
+  color: var(--text-soft);
+  font-weight: 800;
+}
+
+.planner-status-card {
+  display: grid;
+  gap: 1rem;
+  background:
+    radial-gradient(circle at top right, rgba(70, 195, 141, 0.12), transparent 34%),
+    var(--surface);
+  border-color: rgba(70, 195, 141, 0.18);
+}
+
+.planner-progress-track {
+  height: 0.7rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(126, 171, 223, 0.12);
+}
+
+.planner-progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+}
+
 .prose-card {
   max-width: 70ch;
 }
 
 .site-footer {
-  background: rgba(5, 12, 20, 0.98);
+  background:
+    radial-gradient(circle at top left, rgba(91, 168, 255, 0.1), transparent 30%),
+    rgba(5, 12, 20, 0.98);
   color: white;
   margin-top: auto;
   border-top: 1px solid rgba(126, 171, 223, 0.08);
@@ -1729,7 +1833,7 @@ a.info-card:hover {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(180px, 0.9fr) minmax(220px, 0.9fr);
   gap: 1.5rem 2rem;
-  padding: 2rem 0;
+  padding: 2.25rem 0;
 }
 
 .footer-brand-block,
@@ -1779,6 +1883,7 @@ a.info-card:hover {
 .footer-nav {
   display: grid;
   gap: 0.55rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .footer-release {

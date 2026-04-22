@@ -179,7 +179,7 @@ export default function WifiCalculatorPage() {
             </div>
           </div>
           <span className={`status-pill verdict-pill status-${results.verdict.toLowerCase().replace(/\s+/g, '-')}`}>
-            {results.verdict}
+            {results.recommendedPlan === 'no-wifi' ? 'Skip WiFi' : results.recommendation}
           </span>
         </div>
         <div className="verdict-highlight">
@@ -203,8 +203,8 @@ export default function WifiCalculatorPage() {
       <div className="two-column-layout">
         <section className="card">
           <SectionHeader
-            title="Differences"
-            description="This is the price jump between each option."
+            title="Cost jumps"
+            description="This shows what each upgrade step actually adds to the bill."
           />
           <div className="explanation-list">
             <div className="explanation-item">

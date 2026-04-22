@@ -86,8 +86,10 @@ export default function TheKeyPage() {
           ]
 
   const insight =
-    results.mainDriver
-      ? `${results.mainDriver.label} is doing the most work in the value estimate.`
+    results.mainDriver?.label === 'WiFi value'
+      ? 'Most of the value is coming from WiFi. If you would not buy internet anyway, The Key gets weak fast.'
+      : results.mainDriver
+        ? `${results.mainDriver.label} is doing the most work. The convenience perks only matter if you actually care about them.`
       : 'Most of the bundled perks are not adding enough real value for this trip.'
   const coachingMessage =
     results.recommendation === 'Skip it'

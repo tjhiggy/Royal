@@ -20,7 +20,7 @@ export default function Footer() {
         <div className="footer-brand-block">
           <div className="footer-brand-row">
             <strong className="footer-brand">Cruise Decision Engine</strong>
-            <span className="footer-product-tag">Royal Caribbean trip decision tools</span>
+            <span className="footer-product-tag">Decision tools for Royal Caribbean trips</span>
           </div>
           <p className="footer-statement">
             See the real trip cost, sort the worthwhile upgrades from the nonsense, and make the expensive calls with your eyes open.

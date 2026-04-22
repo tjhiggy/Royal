@@ -27,6 +27,7 @@ const cruiseCostPresets = [
       wifi: 180,
       dining: 250,
       excursions: 450,
+      theKey: 0,
       hotel: 220,
       flights: 650,
       parking: 100,
@@ -47,6 +48,7 @@ const cruiseCostPresets = [
       wifi: 240,
       dining: 180,
       excursions: 850,
+      theKey: 0,
       hotel: 320,
       flights: 1200,
       parking: 140,
@@ -67,6 +69,7 @@ const cruiseCostPresets = [
       wifi: 0,
       dining: 0,
       excursions: 150,
+      theKey: 0,
       hotel: 0,
       flights: 0,
       parking: 120,
@@ -87,6 +90,7 @@ const cruiseCostPresets = [
       wifi: 280,
       dining: 500,
       excursions: 900,
+      theKey: 532,
       hotel: 350,
       flights: 850,
       parking: 140,
@@ -97,6 +101,28 @@ const cruiseCostPresets = [
     },
   },
 ]
+
+const fieldGroups = [
+  {
+    title: 'Fare and required costs',
+    description: 'The price of getting on the ship before optional spending starts.',
+    fields: ['cruiseFare', 'taxesAndFees', 'prepaidGratuities', 'travelerCount', 'cruiseNights'],
+  },
+  {
+    title: 'Add-ons',
+    description: 'Packages, onboard upgrades, and port choices that can quietly hijack the total.',
+    fields: ['drinkPackage', 'wifi', 'dining', 'excursions', 'theKey', 'miscellaneous'],
+  },
+  {
+    title: 'Travel',
+    description: 'The cost of getting to the cruise, because the ship does not teleport you there. Rude.',
+    fields: ['hotel', 'flights', 'parking', 'travelExtras'],
+  },
+]
+
+const cruiseCostFieldMap = Object.fromEntries(
+  cruiseCostFields.map((field) => [field[0], field]),
+)
 
 export default function CruiseCostPage() {
   const location = useLocation()
@@ -191,18 +217,32 @@ export default function CruiseCostPage() {
             ))}
           </div>
         </div>
-        <div className="form-grid">
-          {cruiseCostFields.map(([name, label, helper, min = '0']) => (
-            <FormField
-              key={name}
-              label={label}
-              name={name}
-              value={form[name]}
-              onChange={handleChange}
-              min={min}
-              helper={helper}
-              inputMode="decimal"
-            />
+        <div className="input-group-grid">
+          {fieldGroups.map((group) => (
+            <div key={group.title} className="input-group-card">
+              <div className="input-group-copy">
+                <h3>{group.title}</h3>
+                <p>{group.description}</p>
+              </div>
+              <div className="form-grid compact-form-grid">
+                {group.fields.map((fieldName) => {
+                  const [name, label, helper, min = '0'] = cruiseCostFieldMap[fieldName]
+
+                  return (
+                    <FormField
+                      key={name}
+                      label={label}
+                      name={name}
+                      value={form[name]}
+                      onChange={handleChange}
+                      min={min}
+                      helper={helper}
+                      inputMode="decimal"
+                    />
+                  )
+                })}
+              </div>
+            </div>
           ))}
         </div>
       </section>
