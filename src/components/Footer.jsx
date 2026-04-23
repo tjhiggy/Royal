@@ -3,11 +3,13 @@ import { releaseInfo } from '../data/releaseInfo'
 
 const footerLinks = [
   { label: 'Home', to: '/' },
-  { label: 'Start', to: '/start' },
-  { label: 'Tools', to: '/tools' },
+  { label: 'Guided Start', to: '/start' },
+  { label: 'Deal', to: '/tools/deal-evaluator' },
+  { label: 'Cost', to: '/tools/cruise-cost' },
+  { label: 'Upgrades', to: '/tools' },
+  { label: 'Dining', to: '/dining' },
   { label: 'Compare', to: '/compare' },
   { label: 'Snapshot', to: '/snapshot' },
-  { label: 'Dining', to: '/dining' },
   { label: 'Packing', to: '/packing' },
   { label: 'Planner', to: '/planner' },
   { label: 'About', to: '/about' },
@@ -20,10 +22,10 @@ export default function Footer() {
         <div className="footer-brand-block">
           <div className="footer-brand-row">
             <strong className="footer-brand">Cruise Decision Engine</strong>
-            <span className="footer-product-tag">Decision tools for Royal Caribbean trips</span>
+            <span className="footer-product-tag">Version 2.0 guided decision system</span>
           </div>
           <p className="footer-statement">
-            See the real trip cost, sort the worthwhile upgrades from the nonsense, and make the expensive calls with your eyes open.
+            Price the full trip, challenge the upgrades, compare the options, then leave with one clean answer.
           </p>
           <p className="footer-disclaimer">
             Independent tool. Not affiliated with Royal Caribbean.

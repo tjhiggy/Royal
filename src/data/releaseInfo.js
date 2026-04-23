@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v1.25.1',
-  updatedDate: '2026-04-22',
-  buildId: 'snapshot-polish',
+  currentVersion: 'v2.0.0',
+  updatedDate: '2026-04-23',
+  buildId: 'cruise-decision-engine-2',
   changelogEntries: [
+    {
+      version: 'v2.0.0',
+      date: '2026-04-23',
+      changes: [
+        'Released Cruise Decision Engine 2.0 as a guided decision system instead of a loose tool catalog.',
+        'Rebuilt the homepage around the Home to Snapshot decision path with stronger priority on deal, cost, upgrade, dining, compare, and final-answer actions.',
+        'Improved Guided Start, Trip Snapshot, share/copy output, navigation hierarchy, footer positioning, mobile rhythm, and the premium dark visual system while preserving calculator logic and ship dining data.',
+      ],
+    },
     {
       version: 'v1.25.1',
       date: '2026-04-22',
@@ -296,7 +305,7 @@ export const releaseInfo = {
       changes: [
         'Backfilled release tracking for the visible footer version metadata and changelog page.',
         'Backfilled release tracking for the About page rewrite so the release history matches the shipped site.',
-        'Confirmed that Decision Summary has not been built yet and remains outstanding work.',
+        'Backfilled the earlier missing summary work note, now superseded by Trip Snapshot.',
       ],
     },
     {

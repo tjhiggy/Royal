@@ -57,13 +57,21 @@ export default function TripSnapshotPage() {
   const fullSummary = () => buildSnapshotSummaryText(snapshot, shareUrl())
   const shortSummary = () => buildSnapshotShortShareText(snapshot, shareUrl())
   const [bestQuickWin, ...otherQuickWins] = snapshot.quickWins
+  const completionItems = [
+    { label: 'Deal', complete: snapshot.hasDealData },
+    { label: 'Cost', complete: snapshot.hasCostData },
+    { label: 'Upgrades', complete: snapshot.upgradeVerdicts.some((item) => !['Needs check', 'Not in current plan', 'Choose ship'].includes(item.value)) },
+    { label: 'Dining', complete: snapshot.hasUserShip },
+    { label: 'Compare', complete: Boolean(snapshot.compareSnapshot) },
+  ]
+  const completionCount = completionItems.filter((item) => item.complete).length
 
   return (
     <div className="container page-stack">
       <PageHero
-        eyebrow="Snapshot"
-        title="Before you book"
-        description="The final checkpoint: real cost, deal verdict, upgrade calls, biggest drivers, and the cuts worth making."
+        eyebrow="Trip Snapshot"
+        title="The final answer before booking"
+        description="Real cost, cost per night, biggest drivers, upgrade verdicts, dining caveats, quick wins, and share text. One page. Finally."
       />
 
       <section className="card snapshot-hero-card">
@@ -76,6 +84,19 @@ export default function TripSnapshotPage() {
             <strong>{snapshot.mainWarning}</strong>
           </div>
           <p className="snapshot-source-note">{snapshot.sourceLine}</p>
+          <div className="snapshot-readiness">
+            <div>
+              <span>Decision readiness</span>
+              <strong>{completionCount} of {completionItems.length} checks complete</strong>
+            </div>
+            <div className="engine-chip-row">
+              {completionItems.map((item) => (
+                <span key={item.label} className={item.complete ? 'engine-chip-complete' : ''}>
+                  {item.label}
+                </span>
+              ))}
+            </div>
+          </div>
           <div className="snapshot-share-card">
             <div>
               <strong>Share this call</strong>
@@ -87,6 +108,10 @@ export default function TripSnapshotPage() {
               getLink={shareUrl}
               compact
             />
+          </div>
+          <div className="snapshot-copy-preview">
+            <span>Copy preview</span>
+            <p>{shortSummary().split('\n').filter(Boolean).slice(0, 3).join(' ')}</p>
           </div>
         </div>
 

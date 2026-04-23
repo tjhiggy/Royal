@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
 import SectionHeader from '../components/SectionHeader'
+import ShareActions from '../components/ShareActions'
 import { cruiseCostInitialState } from '../data/cruiseCostConfig'
 import {
   calculateCruiseCost,
@@ -15,12 +16,30 @@ import {
 import { formatCurrency } from '../utils/formatters'
 
 const steps = [
-  'Trip basics',
-  'Deal check',
-  'Real cost',
-  'Upgrade checks',
-  'Compare',
-  'Summary',
+  {
+    label: 'Trip basics',
+    intent: 'Set the inputs every decision depends on.',
+  },
+  {
+    label: 'Deal check',
+    intent: 'Decide whether the fare survives contact with reality.',
+  },
+  {
+    label: 'Real cost',
+    intent: 'Build the full trip number before upgrades get slippery.',
+  },
+  {
+    label: 'Upgrade checks',
+    intent: 'Make packages defend themselves.',
+  },
+  {
+    label: 'Compare',
+    intent: 'Current plan versus the leaner version.',
+  },
+  {
+    label: 'Final call',
+    intent: 'Turn the guided run into one shareable answer.',
+  },
 ]
 
 const initialState = {
@@ -189,6 +208,23 @@ export default function GuidedModePage() {
       : null,
   ].filter(Boolean).slice(0, 4)
 
+  const guidedSummaryText = () => [
+    'Cruise Decision Engine guided summary',
+    '',
+    `${results.deal.verdict}.`,
+    `Real trip cost: ${formatCurrency(results.cost.grandTotal)}`,
+    `Cost per night: ${formatCurrency(results.cost.costPerNight)}`,
+    `Potential savings: ${formatCurrency(results.comparison.absoluteTotalDifference)}`,
+    '',
+    'Upgrade calls:',
+    `- Drink package: ${results.drink.recommendation}`,
+    `- WiFi: ${results.wifi.recommendation}`,
+    `- The Key: ${results.key.recommendation}`,
+    '',
+    'Best moves:',
+    ...suggestedCuts.slice(0, 3).map((cut) => `- ${cut}`),
+  ].join('\n')
+
   function goNext() {
     setCurrentStep((step) => Math.min(step + 1, steps.length - 1))
   }
@@ -200,24 +236,25 @@ export default function GuidedModePage() {
   return (
     <div className="container page-stack">
       <PageHero
-        eyebrow="Guided mode"
-        title="Plan the cruise in the right order"
-        description="Walk through the decisions that actually change the trip cost. No accounts, no backend, no spreadsheet cosplay."
+        eyebrow="Guided Start"
+        title="Run the cruise decision path"
+        description="One guided pass through deal, cost, upgrades, comparison, and final answer. No backend, no account, no spreadsheet cosplay."
       />
 
       <section className="card guided-shell">
         <div className="guided-step-topline">
           <span className="verdict-kicker">Step {currentStep + 1} of {steps.length}</span>
-          <strong>{steps[currentStep]}</strong>
+          <strong>{steps[currentStep].label}</strong>
         </div>
+        <p className="guided-step-intent">{steps[currentStep].intent}</p>
         <div className="guided-step-track" aria-label="Guided mode progress">
           {steps.map((step, index) => (
             <button
-              key={step}
+              key={step.label}
               type="button"
               className={`guided-step-dot ${index === currentStep ? 'guided-step-dot-active' : ''} ${index < currentStep ? 'guided-step-dot-complete' : ''}`}
               onClick={() => setCurrentStep(index)}
-              aria-label={`Go to step ${index + 1}: ${step}`}
+              aria-label={`Go to step ${index + 1}: ${step.label}`}
             >
               {index + 1}
             </button>
@@ -371,7 +408,7 @@ export default function GuidedModePage() {
           <div className="guided-step-content">
             <SectionHeader
               title="Summary"
-              description="The final answer. Not perfect, but a lot better than booking blind."
+              description="The guided answer. Snapshot can sharpen this further with recent calculator data from the rest of the site."
             />
             <div className="stats-grid guided-stats">
               <MetricCard label="Total trip cost" value={formatCurrency(results.cost.grandTotal)} />
@@ -379,6 +416,12 @@ export default function GuidedModePage() {
               <MetricCard label="Add-ons" value={formatCurrency(results.cost.addOnsSubtotal)} />
               <MetricCard label="Potential savings" value={formatCurrency(results.comparison.absoluteTotalDifference)} />
             </div>
+
+            <ShareActions
+              summary={guidedSummaryText}
+              shortSummary={() => `${results.deal.verdict}. Real trip cost: ${formatCurrency(results.cost.grandTotal)}. Best move: ${suggestedCuts[0] ?? 'Finish the cost checks.'}`}
+              compact
+            />
 
             <div className="two-column-layout">
               <section className="card guided-mini-card">
@@ -419,8 +462,8 @@ export default function GuidedModePage() {
               Next
             </button>
           ) : (
-            <Link className="button button-primary" to="/compare">
-              Open Compare
+            <Link className="button button-primary" to="/snapshot">
+              Open Snapshot
             </Link>
           )}
         </div>

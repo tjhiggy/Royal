@@ -5,9 +5,9 @@ export default function ShareActions({
   summary,
   shortSummary,
   getLink = getCurrentShareUrl,
-  summaryLabel = 'Copy summary',
-  shortSummaryLabel = 'Copy share text',
-  linkLabel = 'Copy link',
+  summaryLabel = 'Copy final answer',
+  shortSummaryLabel = 'Copy group text',
+  linkLabel = 'Copy page link',
   compact = false,
 }) {
   const [feedback, setFeedback] = useState('')

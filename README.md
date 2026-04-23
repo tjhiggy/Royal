@@ -1,6 +1,6 @@
 # Royal
 
-Royal is a responsive React + Vite single-page app for Royal Caribbean trip planning. Version 1 includes two pricing tools, a packing list generator, and a browser-saved trip planner.
+Royal is a responsive React + Vite single-page app for Royal Caribbean trip planning. Version 2.0 positions the site as a guided Cruise Decision Engine: start with the trip shape, test the deal, build the real cost, challenge upgrades, check dining, compare scenarios, and finish with Trip Snapshot.
 
 ## Run locally
 

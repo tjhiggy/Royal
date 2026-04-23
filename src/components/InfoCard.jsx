@@ -8,6 +8,7 @@ export default function InfoCard({
   ctaLabel,
   icon,
   muted = false,
+  priorityLabel,
 }) {
   const body = (
     <>
@@ -16,7 +17,7 @@ export default function InfoCard({
           <span className="tool-icon" aria-hidden="true">{icon ?? title.slice(0, 1)}</span>
           <h3>{title}</h3>
         </div>
-        {badge ? <span className={`status-pill ${muted ? 'status-muted' : ''}`}>{badge}</span> : null}
+        {priorityLabel ? <span className="step-badge">{priorityLabel}</span> : badge ? <span className={`status-pill ${muted ? 'status-muted' : ''}`}>{badge}</span> : null}
       </div>
       <p>{description}</p>
       {to ? <span className="card-link">{ctaLabel ?? 'Use this tool'}</span> : <span className="card-link">{ctaLabel ?? 'Coming soon'}</span>}

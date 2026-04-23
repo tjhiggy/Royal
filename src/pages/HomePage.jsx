@@ -1,22 +1,56 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import PageHero from '../components/PageHero'
 import SectionHeader from '../components/SectionHeader'
 import { loadRecentTrips } from '../utils/storage'
 
-const caughtExamples = [
+const decisionPath = [
   {
-    title: 'The fake-cheap fare',
-    copy: 'A low cabin price that stops looking low once taxes, travel, and add-ons join the bill.',
+    step: '01',
+    label: 'Guided Start',
+    title: 'Give the engine the trip shape',
+    copy: 'Start with nights, travelers, fare, and the costs every other decision leans on.',
+    to: '/start',
+    cta: 'Start guided plan',
   },
   {
-    title: 'The package trap',
-    copy: 'A drink, dining, WiFi, or Key upgrade that sounds useful but does not earn its keep.',
+    step: '02',
+    label: 'Deal',
+    title: 'Expose fake-cheap pricing',
+    copy: 'A low fare is not a deal until travel, taxes, and extras survive inspection.',
+    to: '/tools/deal-evaluator',
+    cta: 'Check the deal',
   },
   {
-    title: 'The total that doubles',
-    copy: 'A trip that looks manageable until flights, hotel, excursions, and onboard spend land at once.',
+    step: '03',
+    label: 'Cost',
+    title: 'Build the real number',
+    copy: 'Fare, gratuities, flights, hotel, excursions, parking, packages, and the other little budget knives.',
+    to: '/tools/cruise-cost',
+    cta: 'Calculate real cost',
   },
+  {
+    step: '04',
+    label: 'Upgrades',
+    title: 'Make packages earn their seat',
+    copy: 'Drinks, dining, WiFi, and The Key get verdicts. Vibes do not get a purchase order.',
+    to: '/tools',
+    cta: 'Test upgrades',
+  },
+  {
+    step: '05',
+    label: 'Snapshot',
+    title: 'Leave with the final answer',
+    copy: 'Review the verdict, biggest drivers, upgrade calls, quick wins, and share text in one place.',
+    to: '/snapshot',
+    cta: 'View Snapshot',
+  },
+]
+
+const priorityTools = [
+  { title: 'Deal Evaluator', copy: 'Decide whether the sailing is actually worth chasing.', to: '/tools/deal-evaluator' },
+  { title: 'Cruise Cost', copy: 'Turn the fare into the full trip total.', to: '/tools/cruise-cost' },
+  { title: 'Upgrade Checks', copy: 'Challenge drinks, dining, WiFi, and The Key.', to: '/tools' },
+  { title: 'Trip Snapshot', copy: 'Copy the final call for the travel group.', to: '/snapshot' },
 ]
 
 export default function HomePage() {
@@ -28,27 +62,65 @@ export default function HomePage() {
 
   return (
     <div className="container page-stack">
-      <PageHero
-        eyebrow="Royal Caribbean decision engine"
-        title="Stop overpaying for your cruise."
-        description="Cheap fares are the bait. This shows the real trip cost, what is actually included, and which upgrades deserve your money before checkout gets cute."
-        actions={
-          <>
-            <Link className="button button-primary" to="/tools/deal-evaluator">
-              Check if your deal is actually good
+      <section className="home-command hero-card card">
+        <div className="home-command-copy">
+          <p className="eyebrow">Cruise Decision Engine 2.0</p>
+          <h1>Book the trip you meant to buy.</h1>
+          <p className="hero-copy">
+            Royal Caribbean pricing gets fragmented fast. This turns the fare, real cost, upgrades, dining caveats, comparisons, and final shareable answer into one guided decision system.
+          </p>
+          <div className="hero-actions">
+            <Link className="button button-primary" to="/start">
+              Start Guided Plan
             </Link>
-            <Link className="button button-secondary" to="/tools/cruise-cost">
-              See what your trip will really cost
+            <Link className="button button-secondary" to="/tools/deal-evaluator">
+              Check Deal First
             </Link>
-          </>
-        }
-      />
+            <Link className="button button-ghost" to="/snapshot">
+              View Snapshot
+            </Link>
+          </div>
+        </div>
+
+        <div className="home-engine-panel" aria-label="Cruise Decision Engine preview">
+          <div className="engine-panel-header">
+            <span>Decision route</span>
+            <strong>Home to Snapshot</strong>
+          </div>
+          <div className="engine-route-list">
+            {['Home', 'Guided', 'Deal', 'Cost', 'Upgrades', 'Dining', 'Compare', 'Snapshot'].map((item, index) => (
+              <span key={item} className={index === 7 ? 'engine-route-active' : ''}>
+                {item}
+              </span>
+            ))}
+          </div>
+          <div className="snapshot-preview-card">
+            <span className="verdict-kicker">Sample final-answer preview</span>
+            <strong>Real cost beats headline fare.</strong>
+            <div className="snapshot-preview-grid">
+              <span>
+                <small>Real trip cost</small>
+                <b>$5,420</b>
+              </span>
+              <span>
+                <small>Cost per night</small>
+                <b>$774</b>
+              </span>
+            </div>
+            <div className="engine-chip-row">
+              <span>Driver: drinks</span>
+              <span>Dining: check ship</span>
+              <span>Share ready</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {recentTrips.length ? (
         <section className="page-section">
           <SectionHeader
             title="Continue where you left off"
-            description="Your last calculator sessions from this browser. No account required, because we are not monsters."
+            description="Your last calculator sessions from this browser. No account, no login theater."
           />
           <div className="recent-trip-list">
             {recentTrips.map((trip) => (
@@ -66,130 +138,51 @@ export default function HomePage() {
 
       <section className="page-section">
         <SectionHeader
-          title="Where people get burned"
-          description="The fare is only the opening act. The expensive mistakes usually show up after that."
+          title="Why use this before booking?"
+          description="Because the number that sells the cruise is rarely the number that funds the trip. Cute trick. Expensive trick."
         />
-        <div className="card burn-card">
-          <ul className="burn-list">
-            <li>Drink packages that quietly waste hundreds</li>
-            <li>WiFi plans you do not need</li>
-            <li>Dining packages you will not use enough</li>
-            <li>Cheap fares that turn into expensive trips</li>
-          </ul>
-        </div>
-      </section>
-
-      <section className="page-section">
-        <SectionHeader
-          title="What this catches"
-          description="The expensive mistakes usually hide in separate screens. This pulls them into daylight."
-        />
-        <div className="card-grid">
-          {caughtExamples.map((item) => (
-            <article key={item.title} className="card info-card catch-card">
-              <span className="step-badge">Caught</span>
-              <h3>{item.title}</h3>
-              <p>{item.copy}</p>
-            </article>
+        <div className="home-priority-grid">
+          {priorityTools.map((tool) => (
+            <Link key={tool.title} className="card info-card home-priority-card" to={tool.to}>
+              <h3>{tool.title}</h3>
+              <p>{tool.copy}</p>
+              <span className="card-link">Open</span>
+            </Link>
           ))}
         </div>
       </section>
 
       <section className="page-section">
         <SectionHeader
-          title="Start here"
-          description="Use the tools in the order the money decisions actually happen."
+          title="Run the decision path"
+          description="Use the site in the order the money decisions actually happen. Revolutionary, apparently."
         />
-        <div className="decision-flow-grid">
-          <Link className="card info-card decision-flow-card decision-flow-card-primary" to="/tools/deal-evaluator">
-            <span className="step-badge">Step 1</span>
-            <h3>Is this a good deal?</h3>
-            <p>Test the fare before you let the word "deal" anywhere near it.</p>
-            <span className="card-link">Evaluate the deal</span>
-          </Link>
-          <Link className="card info-card decision-flow-card" to="/tools/cruise-cost">
-            <span className="step-badge">Step 2</span>
-            <h3>What will it really cost?</h3>
-            <p>Add fare, taxes, travel, and extras.</p>
-            <span className="card-link">Calculate real cost</span>
-          </Link>
-          <article className="card info-card decision-flow-card">
-            <span className="step-badge">Step 3</span>
-            <h3>Which upgrades are worth it?</h3>
-            <p>Keep the upgrades that earn their keep. Cut the expensive passengers.</p>
-            <div className="inline-link-list" aria-label="Upgrade calculators">
-              <Link className="inline-tool-link" to="/tools/drink-package">Drink</Link>
-              <Link className="inline-tool-link" to="/tools/dining-package">Dining</Link>
-              <Link className="inline-tool-link" to="/tools/wifi">WiFi</Link>
-              <Link className="inline-tool-link" to="/tools/the-key">The Key</Link>
-            </div>
-          </article>
+        <div className="engine-timeline">
+          {decisionPath.map((item) => (
+            <Link key={item.step} className="engine-timeline-item" to={item.to}>
+              <span className="engine-step-number">{item.step}</span>
+              <span className="engine-step-copy">
+                <small>{item.label}</small>
+                <strong>{item.title}</strong>
+                <em>{item.copy}</em>
+              </span>
+              <span className="engine-step-cta">{item.cta}</span>
+            </Link>
+          ))}
         </div>
       </section>
 
-      <section className="page-section">
-        <SectionHeader
-          title="Why this exists"
-          description="Cruise pricing is fragmented. The base fare looks fine, then drinks, dining, WiFi, excursions, and travel inflate the trip. This pulls the real cost into one place."
-        />
-      </section>
-
-      <section className="page-section">
-        <SectionHeader
-          title="Then check the details"
-          description="Once the big number makes sense, refine the plan instead of reopening every tab like a raccoon with WiFi."
-        />
-        <div className="card-grid">
-          <Link className="card info-card" to="/compare">
-            <div className="card-topline">
-              <h3>Compare scenarios</h3>
-              <span className="status-pill">Live</span>
-            </div>
-            <p>Put two trip versions side by side.</p>
-            <span className="card-link">Compare trip versions</span>
-          </Link>
-          <Link className="card info-card" to="/dining">
-            <div className="card-topline">
-              <h3>Dining Explorer</h3>
-              <span className="status-pill">Live</span>
-            </div>
-            <p>Check what is included on your ship before buying dining like a reflex.</p>
-            <span className="card-link">Explore ship dining</span>
-          </Link>
-          <Link className="card info-card" to="/snapshot">
-            <div className="card-topline">
-              <h3>Trip Snapshot</h3>
-              <span className="status-pill">Live</span>
-            </div>
-            <p>Review the latest saved calculator outputs in one place.</p>
-            <span className="card-link">View final answer</span>
-          </Link>
+      <section className="card home-final-band">
+        <div>
+          <span className="verdict-kicker">The point</span>
+          <h2>Snapshot is the finish line, not another dashboard.</h2>
+          <p>
+            Run the key decisions, then Snapshot gives you the verdict, real cost, cost per night, biggest drivers, upgrade calls, quick wins, and copyable text for the person who has to hear the number.
+          </p>
         </div>
-      </section>
-
-      <section className="page-section">
-        <SectionHeader
-          title="Lower-priority utilities"
-          description="Useful after the money decisions stop wobbling."
-        />
-        <div className="card-grid">
-          <Link className="card info-card" to="/packing">
-            <div className="card-topline">
-              <h3>Packing</h3>
-              <span className="status-pill">Live</span>
-            </div>
-            <p>Build a list that matches the sailing, not a generic beach vacation.</p>
-            <span className="card-link">Build checklist</span>
-          </Link>
-          <Link className="card info-card" to="/planner">
-            <div className="card-topline">
-              <h3>Planner</h3>
-              <span className="status-pill">Live</span>
-            </div>
-            <p>Keep reservations, notes, and trip details together.</p>
-            <span className="card-link">Open the planner</span>
-          </Link>
-        </div>
+        <Link className="button button-primary" to="/snapshot">
+          Get final answer
+        </Link>
       </section>
     </div>
   )

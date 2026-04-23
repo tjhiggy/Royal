@@ -5,14 +5,13 @@ import TopBanner from './TopBanner'
 
 const navItems = [
   { label: 'Home', to: '/' },
-  { label: 'Start', to: '/start' },
-  { label: 'Tools', to: '/tools' },
+  { label: 'Guided Start', to: '/start' },
+  { label: 'Deal', to: '/tools/deal-evaluator' },
+  { label: 'Cost', to: '/tools/cruise-cost' },
+  { label: 'Upgrades', to: '/tools' },
+  { label: 'Dining', to: '/dining' },
   { label: 'Compare', to: '/compare' },
   { label: 'Snapshot', to: '/snapshot' },
-  { label: 'Dining', to: '/dining' },
-  { label: 'Packing', to: '/packing' },
-  { label: 'Planner', to: '/planner' },
-  { label: 'About', to: '/about' },
 ]
 
 export default function SiteLayout() {
@@ -25,7 +24,7 @@ export default function SiteLayout() {
             <span className="brand-mark">CDE</span>
             <span className="brand-copy">
               <span className="brand-title">Cruise Decision Engine</span>
-              <small>Decision tools for Royal Caribbean trips</small>
+              <small>Guided calls for Royal Caribbean trips</small>
             </span>
           </NavLink>
 
