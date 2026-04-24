@@ -4,10 +4,12 @@ import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
 import SectionHeader from '../components/SectionHeader'
+import ShareActions from '../components/ShareActions'
 import { activeRoyalShips, futureRoyalShips, royalShipsBySlug } from '../data/royalShips'
 import { calculateDiningPackage } from '../utils/calculators'
 import { buildDiningStrategy } from '../utils/diningStrategy'
 import { formatCurrency } from '../utils/formatters'
+import { appendShareUrl } from '../utils/share'
 import { saveSnapshotToolState } from '../utils/storage'
 
 const sortedActiveShips = [...activeRoyalShips].sort((left, right) =>
@@ -352,6 +354,19 @@ export default function DiningPackagePage() {
           </div>
         </section>
       ) : null}
+
+      <ShareActions
+        summary={() => appendShareUrl([
+          `Dining package verdict: ${results.recommendation}.`,
+          selectedShip ? `Ship: ${selectedShip.shipName}` : null,
+          diningStrategy ? `Ship dining stance: ${diningStrategy.packageVerdict}` : null,
+          `Package total: ${formatCurrency(results.packageTotal)}`,
+          `Estimated meal value: ${formatCurrency(results.estimatedValueUsed)}`,
+          `Break-even meals needed: ${roundedBreakEvenMeals}`,
+          worthItInsight,
+        ].filter(Boolean))}
+        shortSummary={() => `${results.recommendation}: dining package ${results.netSavings >= 0 ? `saves about ${formatCurrency(results.netSavings)}` : `overpays by about ${formatCurrency(Math.abs(results.netSavings))}`}${selectedShip ? ` on ${selectedShip.shipName}` : ''}.`}
+      />
 
       <ResultPanel
         title="Supporting numbers"

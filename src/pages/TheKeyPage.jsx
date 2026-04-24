@@ -4,8 +4,10 @@ import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
 import SectionHeader from '../components/SectionHeader'
+import ShareActions from '../components/ShareActions'
 import { calculateTheKey } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
+import { appendShareUrl } from '../utils/share'
 import { saveSnapshotToolState } from '../utils/storage'
 
 const initialState = {
@@ -228,6 +230,19 @@ export default function TheKeyPage() {
       </section>
 
       <CoachingMessage message={coachingMessage} />
+
+      <ShareActions
+        summary={() => appendShareUrl([
+          `The Key verdict: ${results.recommendation}.`,
+          `The Key total: ${formatCurrency(results.keyTotal)}`,
+          `Estimated value used: ${formatCurrency(results.estimatedValueUsed)}`,
+          results.netValue >= 0
+            ? `Value over cost: ${formatCurrency(results.netValue)}`
+            : `Estimated overpay: ${formatCurrency(Math.abs(results.netValue))}`,
+          insight,
+        ])}
+        shortSummary={() => `${results.recommendation}: The Key ${results.netValue >= 0 ? `beats cost by about ${formatCurrency(results.netValue)}` : `overpays by about ${formatCurrency(Math.abs(results.netValue))}`}.`}
+      />
 
       <ResultPanel
         title="The Key summary"

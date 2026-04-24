@@ -706,6 +706,50 @@ img {
   margin: 0.35rem 0 0.6rem;
 }
 
+.caught-example-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.caught-example-card {
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+  border-color: rgba(240, 177, 75, 0.18);
+  background:
+    linear-gradient(180deg, rgba(240, 177, 75, 0.08), rgba(91, 168, 255, 0.03)),
+    var(--surface);
+}
+
+.caught-example-swing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.caught-example-swing span,
+.caught-example-swing strong {
+  display: grid;
+  place-items: center;
+  min-height: 3.25rem;
+  padding: 0.65rem;
+  border-radius: 8px;
+  border: 1px solid rgba(151, 179, 211, 0.12);
+  text-align: center;
+}
+
+.caught-example-swing span {
+  color: var(--text-soft);
+  background: rgba(91, 168, 255, 0.06);
+}
+
+.caught-example-swing strong {
+  color: var(--warn);
+  background: rgba(240, 177, 75, 0.09);
+}
+
 .section-title-row {
   display: flex;
   align-items: center;
@@ -1708,6 +1752,45 @@ a.info-card:hover {
   margin: 0;
 }
 
+.snapshot-action-brief {
+  border-color: rgba(240, 177, 75, 0.22);
+  background:
+    linear-gradient(135deg, rgba(240, 177, 75, 0.11), transparent 44%),
+    var(--surface);
+}
+
+.snapshot-action-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.snapshot-action-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+  padding: 0.95rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(151, 179, 211, 0.12);
+  background: rgba(8, 19, 32, 0.42);
+}
+
+.snapshot-action-item:hover {
+  border-color: rgba(240, 177, 75, 0.3);
+  background: rgba(240, 177, 75, 0.07);
+}
+
+.snapshot-action-item span:last-child {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.snapshot-action-item small {
+  color: var(--text-soft);
+  line-height: 1.4;
+}
+
 .dining-placeholder-note {
   display: grid;
   gap: 0.25rem;
@@ -2277,12 +2360,21 @@ a.info-card:hover {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .caught-example-grid {
+    grid-template-columns: 1fr;
+  }
+
   .engine-timeline-item {
     grid-template-columns: auto minmax(0, 1fr);
   }
 
   .engine-step-cta {
     grid-column: 2;
+  }
+
+  .snapshot-readiness > div:first-child {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .advanced-header {
@@ -2327,6 +2419,10 @@ a.info-card:hover {
   .break-even-summary,
   .home-priority-grid,
   .snapshot-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .caught-example-swing {
     grid-template-columns: 1fr;
   }
 

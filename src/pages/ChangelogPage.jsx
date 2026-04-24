@@ -6,7 +6,7 @@ export default function ChangelogPage() {
     <div className="container page-stack">
       <PageHero
         eyebrow="Changelog"
-        title="Recent changes to Royal"
+        title="Recent Cruise Decision Engine changes"
         description="Use this page to confirm what shipped, when it landed, and whether the latest deployment is actually live."
       />
 

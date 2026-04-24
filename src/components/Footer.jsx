@@ -22,7 +22,7 @@ export default function Footer() {
         <div className="footer-brand-block">
           <div className="footer-brand-row">
             <strong className="footer-brand">Cruise Decision Engine</strong>
-            <span className="footer-product-tag">Version 2.0 guided decision system</span>
+            <span className="footer-product-tag">Guided decision system</span>
           </div>
           <p className="footer-statement">
             Price the full trip, challenge the upgrades, compare the options, then leave with one clean answer.

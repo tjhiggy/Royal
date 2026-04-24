@@ -5,8 +5,10 @@ import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
 import SectionHeader from '../components/SectionHeader'
+import ShareActions from '../components/ShareActions'
 import { calculateDrinkPackage } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
+import { appendShareUrl } from '../utils/share'
 import { saveSnapshotToolState } from '../utils/storage'
 
 const initialState = {
@@ -332,6 +334,19 @@ export default function DrinkPackagePage() {
       </section>
 
       <CoachingMessage message={coachingMessage} />
+
+      <ShareActions
+        summary={() => appendShareUrl([
+          `Drink package verdict: ${results.recommendation}.`,
+          `Package total: ${formatCurrency(results.packageTotal)}`,
+          `Pay-as-you-go estimate: ${formatCurrency(results.payAsYouGoTotal)}`,
+          results.netSavings >= 0
+            ? `Estimated savings: ${formatCurrency(results.netSavings)}`
+            : `Estimated overpay: ${formatCurrency(Math.abs(results.netSavings))}`,
+          worthItInsight,
+        ])}
+        shortSummary={() => `${results.recommendation}: drink package ${results.netSavings >= 0 ? `saves about ${formatCurrency(results.netSavings)}` : `overpays by about ${formatCurrency(Math.abs(results.netSavings))}`}.`}
+      />
 
       <ResultPanel
         title="Supporting numbers"

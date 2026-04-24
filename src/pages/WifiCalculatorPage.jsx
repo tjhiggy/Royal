@@ -4,8 +4,10 @@ import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
 import SectionHeader from '../components/SectionHeader'
+import ShareActions from '../components/ShareActions'
 import { calculateWifiRecommendation } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
+import { appendShareUrl } from '../utils/share'
 import { saveSnapshotToolState } from '../utils/storage'
 
 const initialState = {
@@ -194,6 +196,17 @@ export default function WifiCalculatorPage() {
       </section>
 
       <CoachingMessage message={coachingMessage} />
+
+      <ShareActions
+        summary={() => appendShareUrl([
+          `WiFi verdict: ${results.recommendation}.`,
+          `No WiFi: ${formatCurrency(results.noWifiCost)}`,
+          `1 device: ${formatCurrency(results.oneDeviceCost)}`,
+          `2 devices: ${formatCurrency(results.twoDeviceCost)}`,
+          results.wastedSpendMessage,
+        ])}
+        shortSummary={() => `${results.recommendation}: ${results.wastedSpendMessage}`}
+      />
 
       <ResultPanel
         title="WiFi option costs"
