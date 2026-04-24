@@ -147,13 +147,14 @@ export default function TripSnapshotPage() {
     { label: 'Upgrades', complete: snapshot.upgradeVerdicts.some((item) => !['Needs check', 'Not in current plan', 'Choose ship'].includes(item.value)) },
     { label: 'Dining', complete: snapshot.hasUserShip },
     { label: 'Compare', complete: Boolean(snapshot.compareSnapshot) },
+    { label: 'Book', complete: Boolean(snapshot.shouldBookDecision) },
   ]
   const completionCount = completionItems.filter((item) => item.complete).length
   const actionItems = buildSnapshotActionItems(snapshot)
   const finalRecommendation = buildFinalRecommendation(snapshot)
 
   useEffect(() => {
-    if (!snapshot.hasCostData && !snapshot.hasDealData && !snapshot.compareSnapshot) {
+    if (!snapshot.hasCostData && !snapshot.hasDealData && !snapshot.compareSnapshot && !snapshot.shouldBookDecision) {
       return
     }
 
@@ -163,6 +164,8 @@ export default function TripSnapshotPage() {
       toolLabel: 'Trip Snapshot',
       label: snapshot.costResults
         ? `${snapshot.mainVerdict} | ${formatCurrency(snapshot.costResults.grandTotal)}`
+        : snapshot.shouldBookDecision
+          ? `${snapshot.mainVerdict} | ${formatCurrency(snapshot.shouldBookDecision.realTotal)}`
         : snapshot.mainVerdict,
       path: '/snapshot',
       data: {
@@ -171,7 +174,7 @@ export default function TripSnapshotPage() {
         updatedFrom: 'snapshot',
       },
     })
-  }, [snapshot.compareSnapshot, snapshot.costResults, snapshot.hasCostData, snapshot.hasDealData, snapshot.mainVerdict])
+  }, [snapshot.compareSnapshot, snapshot.costResults, snapshot.hasCostData, snapshot.hasDealData, snapshot.mainVerdict, snapshot.shouldBookDecision])
 
   return (
     <div className="container page-stack">

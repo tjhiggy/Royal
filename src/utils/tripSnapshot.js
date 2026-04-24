@@ -69,6 +69,8 @@ export function buildTripSnapshot({ snapshotState = {}, recentTrips = [], planne
   const recentCostTrip = latestRecentTrip(recentTrips, 'cruise-cost')
   const recentDealTrip = latestRecentTrip(recentTrips, 'deal-evaluator')
   const recentCompareTrip = latestRecentTrip(recentTrips, 'compare')
+  const recentShouldBookTrip = latestRecentTrip(recentTrips, 'should-book')
+  const shouldBookDecision = snapshotState.shouldBook?.decision ?? recentShouldBookTrip?.data?.decision ?? null
 
   const savedCostForm = snapshotState.cost?.form ?? recentCostTrip?.data?.form ?? null
   const savedDealForm = snapshotState.deal?.form ?? recentDealTrip?.data?.form ?? null
@@ -133,7 +135,9 @@ export function buildTripSnapshot({ snapshotState = {}, recentTrips = [], planne
   })
 
   const mainWarning =
-    drinkResults?.recommendation === 'Skip it'
+    shouldBookDecision?.financialRisk
+      ? shouldBookDecision.financialRisk
+      : drinkResults?.recommendation === 'Skip it'
       ? 'Biggest waste risk: drink package'
       : costResults?.biggestAddOnDrivers?.[0]
         ? `Biggest cost driver: ${costResults.biggestAddOnDrivers[0].label}`
@@ -141,7 +145,15 @@ export function buildTripSnapshot({ snapshotState = {}, recentTrips = [], planne
           ? `${compareSnapshot.pricierLabel} is the pricier scenario`
           : 'Finish a cost tool to expose the biggest warning.'
 
-  const keyMetrics = costResults && dealResults
+  const keyMetrics = shouldBookDecision
+    ? [
+        { label: 'Booking verdict', value: shouldBookDecision.verdict, helper: `${shouldBookDecision.confidence}% confidence from Should I Book` },
+        { label: 'Real trip cost', value: formatCurrency(shouldBookDecision.realTotal), helper: 'Fare, travel, required costs, and add-ons' },
+        { label: 'Cost per night', value: formatCurrency(shouldBookDecision.costPerNight), helper: 'The cleanest booking reality check' },
+        { label: 'Add-ons share', value: `${shouldBookDecision.addOnPressure.toFixed(0)}%`, helper: 'Everything besides fare and travel' },
+        { label: 'Travel share', value: `${shouldBookDecision.travelPressure.toFixed(0)}%`, helper: 'Getting to the sailing' },
+      ]
+    : costResults && dealResults
     ? [
         { label: 'Base fare', value: formatCurrency(dealResults.baseFare ?? costResults.fare), helper: 'The number that usually looks harmless' },
         { label: 'Real trip cost', value: formatCurrency(costResults.grandTotal), helper: 'Fare plus the stuff that actually hits the budget' },
@@ -152,6 +164,7 @@ export function buildTripSnapshot({ snapshotState = {}, recentTrips = [], planne
     : []
 
   const nextSteps = [
+    !shouldBookDecision ? { to: '/should-i-book', title: 'Get the booking verdict', copy: 'Use Should I Book when you need the actual Book Now, Wait, or Walk Away call.' } : null,
     !dealResults ? { to: '/tools/deal-evaluator', title: 'Complete Deal Evaluator', copy: 'Start here if you have not tested whether the fare is actually good.' } : null,
     !costResults ? { to: '/tools/cruise-cost', title: 'Check real trip cost', copy: 'Snapshot needs the full cost before it can be brutally useful.' } : null,
     !drinkResults ? { to: '/tools/drink-package', title: 'Check drink package', copy: 'Run the package math before it becomes a very expensive hunch.' } : null,
@@ -176,10 +189,13 @@ export function buildTripSnapshot({ snapshotState = {}, recentTrips = [], planne
     diningShip,
     diningStrategy,
     compareSnapshot,
-    mainVerdict: dealResults?.verdict ?? 'Snapshot needs trip data',
+    shouldBookDecision,
+    mainVerdict: shouldBookDecision?.verdict ?? dealResults?.verdict ?? 'Snapshot needs trip data',
     mainWarning,
-    mainLine: dealResults?.verdictLines?.[0] ?? 'Run the Deal Evaluator or Cruise Cost Calculator so this page can stop guessing.',
-    sourceLine: costResults
+    mainLine: shouldBookDecision?.why ?? dealResults?.verdictLines?.[0] ?? 'Run the Deal Evaluator or Cruise Cost Calculator so this page can stop guessing.',
+    sourceLine: shouldBookDecision
+      ? 'Using the latest Should I Book verdict saved in this browser.'
+      : costResults
       ? 'Using the latest local calculator data saved in this browser.'
       : 'No full trip cost saved yet. The good news: this is fixable, not mysterious.',
     keyMetrics,
@@ -311,7 +327,9 @@ export function buildSnapshotSummaryText(snapshot, url = getCurrentShareUrl()) {
   return buildToolShareSummary({
     title: 'Trip Snapshot',
     verdict: snapshot.mainVerdict,
-    keyFigure: snapshot.costResults
+    keyFigure: snapshot.shouldBookDecision
+      ? `Real trip cost ${formatCurrency(snapshot.shouldBookDecision.realTotal)} (${formatCurrency(snapshot.shouldBookDecision.costPerNight)}/night)`
+      : snapshot.costResults
       ? `Real trip cost ${formatCurrency(snapshot.costResults.grandTotal)} (${formatCurrency(snapshot.costResults.costPerNight)}/night)`
       : 'Real trip cost not complete yet',
     mainDriver: snapshot.costDrivers[0]
@@ -326,7 +344,9 @@ export function buildSnapshotShortShareText(snapshot, url = getCurrentShareUrl()
   return buildToolShortShare({
     title: 'Trip Snapshot',
     verdict: snapshot.mainVerdict,
-    keyFigure: snapshot.costResults
+    keyFigure: snapshot.shouldBookDecision
+      ? `Real cost ${formatCurrency(snapshot.shouldBookDecision.realTotal)}`
+      : snapshot.costResults
       ? `Real cost ${formatCurrency(snapshot.costResults.grandTotal)}`
       : 'Real cost incomplete',
     nextAction: snapshot.quickWins[0] ?? 'Finish the cost check first.',
@@ -338,7 +358,9 @@ export function buildTripBriefText(snapshot, url = getCurrentShareUrl()) {
   const lines = [
     'My Trip Brief',
     `Verdict: ${snapshot.mainVerdict}`,
-    snapshot.costResults
+    snapshot.shouldBookDecision
+      ? `Real cost: ${formatCurrency(snapshot.shouldBookDecision.realTotal)} (${formatCurrency(snapshot.shouldBookDecision.costPerNight)}/night)`
+      : snapshot.costResults
       ? `Real cost: ${formatCurrency(snapshot.costResults.grandTotal)} (${formatCurrency(snapshot.costResults.costPerNight)}/night)`
       : 'Real cost: incomplete',
     `Biggest risk: ${snapshot.mainWarning}`,

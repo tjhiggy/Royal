@@ -1554,6 +1554,26 @@ a.info-card:hover {
   margin-top: 0.15rem;
 }
 
+.toggle-card {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  min-height: 3.2rem;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  background: rgba(91, 168, 255, 0.06);
+  border: 1px solid rgba(126, 171, 223, 0.08);
+  color: var(--text-soft);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.toggle-card-active {
+  color: var(--text);
+  border-color: rgba(103, 213, 255, 0.34);
+  background: rgba(103, 213, 255, 0.12);
+}
+
 .toggle-copy {
   display: grid;
   gap: 0.2rem;
@@ -2353,6 +2373,120 @@ a.info-card:hover {
   font-weight: 700;
 }
 
+.should-book-page .page-hero {
+  margin-bottom: 0;
+}
+
+.should-book-verdict-card {
+  display: grid;
+  gap: 1.15rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  overflow: hidden;
+  position: relative;
+}
+
+.should-book-verdict-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(103, 213, 255, 0.12), transparent 46%);
+}
+
+.should-book-verdict-copy,
+.should-book-confidence,
+.should-book-risk-grid,
+.should-book-verdict-card .share-actions {
+  position: relative;
+}
+
+.should-book-verdict-copy h2 {
+  margin: 0.2rem 0 0.45rem;
+  font-size: clamp(3rem, 8vw, 5.8rem);
+  line-height: 0.9;
+}
+
+.should-book-confidence {
+  display: grid;
+  place-items: center;
+  gap: 0.2rem;
+  min-width: 9rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background: rgba(8, 19, 32, 0.6);
+  border: 1px solid rgba(151, 179, 211, 0.16);
+}
+
+.should-book-confidence span {
+  color: var(--text-soft);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.should-book-confidence strong {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
+}
+
+.should-book-risk-grid {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.should-book-verdict-card .share-actions {
+  grid-column: 1 / -1;
+}
+
+.should-book-now {
+  border-color: rgba(70, 195, 141, 0.32);
+  background:
+    linear-gradient(180deg, rgba(70, 195, 141, 0.14), rgba(70, 195, 141, 0.04)),
+    var(--surface);
+}
+
+.should-book-wait {
+  border-color: rgba(240, 177, 75, 0.34);
+  background:
+    linear-gradient(180deg, rgba(240, 177, 75, 0.16), rgba(240, 177, 75, 0.04)),
+    var(--surface);
+}
+
+.should-book-walk {
+  border-color: rgba(255, 123, 109, 0.34);
+  background:
+    linear-gradient(180deg, rgba(255, 123, 109, 0.15), rgba(255, 123, 109, 0.04)),
+    var(--surface);
+}
+
+.should-book-toggle-grid {
+  margin-bottom: 1rem;
+}
+
+.should-book-reality-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.should-book-warning {
+  margin-top: 0;
+}
+
+.should-book-personal-call strong {
+  font-size: clamp(1.4rem, 3vw, 2.1rem);
+}
+
+.should-book-alternative-card {
+  border-color: rgba(240, 177, 75, 0.24);
+  background:
+    linear-gradient(135deg, rgba(240, 177, 75, 0.1), transparent 42%),
+    var(--surface);
+}
+
 .verdict-headline-row {
   display: flex;
   justify-content: space-between;
@@ -2730,6 +2864,8 @@ a.info-card:hover {
   .decision-next-card,
   .brutal-summary-card,
   .home-command,
+  .should-book-verdict-card,
+  .should-book-risk-grid,
   .snapshot-hero-card,
   .home-final-band,
   .recent-empty-card,

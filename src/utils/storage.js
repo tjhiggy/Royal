@@ -2,6 +2,7 @@ const PLANNER_STORAGE_KEY = 'royal-planner-v1'
 const COMPARE_STORAGE_KEY = 'royal-compare-scenarios-v1'
 const RECENT_TRIPS_STORAGE_KEY = 'royal-recent-trips-v1'
 const SNAPSHOT_STORAGE_KEY = 'royal-snapshot-state-v1'
+const SHOULD_BOOK_STORAGE_KEY = 'royal-should-i-book-v1'
 
 export function loadPlannerState(defaultState) {
   try {
@@ -128,4 +129,17 @@ export function saveSnapshotToolState(tool, data) {
 
   window.localStorage.setItem(SNAPSHOT_STORAGE_KEY, JSON.stringify(nextState))
   return nextState
+}
+
+export function loadShouldBookState(defaultState) {
+  try {
+    const saved = window.localStorage.getItem(SHOULD_BOOK_STORAGE_KEY)
+    return saved ? JSON.parse(saved) : defaultState
+  } catch {
+    return defaultState
+  }
+}
+
+export function saveShouldBookState(state) {
+  window.localStorage.setItem(SHOULD_BOOK_STORAGE_KEY, JSON.stringify(state))
 }

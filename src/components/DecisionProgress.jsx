@@ -52,6 +52,13 @@ const steps = [
   },
   {
     number: 8,
+    label: 'Book',
+    title: 'Make the call',
+    to: '/should-i-book',
+    paths: ['/should-i-book'],
+  },
+  {
+    number: 9,
     label: 'Snapshot',
     title: 'Final answer',
     to: '/snapshot',

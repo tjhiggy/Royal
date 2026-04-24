@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v2.3.0',
+  currentVersion: 'v2.4.0',
   updatedDate: '2026-04-24',
-  buildId: 'share-trust-brief',
+  buildId: 'should-i-book-flagship',
   changelogEntries: [
+    {
+      version: 'v2.4.0',
+      date: '2026-04-24',
+      changes: [
+        'Added the Should I Book This Cruise flagship page with a Book Now, Wait, or Walk Away verdict, confidence score, risk callout, next action, and comparison option.',
+        'Added local persistence, recent-session restore, Trip Snapshot publishing, Copy Summary, and Copy Share Text support for the booking verdict.',
+        'Linked the new booking decision route from navigation, the homepage decision path, and the tools catalog.',
+      ],
+    },
     {
       version: 'v2.3.0',
       date: '2026-04-24',

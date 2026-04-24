@@ -11,6 +11,7 @@ const navItems = [
   { label: 'Upgrades', to: '/tools' },
   { label: 'Dining', to: '/dining' },
   { label: 'Compare', to: '/compare' },
+  { label: 'Should I Book?', to: '/should-i-book' },
   { label: 'Snapshot', to: '/snapshot' },
 ]
 
