@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
@@ -14,6 +14,7 @@ import {
   compareCruiseCostScenarios,
 } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
+import { saveSnapshotToolState } from '../utils/storage'
 
 const steps = [
   {
@@ -190,8 +191,68 @@ export default function GuidedModePage() {
     const leanCost = calculateCruiseCost(leanCostForm)
     const comparison = compareCruiseCostScenarios(cost, leanCost)
 
-    return { drink, wifi, key, cost, deal, leanCost, comparison }
+    return { drink, wifi, key, cost, deal, leanCost, comparison, currentCostForm, dealForm: {
+      cruiseNights: form.cruiseNights,
+      baseFare: form.cruiseFare,
+      taxesAndFees: form.taxesAndFees,
+      drinkPackage: currentCostForm.drinkPackage,
+      wifi: currentCostForm.wifi,
+      excursions: form.excursions,
+      specialtyDining: form.dining,
+      theKey: currentCostForm.theKey,
+      flights: form.flights,
+      hotel: form.hotel,
+      parkingTransport: form.parking,
+    }, leanCostForm }
   }, [form])
+
+  useEffect(() => {
+    saveSnapshotToolState('deal', { form: results.dealForm })
+    saveSnapshotToolState('cost', { form: results.currentCostForm })
+    saveSnapshotToolState('drink', {
+      form: {
+        cruiseNights: form.cruiseNights,
+        packagePricePerPersonPerDay: form.packagePricePerPersonPerDay,
+        gratuityPercentage: form.gratuityPercentage,
+        alcoholicDrinksPerDay: form.alcoholicDrinksPerDay,
+        specialtyCoffeesPerDay: form.specialtyCoffeesPerDay,
+        bottledWatersPerDay: form.bottledWatersPerDay,
+        sodasMocktailsPerDay: form.sodasMocktailsPerDay,
+        alcoholicDrinkPrice: form.alcoholicDrinkPrice,
+        specialtyCoffeePrice: form.specialtyCoffeePrice,
+        bottledWaterPrice: form.bottledWaterPrice,
+        sodaMocktailPrice: form.sodaMocktailPrice,
+      },
+    })
+    saveSnapshotToolState('wifi', {
+      form: {
+        cruiseNights: form.cruiseNights,
+        wifiPricePerDevicePerDay: form.wifiPricePerDevicePerDay,
+        peopleCount: form.peopleCount,
+        deviceCount: form.deviceCount,
+        usageType: form.usageType,
+        willingToShare: form.willingToShare,
+      },
+    })
+    saveSnapshotToolState('key', {
+      form: {
+        cruiseNights: form.cruiseNights,
+        theKeyPricePerDay: form.theKeyPricePerDay,
+        wifiNeeded: form.wifiNeeded,
+        numberOfDevices: form.numberOfDevices,
+        embarkationLunch: form.embarkationLunch,
+        priorityBoardingImportance: form.priorityBoardingImportance,
+        reservedSeatingImportance: form.reservedSeatingImportance,
+        skipLineImportance: form.skipLineImportance,
+      },
+    })
+    saveSnapshotToolState('compare', {
+      scenarioA: results.currentCostForm,
+      scenarioB: results.leanCostForm,
+      scenarioALabel: 'Guided current plan',
+      scenarioBLabel: 'Guided leaner plan',
+    })
+  }, [form, results])
 
   const suggestedCuts = [
     ...results.cost.quickWins.map((win) => `${win.title}. ${win.detail}`),
