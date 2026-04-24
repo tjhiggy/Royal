@@ -27,10 +27,16 @@ function isIncludedWithCaveat(rule) {
   )
 }
 
+function isSuiteOnly(rule) {
+  return rule.toLowerCase().includes('suite')
+}
+
 function splitHybridVenues(hybridDining) {
   return hybridDining.reduce(
     (groups, venue) => {
-      if (isIncludedWithCaveat(venue.rule)) {
+      if (isSuiteOnly(venue.rule)) {
+        groups.suiteOnly.push(venue)
+      } else if (isIncludedWithCaveat(venue.rule)) {
         groups.includedWithCaveat.push(venue)
       } else {
         groups.extraOrNuance.push(venue)
@@ -40,6 +46,7 @@ function splitHybridVenues(hybridDining) {
     },
     {
       includedWithCaveat: [],
+      suiteOnly: [],
       extraOrNuance: [],
     },
   )
@@ -49,7 +56,7 @@ function buildShipInsight(ship) {
   const complimentaryCount = ship.complimentaryDining.length
   const specialtyCount = ship.specialtyDining.length
   const hybridCount = ship.hybridDining.length
-  const { includedWithCaveat, extraOrNuance } = splitHybridVenues(ship.hybridDining)
+  const { includedWithCaveat, suiteOnly, extraOrNuance } = splitHybridVenues(ship.hybridDining)
   const includedLead = complimentaryCount - specialtyCount
 
   if (specialtyCount >= complimentaryCount + 2) {
@@ -80,7 +87,7 @@ function buildShipInsight(ship) {
     }
   }
 
-  if (includedLead >= 3 && includedWithCaveat.length <= 3) {
+  if (includedLead >= 3 && includedWithCaveat.length + suiteOnly.length <= 3) {
     return {
       verdict: 'You probably do not need a dining package here',
       reality: [
@@ -107,7 +114,7 @@ function buildShipInsight(ship) {
   }
 }
 
-function VenueList({ venues, hybrid = false }) {
+function VenueList({ venues, hybrid = false, tag }) {
   if (!venues.length) {
     return (
       <div className="venue-item-card">
@@ -124,7 +131,10 @@ function VenueList({ venues, hybrid = false }) {
           key={item.venue}
           className={hybrid ? 'venue-item-card venue-item-hybrid' : 'venue-item-card'}
         >
-          <strong>{item.venue}</strong>
+          <div className="venue-item-heading">
+            <strong>{item.venue}</strong>
+            {tag ? <span>{tag}</span> : null}
+          </div>
           {item.rule ? <span>{item.rule}</span> : null}
         </article>
       ))}
@@ -164,7 +174,7 @@ export default function DiningPage() {
   const diningStrategy = selectedShip ? buildDiningStrategy(selectedShip) : null
   const hybridGroups = selectedShip
     ? splitHybridVenues(selectedShip.hybridDining)
-    : { includedWithCaveat: [], extraOrNuance: [] }
+    : { includedWithCaveat: [], suiteOnly: [], extraOrNuance: [] }
 
   useEffect(() => {
     if (selectedShip?.shipSlug) {
@@ -251,7 +261,23 @@ export default function DiningPage() {
             <div className="dining-verdict-stats" aria-label="Dining mix summary">
               <span>{selectedShip.complimentaryDining.length} included venues</span>
               <span>{selectedShip.specialtyDining.length} specialty venues</span>
-              <span>{hybridGroups.includedWithCaveat.length + hybridGroups.extraOrNuance.length} caveats or watchouts</span>
+              <span>{hybridGroups.includedWithCaveat.length} included caveats</span>
+              <span>{hybridGroups.suiteOnly.length} suite-only or suite caveats</span>
+              <span>{hybridGroups.extraOrNuance.length} extra-cost watchouts</span>
+            </div>
+          </section>
+
+          <section className="card dining-legend-card">
+            <SectionHeader
+              title="Read the labels before you plan meals"
+              description="The dataset keeps venue rules separate because the difference between included, specialty, and caveat is where bad assumptions get expensive."
+            />
+            <div className="dining-legend-grid">
+              <span><strong>Included</strong> Listed as complimentary for normal planning.</span>
+              <span><strong>Specialty</strong> Paid or specialty venue in the ship dataset.</span>
+              <span><strong>Included with caveat</strong> Some included use, but with timing, menu, or rule limits.</span>
+              <span><strong>Suite-only caveat</strong> Mentioned as suite-guest access or suite-related access.</span>
+              <span><strong>Future ship</strong> Treat as planning context until the ship is active.</span>
             </div>
           </section>
 
@@ -361,7 +387,7 @@ export default function DiningPage() {
                 <div className="dining-subsection">
                   <h3>Included with caveat</h3>
                   <p>These still matter for planning, but they are not clean no-questions-asked inclusions.</p>
-                  <VenueList venues={hybridGroups.includedWithCaveat} hybrid />
+                  <VenueList venues={hybridGroups.includedWithCaveat} hybrid tag="Included caveat" />
                 </div>
               ) : null}
             </section>
@@ -383,13 +409,19 @@ export default function DiningPage() {
             {hybridGroups.includedWithCaveat.length ? (
               <div className="dining-fine-print-group">
                 <h3>Included with caveat</h3>
-                <VenueList venues={hybridGroups.includedWithCaveat} hybrid />
+                <VenueList venues={hybridGroups.includedWithCaveat} hybrid tag="Included caveat" />
+              </div>
+            ) : null}
+            {hybridGroups.suiteOnly.length ? (
+              <div className="dining-fine-print-group">
+                <h3>Suite-only or suite access caveats</h3>
+                <VenueList venues={hybridGroups.suiteOnly} hybrid tag="Suite caveat" />
               </div>
             ) : null}
             {hybridGroups.extraOrNuance.length ? (
               <div className="dining-fine-print-group">
                 <h3>Extra cost or policy nuance</h3>
-                <VenueList venues={hybridGroups.extraOrNuance} hybrid />
+                <VenueList venues={hybridGroups.extraOrNuance} hybrid tag="Watchout" />
               </div>
             ) : null}
             {selectedShip.notes.length ? (

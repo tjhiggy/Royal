@@ -14,6 +14,7 @@ import PackingPage from './pages/PackingPage'
 import PlannerPage from './pages/PlannerPage'
 import TheKeyPage from './pages/TheKeyPage'
 import ToolsPage from './pages/ToolsPage'
+import TripBriefPage from './pages/TripBriefPage'
 import TripSnapshotPage from './pages/TripSnapshotPage'
 import WifiCalculatorPage from './pages/WifiCalculatorPage'
 
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/tools" element={<ToolsPage />} />
         <Route path="/compare" element={<ComparePage />} />
         <Route path="/snapshot" element={<TripSnapshotPage />} />
+        <Route path="/brief" element={<TripBriefPage />} />
         <Route path="/dining" element={<DiningPage />} />
         <Route path="/changelog" element={<ChangelogPage />} />
         <Route path="/tools/dining-package" element={<DiningPackagePage />} />

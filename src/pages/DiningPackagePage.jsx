@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import AssumptionsPanel from '../components/AssumptionsPanel'
 import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
@@ -9,7 +10,7 @@ import { activeRoyalShips, futureRoyalShips, royalShipsBySlug } from '../data/ro
 import { calculateDiningPackage } from '../utils/calculators'
 import { buildDiningStrategy } from '../utils/diningStrategy'
 import { formatCurrency } from '../utils/formatters'
-import { appendShareUrl } from '../utils/share'
+import { buildSavingsLine, buildToolShareSummary, buildToolShortShare } from '../utils/shareSummaries'
 import { saveSnapshotToolState } from '../utils/storage'
 
 const sortedActiveShips = [...activeRoyalShips].sort((left, right) =>
@@ -70,6 +71,7 @@ export default function DiningPackagePage() {
   const complimentaryCount = selectedShip?.complimentaryDining.length ?? 0
   const specialtyCount = selectedShip?.specialtyDining.length ?? 0
   const caveatCount = selectedShip?.hybridDining.length ?? 0
+  const suiteCaveatCount = selectedShip?.hybridDining.filter((venue) => venue.rule.toLowerCase().includes('suite')).length ?? 0
 
   useEffect(() => {
     saveSnapshotToolState('diningPackage', { form })
@@ -348,24 +350,42 @@ export default function DiningPackagePage() {
               <span className="stat-label">Caveats</span>
               <strong className="stat-value">{caveatCount}</strong>
             </article>
+            <article className="stat-card">
+              <span className="stat-label">Suite caveats</span>
+              <strong className="stat-value">{suiteCaveatCount}</strong>
+            </article>
+          </div>
+          <div className="explanation-list compact-list">
+            {diningStrategy.strategyLines.slice(0, 2).map((line) => (
+              <div key={line} className="explanation-item">
+                <span>{line}</span>
+              </div>
+            ))}
           </div>
           <div className="verification-note">
-            Dining policies can change before your sailing. Use this as a decision filter, then verify current ship details before buying the package.
+            Package eligibility, lunch availability, venue rules, and future ship details can change before your sailing. Use this as a decision filter, then verify current ship details before buying the package.
           </div>
         </section>
       ) : null}
 
       <ShareActions
-        summary={() => appendShareUrl([
-          `Dining package verdict: ${results.recommendation}.`,
-          selectedShip ? `Ship: ${selectedShip.shipName}` : null,
-          diningStrategy ? `Ship dining stance: ${diningStrategy.packageVerdict}` : null,
-          `Package total: ${formatCurrency(results.packageTotal)}`,
-          `Estimated meal value: ${formatCurrency(results.estimatedValueUsed)}`,
-          `Break-even meals needed: ${roundedBreakEvenMeals}`,
-          worthItInsight,
-        ].filter(Boolean))}
-        shortSummary={() => `${results.recommendation}: dining package ${results.netSavings >= 0 ? `saves about ${formatCurrency(results.netSavings)}` : `overpays by about ${formatCurrency(Math.abs(results.netSavings))}`}${selectedShip ? ` on ${selectedShip.shipName}` : ''}.`}
+        summary={() => buildToolShareSummary({
+          title: 'Dining Package',
+          verdict: results.recommendation,
+          keyFigure: buildSavingsLine({ amount: results.netSavings }),
+          mainDriver: selectedShip && diningStrategy
+            ? `${selectedShip.shipName}: ${diningStrategy.packageVerdict}`
+            : worthItInsight,
+          nextAction: results.recommendation === 'Skip it'
+            ? 'Book only the specialty meals you are sure you will use.'
+            : 'Verify current ship pricing, then compare with and without the package.',
+        })}
+        shortSummary={() => buildToolShortShare({
+          title: 'Dining Package',
+          verdict: results.recommendation,
+          keyFigure: buildSavingsLine({ amount: results.netSavings }),
+          nextAction: results.recommendation === 'Skip it' ? 'Do not buy it by default.' : 'Verify current pricing first.',
+        })}
       />
 
       <ResultPanel
@@ -431,6 +451,14 @@ export default function DiningPackagePage() {
         title="Next: compare the trip versions"
         description="If dining changes the budget, compare the package version against the leaner version before the checkout page starts acting charming."
         links={[{ to: '/compare', label: 'Compare scenarios' }]}
+      />
+
+      <AssumptionsPanel
+        items={[
+          'This estimates package value from your package price, planned specialty meals, sea days, port days, and the ship context in the local dining dataset.',
+          'Dining venues, availability, package eligibility, lunch availability, and future ship details can vary by ship and sailing.',
+          'This site is independent and not affiliated with Royal Caribbean. Verify current dining rules and pricing in Royal Caribbean official app or site before buying.',
+        ]}
       />
     </div>
   )

@@ -1,5 +1,5 @@
 import { formatCurrency } from './formatters'
-import { appendShareUrl } from './share'
+import { buildToolShareSummary } from './shareSummaries'
 
 const COMPARE_SHARE_PARAM = 'cmp'
 
@@ -21,12 +21,16 @@ export function buildCompareSummary(comparison, labels = { scenarioA: 'Scenario 
     ? `Main driver: ${driver.label} (+${formatCurrency(driver.amount)} in ${driver.higherIn.replace('Scenario A', scenarioAName).replace('Scenario B', scenarioBName)})`
     : 'Main driver: no single line item is creating a major gap'
 
-  return appendShareUrl([
-    totalLine,
-    driverLine,
-    `Nightly difference: about ${formatCurrency(comparison.absoluteCostPerNightDifference)}`,
-    `Add-ons gap: about ${formatCurrency(comparison.absoluteAddOnsDifference)}`,
-  ], shareUrl)
+  return buildToolShareSummary({
+    title: `${scenarioAName} vs ${scenarioBName}`,
+    verdict: totalLine,
+    keyFigure: `Total gap ${formatCurrency(comparison.absoluteTotalDifference)}`,
+    mainDriver: driverLine.replace('Main driver: ', ''),
+    nextAction: comparison.absoluteTotalDifference === 0
+      ? 'Choose based on comfort, timing, and hassle.'
+      : `Challenge the biggest gap before booking. Nightly gap is about ${formatCurrency(comparison.absoluteCostPerNightDifference)}.`,
+    url: shareUrl,
+  })
 }
 
 export function encodeCompareState({ scenarioA, scenarioB, scenarioALabel, scenarioBLabel }, template) {

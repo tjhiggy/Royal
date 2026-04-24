@@ -11,6 +11,15 @@ export default function ChangelogPage() {
       />
 
       <section className="page-section">
+        <article className="card changelog-current-card">
+          <span className="verdict-kicker">Current release</span>
+          <div className="card-topline">
+            <h2>{releaseInfo.currentVersion}</h2>
+            <span className="status-pill">Build {releaseInfo.buildId}</span>
+          </div>
+          <p>Latest shipped build date: {releaseInfo.updatedDate}. This page is the product receipt, not a victory parade.</p>
+        </article>
+
         {releaseInfo.changelogEntries.map((entry) => (
           <article key={entry.version} className="card changelog-card">
             <div className="card-topline">

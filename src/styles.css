@@ -958,6 +958,13 @@ a.decision-flow-card:hover::before {
   min-height: 100%;
 }
 
+.recent-trip-card-pinned {
+  border-color: rgba(240, 177, 75, 0.28);
+  background:
+    linear-gradient(180deg, rgba(240, 177, 75, 0.1), rgba(91, 168, 255, 0.035)),
+    var(--surface);
+}
+
 .recent-trip-main {
   display: flex;
   justify-content: space-between;
@@ -985,9 +992,50 @@ a.decision-flow-card:hover::before {
   cursor: pointer;
 }
 
+.recent-trip-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.recent-trip-control {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--cyan);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.recent-trip-control:hover,
+.recent-trip-control:focus-visible {
+  color: var(--text);
+  outline: 2px solid rgba(103, 213, 255, 0.32);
+  outline-offset: 3px;
+}
+
+.recent-empty-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  border-color: rgba(103, 213, 255, 0.18);
+  background:
+    linear-gradient(135deg, rgba(103, 213, 255, 0.08), transparent 44%),
+    var(--surface);
+}
+
+.recent-empty-card h3 {
+  margin: 0.35rem 0;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+}
+
 .recent-trip-remove:hover,
 .recent-trip-remove:focus-visible {
   color: var(--danger);
+  outline: 2px solid rgba(255, 123, 109, 0.32);
+  outline-offset: 3px;
 }
 
 .preset-grid {
@@ -1907,6 +1955,122 @@ a.info-card:hover {
   line-height: 1.4;
 }
 
+.brief-page {
+  max-width: 980px;
+}
+
+.brief-shell {
+  display: grid;
+  gap: 1.25rem;
+  padding: clamp(1.2rem, 2.5vw, 2rem);
+  border: 1px solid rgba(151, 179, 211, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(103, 213, 255, 0.08), rgba(8, 19, 32, 0.94) 38%),
+    var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.brief-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+  gap: 1rem;
+  align-items: start;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(151, 179, 211, 0.12);
+}
+
+.brief-header h1 {
+  margin: 0.35rem 0 0.5rem;
+  font-size: clamp(2rem, 5vw, 3.3rem);
+  line-height: 1.02;
+}
+
+.brief-actions {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.brief-verdict {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(70, 195, 141, 0.22);
+  background: rgba(70, 195, 141, 0.08);
+}
+
+.brief-verdict > strong {
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  line-height: 1.05;
+}
+
+.brief-metric-grid,
+.brief-section-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.brief-section-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.brief-metric,
+.brief-empty,
+.brief-dining,
+.brief-list-item {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(151, 179, 211, 0.12);
+  background: rgba(8, 19, 32, 0.5);
+}
+
+.brief-metric span,
+.brief-list-item span,
+.brief-muted {
+  color: var(--text-soft);
+}
+
+.brief-metric strong {
+  font-size: 1.45rem;
+  line-height: 1.1;
+}
+
+.brief-metric small,
+.brief-list-item small {
+  color: var(--text-faint);
+  line-height: 1.35;
+}
+
+.brief-list {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 0.85rem;
+}
+
+.brief-list-item {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.brief-list-item small {
+  grid-column: 1 / -1;
+}
+
+.brief-win {
+  grid-template-columns: 1fr;
+  border-color: rgba(70, 195, 141, 0.18);
+  background: rgba(70, 195, 141, 0.07);
+}
+
+.brief-dining {
+  border-color: rgba(240, 177, 75, 0.2);
+  background: rgba(240, 177, 75, 0.08);
+}
+
 .dining-placeholder-note {
   display: grid;
   gap: 0.25rem;
@@ -1950,6 +2114,25 @@ a.info-card:hover {
   line-height: 1.4;
 }
 
+.venue-item-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.65rem;
+  align-items: flex-start;
+}
+
+.venue-item-heading span {
+  flex: 0 0 auto;
+  padding: 0.26rem 0.48rem;
+  border-radius: 999px;
+  background: rgba(240, 177, 75, 0.12);
+  border: 1px solid rgba(240, 177, 75, 0.2);
+  color: var(--warn);
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
 .venue-item-hybrid {
   background:
     linear-gradient(180deg, rgba(240, 177, 75, 0.12), rgba(240, 177, 75, 0.03)),
@@ -1961,6 +2144,35 @@ a.info-card:hover {
   display: grid;
   gap: 0.75rem;
   margin-top: 1rem;
+}
+
+.dining-legend-card {
+  border-color: rgba(103, 213, 255, 0.18);
+  background:
+    linear-gradient(135deg, rgba(103, 213, 255, 0.08), transparent 44%),
+    var(--surface);
+}
+
+.dining-legend-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 1rem;
+}
+
+.dining-legend-grid span {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.85rem;
+  border-radius: 8px;
+  background: rgba(91, 168, 255, 0.055);
+  border: 1px solid rgba(151, 179, 211, 0.1);
+  color: var(--text-soft);
+  line-height: 1.35;
+}
+
+.dining-legend-grid strong {
+  color: var(--text);
 }
 
 .dining-subsection,
@@ -1985,6 +2197,56 @@ a.info-card:hover {
   border-radius: 8px;
   background: rgba(240, 177, 75, 0.09);
   border: 1px solid rgba(240, 177, 75, 0.18);
+  color: var(--text-soft);
+  line-height: 1.45;
+}
+
+.assumptions-panel {
+  padding: 0;
+  overflow: hidden;
+  border-color: rgba(103, 213, 255, 0.16);
+  background: rgba(8, 19, 32, 0.72);
+}
+
+.assumptions-panel summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+  padding: 1rem 1.1rem;
+}
+
+.assumptions-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.assumptions-panel summary:focus-visible {
+  outline: 3px solid rgba(103, 213, 255, 0.4);
+  outline-offset: -3px;
+}
+
+.assumptions-panel summary span {
+  color: var(--text-faint);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.assumptions-panel summary strong {
+  color: var(--cyan);
+  font-size: 0.9rem;
+}
+
+.assumptions-list {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0 1.1rem 1.1rem;
+}
+
+.assumptions-list p {
   color: var(--text-soft);
   line-height: 1.45;
 }
@@ -2385,6 +2647,22 @@ a.info-card:hover {
   line-height: 1.4;
 }
 
+.footer-trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.footer-trust-row span {
+  padding: 0.38rem 0.58rem;
+  border-radius: 999px;
+  background: rgba(70, 195, 141, 0.1);
+  border: 1px solid rgba(70, 195, 141, 0.18);
+  color: rgba(237, 245, 255, 0.9);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
 .footer-link {
   color: rgba(237, 245, 255, 0.92);
   font-weight: 600;
@@ -2402,6 +2680,17 @@ a.info-card:hover {
 .changelog-card {
   display: grid;
   gap: 1rem;
+}
+
+.changelog-current-card {
+  border-color: rgba(103, 213, 255, 0.22);
+  background:
+    linear-gradient(135deg, rgba(103, 213, 255, 0.09), transparent 44%),
+    var(--surface);
+}
+
+.changelog-current-card p {
+  color: var(--text-soft);
 }
 
 .changelog-list {
@@ -2442,7 +2731,10 @@ a.info-card:hover {
   .brutal-summary-card,
   .home-command,
   .snapshot-hero-card,
-  .home-final-band {
+  .home-final-band,
+  .recent-empty-card,
+  .brief-header,
+  .brief-section-grid {
     grid-template-columns: 1fr;
   }
 
@@ -2512,6 +2804,7 @@ a.info-card:hover {
   .save-comparison-bar,
   .saved-comparison-item,
   .saved-comparison-actions,
+  .recent-trip-actions,
   .dining-selector-row {
     flex-direction: column;
     align-items: flex-start;
@@ -2545,7 +2838,8 @@ a.info-card:hover {
   .preset-grid,
   .break-even-summary,
   .home-priority-grid,
-  .snapshot-preview-grid {
+  .snapshot-preview-grid,
+  .brief-metric-grid {
     grid-template-columns: 1fr;
   }
 
@@ -2557,7 +2851,8 @@ a.info-card:hover {
   .share-button-row,
   .snapshot-empty-actions,
   .decision-next-links,
-  .saved-comparison-actions {
+  .saved-comparison-actions,
+  .brief-actions {
     width: 100%;
   }
 
@@ -2565,7 +2860,8 @@ a.info-card:hover {
   .share-button-row .button,
   .snapshot-empty-actions .button,
   .decision-next-links .button,
-  .saved-comparison-actions .button {
+  .saved-comparison-actions .button,
+  .brief-actions .button {
     width: 100%;
     text-align: center;
   }
@@ -2612,22 +2908,36 @@ a.info-card:hover {
 }
 
 @media print {
+  .top-banner,
+  .decision-progress,
   .site-header,
   .site-footer,
   .hero-actions,
-  .button {
+  .button,
+  .brief-actions {
     display: none !important;
   }
 
   body {
     background: white;
+    color: black;
   }
 
   .card,
-  .hero-card {
+  .hero-card,
+  .brief-shell,
+  .brief-verdict,
+  .brief-metric,
+  .brief-list-item,
+  .brief-dining {
     box-shadow: none;
     border: 1px solid #c7d3df;
     color: black;
     background: white;
+  }
+
+  .brief-page {
+    width: 100%;
+    max-width: none;
   }
 }

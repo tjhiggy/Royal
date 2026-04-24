@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import SectionHeader from '../components/SectionHeader'
-import { clearRecentTrips, loadRecentTrips, removeRecentTripById } from '../utils/storage'
+import {
+  clearRecentTrips,
+  loadRecentTrips,
+  removeRecentTripById,
+  renameRecentTrip,
+  toggleRecentTripPin,
+} from '../utils/storage'
 
 const decisionPath = [
   {
@@ -87,6 +93,35 @@ const trustPoints = [
   'Independent tool. Not affiliated with Royal Caribbean.',
 ]
 
+function formatRecentTripTime(updatedAt) {
+  if (!updatedAt) {
+    return 'Unknown time'
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(new Date(updatedAt))
+}
+
+function getRecentTripTitle(trip) {
+  if (trip.customLabel) {
+    return trip.customLabel
+  }
+
+  if (trip.tool === 'compare') {
+    return `Compare: ${trip.label}`
+  }
+
+  if (trip.tool === 'snapshot') {
+    return `Snapshot: ${trip.label}`
+  }
+
+  return trip.label || `${trip.toolLabel} session`
+}
+
 export default function HomePage() {
   const [recentTrips, setRecentTrips] = useState([])
 
@@ -100,6 +135,19 @@ export default function HomePage() {
 
   function clearAllRecentTrips() {
     setRecentTrips(clearRecentTrips())
+  }
+
+  function renameTrip(trip) {
+    const nextName = window.prompt('Rename this saved trip session:', getRecentTripTitle(trip))
+    if (nextName === null) {
+      return
+    }
+
+    setRecentTrips(renameRecentTrip(trip.id, nextName))
+  }
+
+  function togglePin(trip) {
+    setRecentTrips(toggleRecentTripPin(trip.id))
   }
 
   return (
@@ -158,35 +206,61 @@ export default function HomePage() {
         </div>
       </section>
 
-      {recentTrips.length ? (
-        <section className="page-section">
-          <div className="section-header-with-action">
-            <SectionHeader
-              title="Continue where you left off"
-              description="Your last 3 decision sessions from this browser. Reopen the work instead of rebuilding the whole thing like a tragic little spreadsheet ritual."
-            />
+      <section className="page-section">
+        <div className="section-header-with-action">
+          <SectionHeader
+            title="Continue where you left off"
+            description="Your last 3 decision sessions from this browser. Pin the important one, rename the messy one, reopen the work."
+          />
+          {recentTrips.length ? (
             <button type="button" className="button button-ghost" onClick={clearAllRecentTrips}>
               Clear all
             </button>
-          </div>
+          ) : null}
+        </div>
+        {recentTrips.length ? (
           <div className="recent-trip-list">
             {recentTrips.map((trip) => (
-              <article key={trip.id} className="card recent-trip-card">
+              <article key={trip.id} className={`card recent-trip-card ${trip.isPinned ? 'recent-trip-card-pinned' : ''}`}>
                 <Link className="recent-trip-main" to={`${trip.path}?recent=${trip.id}`}>
                   <div>
-                    <strong>{trip.label}</strong>
+                    <strong>{getRecentTripTitle(trip)}</strong>
                     <span>{trip.toolLabel}</span>
                   </div>
-                  <small>Updated {new Date(trip.updatedAt).toLocaleDateString()}</small>
+                  <small>{trip.isPinned ? 'Pinned' : 'Updated'} {formatRecentTripTime(trip.updatedAt)}</small>
                 </Link>
-                <button type="button" className="recent-trip-remove" onClick={() => removeRecentTrip(trip.id)}>
-                  Remove
-                </button>
+                <div className="recent-trip-actions">
+                  <button type="button" className="recent-trip-control" onClick={() => togglePin(trip)}>
+                    {trip.isPinned ? 'Unpin' : 'Pin'}
+                  </button>
+                  <button type="button" className="recent-trip-control" onClick={() => renameTrip(trip)}>
+                    Rename
+                  </button>
+                  <button type="button" className="recent-trip-remove" onClick={() => removeRecentTrip(trip.id)}>
+                    Remove
+                  </button>
+                </div>
               </article>
             ))}
           </div>
-        </section>
-      ) : null}
+        ) : (
+          <div className="card recent-empty-card">
+            <div>
+              <span className="verdict-kicker">No recent trips yet</span>
+              <h3>Start once, then this becomes your return lane.</h3>
+              <p>Recent sessions save locally in this browser for Deal, Cost, Compare, and Snapshot. No account. No sales funnel. Just your last few decisions waiting here.</p>
+            </div>
+            <div className="hero-actions">
+              <Link className="button button-primary" to="/start">
+                Start guided plan
+              </Link>
+              <Link className="button button-secondary" to="/tools/cruise-cost">
+                Add trip cost
+              </Link>
+            </div>
+          </div>
+        )}
+      </section>
 
       <section className="page-section">
         <SectionHeader

@@ -12,6 +12,7 @@ import {
 import { buildDiningStrategy } from './diningStrategy'
 import { formatCurrency } from './formatters'
 import { getCurrentShareUrl } from './share'
+import { buildToolShareSummary, buildToolShortShare } from './shareSummaries'
 
 function latestRecentTrip(recentTrips, tool) {
   return recentTrips.find((trip) => trip.tool === tool) ?? null
@@ -307,55 +308,65 @@ function buildQuickWins({ costResults, drinkResults, wifiResults, keyResults, di
 }
 
 export function buildSnapshotSummaryText(snapshot, url = getCurrentShareUrl()) {
+  return buildToolShareSummary({
+    title: 'Trip Snapshot',
+    verdict: snapshot.mainVerdict,
+    keyFigure: snapshot.costResults
+      ? `Real trip cost ${formatCurrency(snapshot.costResults.grandTotal)} (${formatCurrency(snapshot.costResults.costPerNight)}/night)`
+      : 'Real trip cost not complete yet',
+    mainDriver: snapshot.costDrivers[0]
+      ? `${snapshot.costDrivers[0].label}: ${formatCurrency(snapshot.costDrivers[0].value)}`
+      : snapshot.mainWarning,
+    nextAction: snapshot.quickWins[0] ?? 'Finish Deal and Cruise Cost before booking.',
+    url,
+  })
+}
+
+export function buildSnapshotShortShareText(snapshot, url = getCurrentShareUrl()) {
+  return buildToolShortShare({
+    title: 'Trip Snapshot',
+    verdict: snapshot.mainVerdict,
+    keyFigure: snapshot.costResults
+      ? `Real cost ${formatCurrency(snapshot.costResults.grandTotal)}`
+      : 'Real cost incomplete',
+    nextAction: snapshot.quickWins[0] ?? 'Finish the cost check first.',
+    url,
+  })
+}
+
+export function buildTripBriefText(snapshot, url = getCurrentShareUrl()) {
   const lines = [
-    'Cruise Decision Engine summary',
-    '',
-    `${snapshot.mainVerdict}.`,
-    snapshot.mainLine,
+    'My Trip Brief',
+    `Verdict: ${snapshot.mainVerdict}`,
+    snapshot.costResults
+      ? `Real cost: ${formatCurrency(snapshot.costResults.grandTotal)} (${formatCurrency(snapshot.costResults.costPerNight)}/night)`
+      : 'Real cost: incomplete',
+    `Biggest risk: ${snapshot.mainWarning}`,
   ]
 
-  if (snapshot.costResults) {
-    lines.push(
-      '',
-      `Base fare: ${formatCurrency(snapshot.costResults.fare)}`,
-      `Real trip cost: ${formatCurrency(snapshot.costResults.grandTotal)}`,
-      `Cost per night: ${formatCurrency(snapshot.costResults.costPerNight)}`,
-    )
-  }
-
   if (snapshot.costDrivers.length) {
-    lines.push('', 'Biggest cost drivers:')
+    lines.push('', 'Top cost drivers:')
     snapshot.costDrivers.slice(0, 3).forEach((driver) => {
       lines.push(`- ${driver.label}: ${formatCurrency(driver.value)}`)
     })
   }
 
   if (snapshot.upgradeVerdicts.length) {
-    lines.push('', 'Upgrade verdicts:')
-    snapshot.upgradeVerdicts.forEach((item) => {
+    lines.push('', 'Upgrade calls:')
+    snapshot.upgradeVerdicts.slice(0, 4).forEach((item) => {
       lines.push(`- ${item.label}: ${item.value}`)
     })
   }
 
-  if (snapshot.quickWins.length) {
-    lines.push('', 'Best savings move:', snapshot.quickWins[0])
+  if (snapshot.diningStrategy) {
+    lines.push('', `Dining stance: ${snapshot.diningStrategy.packageVerdict}`)
   }
 
-  lines.push('', `Check your trip here: ${url}`)
+  if (snapshot.quickWins.length) {
+    lines.push('', 'Quick wins:')
+    snapshot.quickWins.slice(0, 3).forEach((win) => lines.push(`- ${win}`))
+  }
+
+  lines.push('', url)
   return lines.join('\n')
-}
-
-export function buildSnapshotShortShareText(snapshot, url = getCurrentShareUrl()) {
-  const costLine = snapshot.costResults
-    ? `We are not booking a ${formatCurrency(snapshot.costResults.fare)} cruise.\nWe are booking a ${formatCurrency(snapshot.costResults.grandTotal)} trip.`
-    : 'We still need the real trip cost before booking.'
-
-  return [
-    costLine,
-    '',
-    snapshot.mainWarning,
-    snapshot.quickWins[0] ? `Best move: ${snapshot.quickWins[0]}` : 'Best move: finish the cost check first.',
-    '',
-    url,
-  ].join('\n')
 }

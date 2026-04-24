@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import AssumptionsPanel from '../components/AssumptionsPanel'
 import BrutalSummary from '../components/BrutalSummary'
 import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
@@ -9,7 +10,7 @@ import SectionHeader from '../components/SectionHeader'
 import ShareActions from '../components/ShareActions'
 import { calculateDealEvaluator } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
-import { appendShareUrl } from '../utils/share'
+import { buildToolShareSummary, buildToolShortShare } from '../utils/shareSummaries'
 import { getRecentTripById, saveRecentTrip, saveSnapshotToolState } from '../utils/storage'
 
 const initialState = {
@@ -282,12 +283,19 @@ export default function DealEvaluatorPage() {
       </section>
 
       <ShareActions
-        summary={() => appendShareUrl([
-          `${results.verdict}.`,
-          `Base fare: ${formatCurrency(Number(form.baseFare) || 0)}`,
-          `Real trip cost: ${formatCurrency(results.total)}`,
-          `Biggest driver: ${results.costDrivers[0]?.label ?? 'No major add-on'}`,
-        ])}
+        summary={() => buildToolShareSummary({
+          title: 'Deal Evaluator',
+          verdict: results.verdict,
+          keyFigure: `Real trip cost ${formatCurrency(results.total)}`,
+          mainDriver: results.costDrivers[0]?.label ?? 'No major cost driver yet',
+          nextAction: 'Run the full Cruise Cost Calculator before booking.',
+        })}
+        shortSummary={() => buildToolShortShare({
+          title: 'Deal Evaluator',
+          verdict: results.verdict,
+          keyFigure: `Real trip cost ${formatCurrency(results.total)}`,
+          nextAction: 'Check the full cost next.',
+        })}
       />
 
       <CoachingMessage message={coachingMessage} />
@@ -405,6 +413,14 @@ export default function DealEvaluatorPage() {
         title="Next: price the real trip"
         description="If the deal survives the first sniff test, run the full cost next. That is where the quiet little add-ons stop being quiet."
         links={[{ to: '/tools/cruise-cost', label: 'Open Cruise Cost Calculator' }]}
+      />
+
+      <AssumptionsPanel
+        items={[
+          'This estimates the full trip by combining fare, required charges, add-ons, and travel costs you enter.',
+          'Actual pricing can vary by sailing, cabin, guest count, sale timing, and what Royal shows in the app or website.',
+          'This site is independent and not affiliated with Royal Caribbean. Verify current prices in Royal Caribbean official app or site before booking.',
+        ]}
       />
 
       <BrutalSummary

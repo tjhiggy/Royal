@@ -10,6 +10,7 @@ const footerLinks = [
   { label: 'Dining', to: '/dining' },
   { label: 'Compare', to: '/compare' },
   { label: 'Snapshot', to: '/snapshot' },
+  { label: 'Trip Brief', to: '/brief' },
   { label: 'Packing', to: '/packing' },
   { label: 'Planner', to: '/planner' },
   { label: 'About', to: '/about' },
@@ -28,8 +29,13 @@ export default function Footer() {
             Price the full trip, challenge the upgrades, compare the options, then leave with one clean answer.
           </p>
           <p className="footer-disclaimer">
-            Independent tool. Not affiliated with Royal Caribbean.
+            Independent tool. Not affiliated with Royal Caribbean. Verify current prices and rules in Royal Caribbean official channels before buying.
           </p>
+          <div className="footer-trust-row" aria-label="Trust notes">
+            <span>No login</span>
+            <span>Local browser saves</span>
+            <span>Calculator-first</span>
+          </div>
         </div>
 
         <div className="footer-nav-block">

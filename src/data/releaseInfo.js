@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v2.2.0',
+  currentVersion: 'v2.3.0',
   updatedDate: '2026-04-24',
-  buildId: 'trust-stickiness-return-value',
+  buildId: 'share-trust-brief',
   changelogEntries: [
+    {
+      version: 'v2.3.0',
+      date: '2026-04-24',
+      changes: [
+        'Upgraded share summaries across Snapshot, Deal, Cruise Cost, Compare, Drink Package, Dining Package, WiFi, and The Key with a consistent verdict, key number, driver, next move, and page link.',
+        'Added the My Trip Brief route with copy and print actions for screenshot-friendly final-trip sharing.',
+        'Added compact assumptions panels, stronger dining caveat presentation, improved recent sessions with rename and pin actions, mobile/accessibility fixes, and clearer trust/release surfaces.',
+      ],
+    },
     {
       version: 'v2.2.0',
       date: '2026-04-24',

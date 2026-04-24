@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import AssumptionsPanel from '../components/AssumptionsPanel'
 import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
@@ -7,7 +8,7 @@ import SectionHeader from '../components/SectionHeader'
 import ShareActions from '../components/ShareActions'
 import { calculateTheKey } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
-import { appendShareUrl } from '../utils/share'
+import { buildSavingsLine, buildToolShareSummary, buildToolShortShare } from '../utils/shareSummaries'
 import { saveSnapshotToolState } from '../utils/storage'
 
 const initialState = {
@@ -232,16 +233,21 @@ export default function TheKeyPage() {
       <CoachingMessage message={coachingMessage} />
 
       <ShareActions
-        summary={() => appendShareUrl([
-          `The Key verdict: ${results.recommendation}.`,
-          `The Key total: ${formatCurrency(results.keyTotal)}`,
-          `Estimated value used: ${formatCurrency(results.estimatedValueUsed)}`,
-          results.netValue >= 0
-            ? `Value over cost: ${formatCurrency(results.netValue)}`
-            : `Estimated overpay: ${formatCurrency(Math.abs(results.netValue))}`,
-          insight,
-        ])}
-        shortSummary={() => `${results.recommendation}: The Key ${results.netValue >= 0 ? `beats cost by about ${formatCurrency(results.netValue)}` : `overpays by about ${formatCurrency(Math.abs(results.netValue))}`}.`}
+        summary={() => buildToolShareSummary({
+          title: 'The Key',
+          verdict: results.recommendation,
+          keyFigure: buildSavingsLine({ positiveLabel: 'Value beats cost by', amount: results.netValue }),
+          mainDriver: insight,
+          nextAction: results.recommendation === 'Skip it'
+            ? 'Leave The Key out unless the perks matter more than the math.'
+            : 'Compare the trip with and without The Key.',
+        })}
+        shortSummary={() => buildToolShortShare({
+          title: 'The Key',
+          verdict: results.recommendation,
+          keyFigure: buildSavingsLine({ positiveLabel: 'Value beats cost by', amount: results.netValue }),
+          nextAction: results.recommendation === 'Skip it' ? 'Skip it unless the perks matter.' : 'Compare with and without it.',
+        })}
       />
 
       <ResultPanel
@@ -296,6 +302,14 @@ export default function TheKeyPage() {
         title="Next: compare the trip versions"
         description="If The Key survives the math, compare the full trip with and without it. VIP vibes do not get a free pass."
         links={[{ to: '/compare', label: 'Compare scenarios' }]}
+      />
+
+      <AssumptionsPanel
+        items={[
+          'This estimates The Key by comparing the package cost with the perks you say you would actually use.',
+          'Perks, availability, boarding flow, show access, internet pricing, and package price can vary by ship and sailing.',
+          'This site is independent and not affiliated with Royal Caribbean. Verify current The Key terms and price in Royal Caribbean official app or site before buying.',
+        ]}
       />
     </div>
   )

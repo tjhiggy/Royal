@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import AssumptionsPanel from '../components/AssumptionsPanel'
 import BrutalSummary from '../components/BrutalSummary'
 import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
@@ -12,7 +13,7 @@ import ShareActions from '../components/ShareActions'
 import { cruiseCostFields, cruiseCostInitialState } from '../data/cruiseCostConfig'
 import { calculateCruiseCost } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
-import { appendShareUrl } from '../utils/share'
+import { buildToolShareSummary, buildToolShortShare } from '../utils/shareSummaries'
 import { getRecentTripById, saveRecentTrip, saveSnapshotToolState } from '../utils/storage'
 
 const cruiseCostPresets = [
@@ -287,12 +288,19 @@ export default function CruiseCostPage() {
       </section>
 
       <ShareActions
-        summary={() => appendShareUrl([
-          `${results.status}.`,
-          `Base fare: ${formatCurrency(Number(form.cruiseFare) || 0)}`,
-          `Real trip cost: ${formatCurrency(results.grandTotal)}`,
-          `Biggest add-on driver: ${results.biggestAddOnDrivers[0]?.label ?? 'No major add-on'}`,
-        ])}
+        summary={() => buildToolShareSummary({
+          title: 'Cruise Cost',
+          verdict: results.status,
+          keyFigure: `Real trip cost ${formatCurrency(results.grandTotal)}`,
+          mainDriver: results.biggestAddOnDrivers[0]?.label ?? 'No major add-on driver yet',
+          nextAction: 'Test the add-ons before you keep them in the budget.',
+        })}
+        shortSummary={() => buildToolShortShare({
+          title: 'Cruise Cost',
+          verdict: results.status,
+          keyFigure: `Real trip cost ${formatCurrency(results.grandTotal)}`,
+          nextAction: 'Challenge the biggest add-on.',
+        })}
       />
 
       <CoachingMessage message={coachingMessage} />
@@ -357,6 +365,14 @@ export default function CruiseCostPage() {
           { to: '/tools/dining-package', label: 'Check dining' },
           { to: '/tools/wifi', label: 'Check WiFi' },
           { to: '/tools/the-key', label: 'Check The Key' },
+        ]}
+      />
+
+      <AssumptionsPanel
+        items={[
+          'This totals the categories you enter, including fare, required charges, gratuities, add-ons, travel, and forgotten-cost buckets.',
+          'Gratuities, parking, hotels, flights, excursions, and onboard spending can vary by ship, port, sailing, party size, and personal behavior.',
+          'This site is independent and not affiliated with Royal Caribbean. Verify current prices in Royal Caribbean official app or site before paying.',
         ]}
       />
 

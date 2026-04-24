@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import AssumptionsPanel from '../components/AssumptionsPanel'
 import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
@@ -7,7 +8,7 @@ import SectionHeader from '../components/SectionHeader'
 import ShareActions from '../components/ShareActions'
 import { calculateWifiRecommendation } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
-import { appendShareUrl } from '../utils/share'
+import { buildToolShareSummary, buildToolShortShare } from '../utils/shareSummaries'
 import { saveSnapshotToolState } from '../utils/storage'
 
 const initialState = {
@@ -198,14 +199,21 @@ export default function WifiCalculatorPage() {
       <CoachingMessage message={coachingMessage} />
 
       <ShareActions
-        summary={() => appendShareUrl([
-          `WiFi verdict: ${results.recommendation}.`,
-          `No WiFi: ${formatCurrency(results.noWifiCost)}`,
-          `1 device: ${formatCurrency(results.oneDeviceCost)}`,
-          `2 devices: ${formatCurrency(results.twoDeviceCost)}`,
-          results.wastedSpendMessage,
-        ])}
-        shortSummary={() => `${results.recommendation}: ${results.wastedSpendMessage}`}
+        summary={() => buildToolShareSummary({
+          title: 'WiFi',
+          verdict: results.recommendedPlan === 'no-wifi' ? 'Skip WiFi' : results.recommendation,
+          keyFigure: `Best-fit option ${formatCurrency(results.recommendedPlan === 'two-device' ? results.twoDeviceCost : results.recommendedPlan === 'no-wifi' ? results.noWifiCost : results.oneDeviceCost)}`,
+          mainDriver: results.wastedSpendMessage,
+          nextAction: results.recommendedPlan === 'two-device'
+            ? 'Keep the extra device only if the heavy usage is real.'
+            : 'Compare the trip with less internet before buying extra devices.',
+        })}
+        shortSummary={() => buildToolShortShare({
+          title: 'WiFi',
+          verdict: results.recommendedPlan === 'no-wifi' ? 'Skip WiFi' : results.recommendation,
+          keyFigure: results.wastedSpendMessage,
+          nextAction: 'Avoid buying more devices than the trip needs.',
+        })}
       />
 
       <ResultPanel
@@ -259,6 +267,14 @@ export default function WifiCalculatorPage() {
         title="Next: compare the trip versions"
         description="If WiFi changes the plan, compare one-device, two-device, or no-WiFi versions before paying for imaginary productivity."
         links={[{ to: '/compare', label: 'Compare scenarios' }]}
+      />
+
+      <AssumptionsPanel
+        items={[
+          'This estimates no WiFi, one device, and two-device plans from the daily price, sailing length, device count, usage level, and willingness to share.',
+          'Internet pricing, device rules, performance, and promotional pricing can vary by sailing and package offer.',
+          'This site is independent and not affiliated with Royal Caribbean. Verify the current WiFi price in Royal Caribbean official app or site before buying.',
+        ]}
       />
     </div>
   )

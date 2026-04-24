@@ -227,6 +227,9 @@ export default function TripSnapshotPage() {
               getLink={shareUrl}
               compact
             />
+            <Link className="button button-secondary" to="/brief">
+              Open My Trip Brief
+            </Link>
           </div>
           <div className="snapshot-copy-preview">
             <span>Copy preview</span>

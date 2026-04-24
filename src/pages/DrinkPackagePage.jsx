@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import AssumptionsPanel from '../components/AssumptionsPanel'
 import CoachingMessage from '../components/CoachingMessage'
 import DecisionNextStep from '../components/DecisionNextStep'
 import FormField from '../components/FormField'
@@ -8,7 +9,7 @@ import SectionHeader from '../components/SectionHeader'
 import ShareActions from '../components/ShareActions'
 import { calculateDrinkPackage } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
-import { appendShareUrl } from '../utils/share'
+import { buildSavingsLine, buildToolShareSummary, buildToolShortShare } from '../utils/shareSummaries'
 import { saveSnapshotToolState } from '../utils/storage'
 
 const initialState = {
@@ -336,16 +337,21 @@ export default function DrinkPackagePage() {
       <CoachingMessage message={coachingMessage} />
 
       <ShareActions
-        summary={() => appendShareUrl([
-          `Drink package verdict: ${results.recommendation}.`,
-          `Package total: ${formatCurrency(results.packageTotal)}`,
-          `Pay-as-you-go estimate: ${formatCurrency(results.payAsYouGoTotal)}`,
-          results.netSavings >= 0
-            ? `Estimated savings: ${formatCurrency(results.netSavings)}`
-            : `Estimated overpay: ${formatCurrency(Math.abs(results.netSavings))}`,
-          worthItInsight,
-        ])}
-        shortSummary={() => `${results.recommendation}: drink package ${results.netSavings >= 0 ? `saves about ${formatCurrency(results.netSavings)}` : `overpays by about ${formatCurrency(Math.abs(results.netSavings))}`}.`}
+        summary={() => buildToolShareSummary({
+          title: 'Drink Package',
+          verdict: results.recommendation,
+          keyFigure: buildSavingsLine({ amount: results.netSavings }),
+          mainDriver: worthItInsight,
+          nextAction: results.recommendation === 'Skip it'
+            ? 'Compare the trip without the drink package.'
+            : 'Price the full trip with this package included.',
+        })}
+        shortSummary={() => buildToolShortShare({
+          title: 'Drink Package',
+          verdict: results.recommendation,
+          keyFigure: buildSavingsLine({ amount: results.netSavings }),
+          nextAction: results.recommendation === 'Skip it' ? 'Compare without it.' : 'Add it to the real trip cost.',
+        })}
       />
 
       <ResultPanel
@@ -399,6 +405,14 @@ export default function DrinkPackagePage() {
         title="Next: compare the trip versions"
         description="Once the drink package verdict is clear, compare the trip with and without it. Feelings are cute. Totals are better."
         links={[{ to: '/compare', label: 'Compare scenarios' }]}
+      />
+
+      <AssumptionsPanel
+        items={[
+          'This estimates one guest buying the package versus paying a la carte using the drink prices and daily habits you enter.',
+          'Package prices, gratuity treatment, menus, drink pricing, and promotions can vary by sailing and can change before departure.',
+          'This site is independent and not affiliated with Royal Caribbean. Verify the current package price in Royal Caribbean official app or site before buying.',
+        ]}
       />
     </div>
   )
