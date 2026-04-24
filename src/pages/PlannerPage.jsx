@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import DecisionNextStep from '../components/DecisionNextStep'
 import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
 import SectionHeader from '../components/SectionHeader'
@@ -181,6 +182,15 @@ export default function PlannerPage() {
           Reset planner
         </button>
       </section>
+
+      <DecisionNextStep
+        title="Next: review the booking decision"
+        description="Once the plan is organized, Snapshot is where the money verdict, upgrade calls, dining stance, and shareable summary belong."
+        links={[
+          { to: '/snapshot', label: 'Open Trip Snapshot' },
+          { to: '/compare', label: 'Compare scenarios' },
+        ]}
+      />
     </div>
   )
 }

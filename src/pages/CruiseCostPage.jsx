@@ -80,6 +80,27 @@ const cruiseCostPresets = [
     },
   },
   {
+    label: 'First cruise',
+    description: 'A starter trip with the obvious missing costs already dragged into daylight.',
+    values: {
+      cruiseFare: 2100,
+      taxesAndFees: 430,
+      prepaidGratuities: 240,
+      drinkPackage: 0,
+      wifi: 140,
+      dining: 150,
+      excursions: 350,
+      theKey: 0,
+      hotel: 220,
+      flights: 500,
+      parking: 120,
+      travelExtras: 100,
+      miscellaneous: 150,
+      travelerCount: 2,
+      cruiseNights: 6,
+    },
+  },
+  {
     label: 'Vacation mode',
     description: 'Packages, flights, excursions, and the budget wearing sunglasses indoors.',
     values: {

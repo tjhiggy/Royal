@@ -100,6 +100,7 @@ export function buildTripSnapshot({ snapshotState = {}, recentTrips = [], planne
 
   const selectedShip =
     (snapshotState.dining?.shipSlug ? royalShipsBySlug[snapshotState.dining.shipSlug] : null) ??
+    (snapshotState.diningPackage?.form?.shipSlug ? royalShipsBySlug[snapshotState.diningPackage.form.shipSlug] : null) ??
     findShipFromPlanner(plannerState)
   const fallbackShip = royalShipsBySlug['wonder-of-the-seas'] ?? activeRoyalShips[0] ?? null
   const diningShip = selectedShip ?? fallbackShip

@@ -37,6 +37,52 @@ function SnapshotPrompt({ item }) {
   )
 }
 
+function buildSnapshotActionItems(snapshot) {
+  const actions = []
+
+  if (!snapshot.hasCostData) {
+    actions.push({
+      title: 'Run real cost first',
+      detail: 'Snapshot cannot judge the trip until fare, required costs, travel, and add-ons are in the same room.',
+      to: '/tools/cruise-cost',
+    })
+  }
+
+  if (!snapshot.drinkResults && snapshot.costForm?.drinkPackage) {
+    actions.push({
+      title: 'Test the drink package',
+      detail: 'A drink cost is already in the trip total. Run the package math before calling it done.',
+      to: '/tools/drink-package',
+    })
+  }
+
+  if (!snapshot.diningPackageResults && snapshot.costForm?.dining) {
+    actions.push({
+      title: 'Test dining spend',
+      detail: 'Dining is in the budget. Check the package against your ship context and realistic meal use.',
+      to: '/tools/dining-package',
+    })
+  }
+
+  if (!snapshot.compareSnapshot) {
+    actions.push({
+      title: 'Compare a leaner version',
+      detail: 'Use Compare when the decision is not yes/no, but expensive version versus smarter version.',
+      to: '/compare',
+    })
+  }
+
+  if (snapshot.quickWins[0]) {
+    actions.push({
+      title: 'Use the best savings move',
+      detail: snapshot.quickWins[0],
+      to: '/snapshot',
+    })
+  }
+
+  return actions.slice(0, 3)
+}
+
 export default function TripSnapshotPage() {
   const [recentTrips, setRecentTrips] = useState([])
   const [plannerState, setPlannerState] = useState(snapshotPlannerDefaults)
@@ -65,6 +111,7 @@ export default function TripSnapshotPage() {
     { label: 'Compare', complete: Boolean(snapshot.compareSnapshot) },
   ]
   const completionCount = completionItems.filter((item) => item.complete).length
+  const actionItems = buildSnapshotActionItems(snapshot)
 
   return (
     <div className="container page-stack">
@@ -150,6 +197,26 @@ export default function TripSnapshotPage() {
                 <strong>{item.value}</strong>
                 <p>{item.detail}</p>
               </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {actionItems.length ? (
+        <section className="card snapshot-action-brief">
+          <SectionHeader
+            title="Action brief"
+            description="The short version of what to do next. Useful because nobody needs another decorative dashboard pretending to help."
+          />
+          <div className="snapshot-action-list">
+            {actionItems.map((item, index) => (
+              <Link key={item.title} className="snapshot-action-item" to={item.to}>
+                <span className="driver-rank">{index + 1}</span>
+                <span>
+                  <strong>{item.title}</strong>
+                  <small>{item.detail}</small>
+                </span>
+              </Link>
             ))}
           </div>
         </section>

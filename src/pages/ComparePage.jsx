@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import BrutalSummary from '../components/BrutalSummary'
 import CoachingMessage from '../components/CoachingMessage'
+import DecisionNextStep from '../components/DecisionNextStep'
 import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
 import SectionHeader from '../components/SectionHeader'
@@ -473,6 +474,12 @@ export default function ComparePage() {
           `Biggest mistake: ${comparison.topDifferenceLines[0]?.label ?? 'No obvious mistake'}`,
         ]}
         getLink={getCompareLink}
+      />
+
+      <DecisionNextStep
+        title="Next: turn this into the final answer"
+        description="Compare shows the better version. Snapshot pulls that verdict together with cost, package calls, dining context, and share text."
+        links={[{ to: '/snapshot', label: 'Open Trip Snapshot' }]}
       />
     </div>
   )

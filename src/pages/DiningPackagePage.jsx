@@ -4,12 +4,24 @@ import DecisionNextStep from '../components/DecisionNextStep'
 import PageHero from '../components/PageHero'
 import ResultPanel from '../components/ResultPanel'
 import SectionHeader from '../components/SectionHeader'
+import { activeRoyalShips, futureRoyalShips, royalShipsBySlug } from '../data/royalShips'
 import { calculateDiningPackage } from '../utils/calculators'
+import { buildDiningStrategy } from '../utils/diningStrategy'
 import { formatCurrency } from '../utils/formatters'
 import { saveSnapshotToolState } from '../utils/storage'
 
+const sortedActiveShips = [...activeRoyalShips].sort((left, right) =>
+  left.shipName.localeCompare(right.shipName),
+)
+const sortedFutureShips = [...futureRoyalShips].sort((left, right) =>
+  left.shipName.localeCompare(right.shipName),
+)
+const defaultShipSlug = sortedActiveShips[0]?.shipSlug ?? sortedFutureShips[0]?.shipSlug ?? ''
+
 const initialState = {
   cruiseNights: 7,
+  shipSlug: defaultShipSlug,
+  includeFutureShips: false,
   priceMode: 'per-day',
   packagePrice: 45,
   specialtyDinnersPlanned: 4,
@@ -38,14 +50,46 @@ function SelectField({ label, name, value, onChange, helper, options }) {
 export default function DiningPackagePage() {
   const [form, setForm] = useState(initialState)
   const results = useMemo(() => calculateDiningPackage(form), [form])
+  const shipOptions = useMemo(() => {
+    const options = [{ label: 'Active ships', ships: sortedActiveShips }]
+
+    if (form.includeFutureShips && sortedFutureShips.length) {
+      options.push({ label: 'Future ships', ships: sortedFutureShips })
+    }
+
+    return options
+  }, [form.includeFutureShips])
+  const selectedShip =
+    royalShipsBySlug[form.shipSlug] ??
+    sortedActiveShips[0] ??
+    sortedFutureShips[0] ??
+    null
+  const diningStrategy = selectedShip ? buildDiningStrategy(selectedShip) : null
+  const complimentaryCount = selectedShip?.complimentaryDining.length ?? 0
+  const specialtyCount = selectedShip?.specialtyDining.length ?? 0
+  const caveatCount = selectedShip?.hybridDining.length ?? 0
 
   useEffect(() => {
     saveSnapshotToolState('diningPackage', { form })
+    if (form.shipSlug) {
+      saveSnapshotToolState('dining', { shipSlug: form.shipSlug })
+    }
   }, [form])
 
   function handleChange(event) {
-    const { name, value } = event.target
-    setForm((current) => ({ ...current, [name]: value }))
+    const { name, value, type, checked } = event.target
+    setForm((current) => {
+      const next = {
+        ...current,
+        [name]: type === 'checkbox' ? checked : value,
+      }
+
+      if (name === 'includeFutureShips' && !checked && selectedShip?.status !== 'active') {
+        next.shipSlug = defaultShipSlug
+      }
+
+      return next
+    })
   }
 
   const outcomeMessage =
@@ -78,11 +122,17 @@ export default function DiningPackagePage() {
       ? 'This only works if you actually use the specialty meals instead of buying the package for theoretical maximum value.'
       : `You need about ${roundedBreakEvenMeals} specialty meals to break even, and your current plan looks closer to ${roundedMealUsage}.`
   const coachingMessage =
-    roundedMealUsage < roundedBreakEvenMeals
-      ? 'You are not planning enough specialty meals to make this package behave.'
-      : Number(form.portDays) > Number(form.seaDays) && Number(form.specialtyLunchesPlanned) > 0
-        ? 'Port-heavy trips make specialty lunches easier to overcount.'
-        : 'The package only wins if these meals are real plans, not menu-daydreaming.'
+    selectedShip?.status !== 'active'
+      ? 'Future ship dining can change before launch. Treat this as planning context, not a tattoo.'
+      : diningStrategy?.packageVerdict?.includes('do not need')
+        ? 'Your selected ship has enough included dining that the package needs a real usage case.'
+        : diningStrategy?.packageVerdict?.includes('serious look')
+          ? 'This ship makes specialty dining more tempting, but the package still has to beat the math.'
+          : roundedMealUsage < roundedBreakEvenMeals
+            ? 'You are not planning enough specialty meals to make this package behave.'
+            : Number(form.portDays) > Number(form.seaDays) && Number(form.specialtyLunchesPlanned) > 0
+              ? 'Port-heavy trips make specialty lunches easier to overcount.'
+              : 'The package only wins if these meals are real plans, not menu-daydreaming.'
 
   return (
     <div className="container page-stack">
@@ -95,10 +145,42 @@ export default function DiningPackagePage() {
       <div className="two-column-layout">
         <section className="card">
           <SectionHeader
-            title="Trip inputs"
-            description="Start with the sailing length, how the package is priced, and how many days you will actually be onboard for lunch."
+            title="Ship and trip inputs"
+            description="Start with the ship, sailing length, package price, and days where lunch value is even realistic."
           />
           <div className="form-grid">
+            <label className="field field-full">
+              <span className="field-label">Ship</span>
+              <select
+                className="field-input"
+                name="shipSlug"
+                value={form.shipSlug}
+                onChange={handleChange}
+              >
+                {shipOptions.map((group) => (
+                  <optgroup key={group.label} label={group.label}>
+                    {group.ships.map((ship) => (
+                      <option key={ship.shipSlug} value={ship.shipSlug}>
+                        {ship.shipName}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+              <small className="field-helper">Uses the local dining dataset for ship context. No invented venue magic.</small>
+            </label>
+            <label className="toggle-field field-full">
+              <input
+                type="checkbox"
+                name="includeFutureShips"
+                checked={form.includeFutureShips}
+                onChange={handleChange}
+              />
+              <span className="toggle-copy">
+                <strong>Include future ships</strong>
+                <small>Future ship dining can change before launch.</small>
+              </span>
+            </label>
             <label className="field">
               <span className="field-label">Cruise nights</span>
               <input
@@ -240,6 +322,36 @@ export default function DiningPackagePage() {
       </section>
 
       <CoachingMessage message={coachingMessage} />
+
+      {selectedShip && diningStrategy ? (
+        <section className="card dining-strategy-card">
+          <SectionHeader
+            title="Ship dining context"
+            description="This does not change the meal math. It tells you whether the selected ship makes paid dining more or less necessary."
+          />
+          <div className="verdict-highlight dining-strategy-highlight">
+            <span>{selectedShip.shipName}</span>
+            <strong>{diningStrategy.packageVerdict}</strong>
+          </div>
+          <div className="stats-grid">
+            <article className="stat-card">
+              <span className="stat-label">Included venues</span>
+              <strong className="stat-value">{complimentaryCount}</strong>
+            </article>
+            <article className="stat-card">
+              <span className="stat-label">Specialty venues</span>
+              <strong className="stat-value">{specialtyCount}</strong>
+            </article>
+            <article className="stat-card">
+              <span className="stat-label">Caveats</span>
+              <strong className="stat-value">{caveatCount}</strong>
+            </article>
+          </div>
+          <div className="verification-note">
+            Dining policies can change before your sailing. Use this as a decision filter, then verify current ship details before buying the package.
+          </div>
+        </section>
+      ) : null}
 
       <ResultPanel
         title="Supporting numbers"

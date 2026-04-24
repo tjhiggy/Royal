@@ -79,6 +79,23 @@ const dealPresets = [
     },
   },
   {
+    label: 'First cruise',
+    description: 'A safer starter setup with the usual forgotten costs included before they ambush you.',
+    values: {
+      cruiseNights: 6,
+      baseFare: 2100,
+      taxesAndFees: 430,
+      drinkPackage: 0,
+      wifi: 140,
+      excursions: 350,
+      specialtyDining: 150,
+      theKey: 0,
+      flights: 500,
+      hotel: 220,
+      parkingTransport: 120,
+    },
+  },
+  {
     label: 'Vacation mode',
     description: 'The full send: drinks, dining, excursions, and travel all joining the party.',
     values: {

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import DecisionNextStep from '../components/DecisionNextStep'
 import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
 import SectionHeader from '../components/SectionHeader'
@@ -150,6 +151,15 @@ export default function PackingPage() {
           ))}
         </div>
       </section>
+
+      <DecisionNextStep
+        title="Next: keep the plan with the money decisions"
+        description="Packing is useful after the trip shape is clear. Planner keeps the practical tasks together, and Snapshot keeps the final booking call honest."
+        links={[
+          { to: '/planner', label: 'Open Planner' },
+          { to: '/snapshot', label: 'Review Snapshot' },
+        ]}
+      />
     </div>
   )
 }

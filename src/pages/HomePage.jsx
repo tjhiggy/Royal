@@ -53,6 +53,27 @@ const priorityTools = [
   { title: 'Trip Snapshot', copy: 'Copy the final call for the travel group.', to: '/snapshot' },
 ]
 
+const caughtExamples = [
+  {
+    label: 'Fake-cheap fare',
+    before: '$2,200 fare',
+    after: '$4,900 real trip',
+    copy: 'Flights, hotel, gratuities, excursions, and package spend turned the headline fare into a very different animal.',
+  },
+  {
+    label: 'Drink package overbuy',
+    before: '$950 package',
+    after: '$380 habit',
+    copy: 'The package only works when the daily drink pace is real, not a vacation persona with a receipt printer.',
+  },
+  {
+    label: 'WiFi creep',
+    before: '2 devices',
+    after: '1 shared plan',
+    copy: 'A second device can be convenience spend masquerading as need. Sometimes the smart answer is boring. Good.',
+  },
+]
+
 export default function HomePage() {
   const [recentTrips, setRecentTrips] = useState([])
 
@@ -168,6 +189,26 @@ export default function HomePage() {
               </span>
               <span className="engine-step-cta">{item.cta}</span>
             </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="page-section">
+        <SectionHeader
+          title="What this catches"
+          description="Illustrative examples, not user data. The point is to catch the expensive pattern before checkout smiles at you."
+        />
+        <div className="caught-example-grid">
+          {caughtExamples.map((example) => (
+            <article key={example.label} className="card caught-example-card">
+              <span className="step-badge">Example</span>
+              <h3>{example.label}</h3>
+              <div className="caught-example-swing">
+                <span>{example.before}</span>
+                <strong>{example.after}</strong>
+              </div>
+              <p>{example.copy}</p>
+            </article>
           ))}
         </div>
       </section>

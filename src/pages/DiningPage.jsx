@@ -311,6 +311,14 @@ export default function DiningPage() {
                 <p>Compare one trip with more paid add-ons against a leaner version before the budget gets stupid.</p>
                 <span className="card-link">Compare scenarios</span>
               </Link>
+              <Link className="card info-card dining-next-step-card" to="/snapshot">
+                <div className="card-topline">
+                  <h3>Trip Snapshot</h3>
+                  <span className="status-pill">Final</span>
+                </div>
+                <p>Carry this ship context into the final trip answer before you buy around dining assumptions.</p>
+                <span className="card-link">Open Snapshot</span>
+              </Link>
             </div>
           </section>
 

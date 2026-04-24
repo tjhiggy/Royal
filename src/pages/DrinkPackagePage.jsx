@@ -61,6 +61,18 @@ const presets = [
     },
   },
   {
+    label: 'First cruise',
+    description: 'A cautious default for people who are still learning what their ship-day rhythm looks like.',
+    values: {
+      cruiseNights: 6,
+      packagePricePerPersonPerDay: 80,
+      alcoholicDrinksPerDay: 2,
+      specialtyCoffeesPerDay: 1,
+      bottledWatersPerDay: 2,
+      sodasMocktailsPerDay: 1,
+    },
+  },
+  {
     label: 'Vacation mode',
     description: 'Cocktails are flowing, coffees are involved, and the bar staff knows your face.',
     values: {
