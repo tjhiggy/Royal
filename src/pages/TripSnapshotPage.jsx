@@ -5,7 +5,7 @@ import SectionHeader from '../components/SectionHeader'
 import ShareActions from '../components/ShareActions'
 import { formatCurrency } from '../utils/formatters'
 import { getCurrentShareUrl } from '../utils/share'
-import { loadPlannerState, loadRecentTrips, loadSnapshotState } from '../utils/storage'
+import { loadPlannerState, loadRecentTrips, loadSnapshotState, saveRecentTrip } from '../utils/storage'
 import {
   buildSnapshotShortShareText,
   buildSnapshotSummaryText,
@@ -83,6 +83,44 @@ function buildSnapshotActionItems(snapshot) {
   return actions.slice(0, 3)
 }
 
+function buildFinalRecommendation(snapshot) {
+  const bestMove = snapshot.quickWins[0]
+  const biggestDriver = snapshot.costDrivers[0]
+  const hasSkipUpgrade = snapshot.upgradeVerdicts.find((item) => item.value === 'Skip it')
+
+  if (!snapshot.hasCostData) {
+    return {
+      call: 'Do not book from the headline fare yet.',
+      why: 'The Snapshot does not have a real trip total, so the decision is still missing the number that matters.',
+      risk: 'Biggest mistake risk: booking before travel, gratuities, and add-ons are priced.',
+    }
+  }
+
+  if (hasSkipUpgrade) {
+    return {
+      call: `I would cut ${hasSkipUpgrade.label.toLowerCase()} before booking.`,
+      why: `${hasSkipUpgrade.detail} The trip already has enough moving parts without paying for an upgrade that fails its own math.`,
+      risk: `Biggest mistake risk: treating ${hasSkipUpgrade.label.toLowerCase()} as automatic.`,
+    }
+  }
+
+  if (bestMove) {
+    return {
+      call: bestMove,
+      why: 'This is the cleanest lever the current data exposes. It changes the decision without pretending the base fare is still negotiable.',
+      risk: biggestDriver
+        ? `Biggest mistake risk: ignoring ${biggestDriver.label.toLowerCase()}, currently one of the largest controllable drivers.`
+        : snapshot.mainWarning,
+    }
+  }
+
+  return {
+    call: 'I would finish the missing checks before booking.',
+    why: 'The available data is not bad, but the answer gets more trustworthy once the package, dining, and compare checks are complete.',
+    risk: snapshot.mainWarning,
+  }
+}
+
 export default function TripSnapshotPage() {
   const [recentTrips, setRecentTrips] = useState([])
   const [plannerState, setPlannerState] = useState(snapshotPlannerDefaults)
@@ -112,6 +150,28 @@ export default function TripSnapshotPage() {
   ]
   const completionCount = completionItems.filter((item) => item.complete).length
   const actionItems = buildSnapshotActionItems(snapshot)
+  const finalRecommendation = buildFinalRecommendation(snapshot)
+
+  useEffect(() => {
+    if (!snapshot.hasCostData && !snapshot.hasDealData && !snapshot.compareSnapshot) {
+      return
+    }
+
+    saveRecentTrip({
+      id: 'snapshot-latest',
+      tool: 'snapshot',
+      toolLabel: 'Trip Snapshot',
+      label: snapshot.costResults
+        ? `${snapshot.mainVerdict} | ${formatCurrency(snapshot.costResults.grandTotal)}`
+        : snapshot.mainVerdict,
+      path: '/snapshot',
+      data: {
+        mainVerdict: snapshot.mainVerdict,
+        hasCostData: snapshot.hasCostData,
+        updatedFrom: 'snapshot',
+      },
+    })
+  }, [snapshot.compareSnapshot, snapshot.costResults, snapshot.hasCostData, snapshot.hasDealData, snapshot.mainVerdict])
 
   return (
     <div className="container page-stack">
@@ -129,6 +189,18 @@ export default function TripSnapshotPage() {
           <div className="verdict-highlight snapshot-warning">
             <span>Main warning</span>
             <strong>{snapshot.mainWarning}</strong>
+          </div>
+          <div className="snapshot-final-call">
+            <span className="verdict-kicker">What I would do</span>
+            <strong>{finalRecommendation.call}</strong>
+            <div>
+              <span>Why this makes sense</span>
+              <p>{finalRecommendation.why}</p>
+            </div>
+            <div>
+              <span>Biggest mistake risk</span>
+              <p>{finalRecommendation.risk}</p>
+            </div>
           </div>
           <p className="snapshot-source-note">{snapshot.sourceLine}</p>
           <div className="snapshot-readiness">

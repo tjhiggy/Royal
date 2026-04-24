@@ -46,6 +46,17 @@ export function getRecentTripById(id) {
   return loadRecentTrips().find((trip) => trip.id === id) ?? null
 }
 
+export function removeRecentTripById(id) {
+  const nextTrips = loadRecentTrips().filter((trip) => trip.id !== id)
+  window.localStorage.setItem(RECENT_TRIPS_STORAGE_KEY, JSON.stringify(nextTrips))
+  return nextTrips
+}
+
+export function clearRecentTrips() {
+  window.localStorage.removeItem(RECENT_TRIPS_STORAGE_KEY)
+  return []
+}
+
 export function saveRecentTrip(session) {
   const currentTrips = loadRecentTrips()
   const nextSession = {

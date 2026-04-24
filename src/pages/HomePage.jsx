@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import SectionHeader from '../components/SectionHeader'
-import { loadRecentTrips } from '../utils/storage'
+import { clearRecentTrips, loadRecentTrips, removeRecentTripById } from '../utils/storage'
 
 const decisionPath = [
   {
@@ -72,6 +72,19 @@ const caughtExamples = [
     after: '1 shared plan',
     copy: 'A second device can be convenience spend masquerading as need. Sometimes the smart answer is boring. Good.',
   },
+  {
+    label: 'Dining package reflex',
+    before: '$630 package',
+    after: '2 real meals',
+    copy: 'If the ship already has enough included dining, the package has to beat actual meal plans, not menu browsing.',
+  },
+]
+
+const trustPoints = [
+  'Built around real cruise pricing patterns: fare, fees, travel, add-ons, and onboard spend.',
+  'Uses editable assumptions so you can replace defaults with the numbers you are actually seeing.',
+  'Runs locally in your browser with no account, backend, or sales funnel lurking behind the curtain.',
+  'Independent tool. Not affiliated with Royal Caribbean.',
 ]
 
 export default function HomePage() {
@@ -80,6 +93,14 @@ export default function HomePage() {
   useEffect(() => {
     setRecentTrips(loadRecentTrips())
   }, [])
+
+  function removeRecentTrip(id) {
+    setRecentTrips(removeRecentTripById(id))
+  }
+
+  function clearAllRecentTrips() {
+    setRecentTrips(clearRecentTrips())
+  }
 
   return (
     <div className="container page-stack">
@@ -139,19 +160,29 @@ export default function HomePage() {
 
       {recentTrips.length ? (
         <section className="page-section">
-          <SectionHeader
-            title="Continue where you left off"
-            description="Your last calculator sessions from this browser. No account, no login theater."
-          />
+          <div className="section-header-with-action">
+            <SectionHeader
+              title="Continue where you left off"
+              description="Your last 3 decision sessions from this browser. Reopen the work instead of rebuilding the whole thing like a tragic little spreadsheet ritual."
+            />
+            <button type="button" className="button button-ghost" onClick={clearAllRecentTrips}>
+              Clear all
+            </button>
+          </div>
           <div className="recent-trip-list">
             {recentTrips.map((trip) => (
-              <Link key={trip.id} className="card recent-trip-card" to={`${trip.path}?recent=${trip.id}`}>
-                <div>
-                  <strong>{trip.label}</strong>
-                  <span>{trip.toolLabel}</span>
-                </div>
-                <small>Updated {new Date(trip.updatedAt).toLocaleDateString()}</small>
-              </Link>
+              <article key={trip.id} className="card recent-trip-card">
+                <Link className="recent-trip-main" to={`${trip.path}?recent=${trip.id}`}>
+                  <div>
+                    <strong>{trip.label}</strong>
+                    <span>{trip.toolLabel}</span>
+                  </div>
+                  <small>Updated {new Date(trip.updatedAt).toLocaleDateString()}</small>
+                </Link>
+                <button type="button" className="recent-trip-remove" onClick={() => removeRecentTrip(trip.id)}>
+                  Remove
+                </button>
+              </article>
             ))}
           </div>
         </section>
@@ -209,6 +240,21 @@ export default function HomePage() {
               </div>
               <p>{example.copy}</p>
             </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="card trust-card">
+        <SectionHeader
+          title="How this works"
+          description="Short version: it forces the real trip cost into the open before the booking flow gets persuasive."
+        />
+        <div className="trust-point-grid">
+          {trustPoints.map((point) => (
+            <div key={point} className="trust-point">
+              <span aria-hidden="true">OK</span>
+              <p>{point}</p>
+            </div>
           ))}
         </div>
       </section>

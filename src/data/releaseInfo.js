@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v2.1.0',
+  currentVersion: 'v2.2.0',
   updatedDate: '2026-04-24',
-  buildId: 'expanded-product-experience',
+  buildId: 'trust-stickiness-return-value',
   changelogEntries: [
+    {
+      version: 'v2.2.0',
+      date: '2026-04-24',
+      changes: [
+        'Added stronger return value with removable recent sessions, Snapshot as a saved recent trip, and clearer continue-where-you-left-off behavior.',
+        'Upgraded Trip Snapshot with What I would do, why the recommendation makes sense, and biggest mistake risk blocks.',
+        'Expanded hidden-cost intelligence, added concise trust sections, improved real example cards, and tightened mobile layouts for return users.',
+      ],
+    },
     {
       version: 'v2.1.0',
       date: '2026-04-24',

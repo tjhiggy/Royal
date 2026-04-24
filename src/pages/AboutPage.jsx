@@ -46,6 +46,13 @@ export default function AboutPage() {
         </ul>
       </section>
 
+      <section className="card prose-card trust-card">
+        <SectionHeader
+          title="How this works"
+          description="The site uses editable pricing assumptions, local ship dining data, and browser-saved planning state to expose the full trip picture. It is not official Royal Caribbean data, and it will not replace checking current prices before you buy."
+        />
+      </section>
+
       <section className="card prose-card">
         <p>
           The point is simple: make the expensive decisions before the expensive screen.

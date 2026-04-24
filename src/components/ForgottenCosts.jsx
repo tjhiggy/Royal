@@ -20,10 +20,22 @@ const forgottenCostItems = [
     amount: 220,
   },
   {
+    key: 'travelExtras',
+    label: 'Transportation',
+    helper: 'Rideshares, shuttles, tolls, gas, and airport transfers do not pay for themselves. Annoying, but true.',
+    amount: 100,
+  },
+  {
     key: 'excursions',
     label: 'Excursions',
     helper: 'Tours and beach days are not free just because they are sunny.',
     amount: 450,
+  },
+  {
+    key: 'dining',
+    label: 'Specialty dining',
+    helper: 'A couple paid meals can quietly become a real line item.',
+    amount: 180,
   },
   {
     key: 'miscellaneous',
@@ -35,6 +47,10 @@ const forgottenCostItems = [
 
 export default function ForgottenCosts({ form, onQuickAdd }) {
   const zeroCount = forgottenCostItems.filter((item) => Number(form[item.key]) === 0).length
+  const missingLabels = forgottenCostItems
+    .filter((item) => Number(form[item.key]) === 0)
+    .map((item) => item.label)
+    .slice(0, 4)
 
   return (
     <section className="card forgotten-costs-card">
@@ -45,10 +61,17 @@ export default function ForgottenCosts({ form, onQuickAdd }) {
         </div>
         <p>
           {zeroCount
-            ? 'Most trips do not stay at $0 here. Quick-add the usual suspects before the total lies to your face.'
+            ? `${zeroCount} common cost categories are still $0. That might be true, but it deserves suspicion.`
             : 'Good. The usual forgotten costs are at least on the board.'}
         </p>
       </div>
+
+      {missingLabels.length ? (
+        <div className="hidden-cost-warning">
+          <strong>Missing risk</strong>
+          <span>{missingLabels.join(', ')}</span>
+        </div>
+      ) : null}
 
       <div className="forgotten-cost-grid">
         {forgottenCostItems.map((item) => {

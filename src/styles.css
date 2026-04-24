@@ -706,10 +706,51 @@ img {
   margin: 0.35rem 0 0.6rem;
 }
 
+.trust-card {
+  border-color: rgba(103, 213, 255, 0.22);
+  background:
+    linear-gradient(135deg, rgba(103, 213, 255, 0.09), transparent 45%),
+    var(--surface);
+}
+
+.trust-point-grid {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin-top: 1rem;
+}
+
+.trust-point {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: start;
+  padding: 0.85rem;
+  border-radius: 8px;
+  background: rgba(91, 168, 255, 0.055);
+  border: 1px solid rgba(151, 179, 211, 0.1);
+}
+
+.trust-point span {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: rgba(70, 195, 141, 0.12);
+  color: var(--success);
+  font-weight: 900;
+  font-size: 0.72rem;
+}
+
+.trust-point p {
+  color: var(--text-soft);
+}
+
 .caught-example-grid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
 }
 
 .caught-example-card {
@@ -904,26 +945,49 @@ a.decision-flow-card:hover::before {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
-.recent-trip-card {
+.section-header-with-action {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
   align-items: center;
+}
+
+.recent-trip-card {
+  display: grid;
+  gap: 0.75rem;
   min-height: 100%;
 }
 
-.recent-trip-card div {
+.recent-trip-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.recent-trip-main div {
   display: grid;
   gap: 0.2rem;
 }
 
-.recent-trip-card span,
-.recent-trip-card small {
+.recent-trip-main span,
+.recent-trip-main small {
   color: var(--text-soft);
 }
 
-.recent-trip-card:hover {
-  transform: translateY(-3px);
+.recent-trip-remove {
+  justify-self: start;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--text-faint);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.recent-trip-remove:hover,
+.recent-trip-remove:focus-visible {
+  color: var(--danger);
 }
 
 .preset-grid {
@@ -1207,6 +1271,23 @@ a.info-card:hover {
   gap: 0.75rem;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   margin-top: 1rem;
+}
+
+.hidden-cost-warning {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  background: rgba(255, 123, 109, 0.09);
+  border: 1px solid rgba(255, 123, 109, 0.2);
+}
+
+.hidden-cost-warning span {
+  color: var(--text-soft);
+  text-align: right;
 }
 
 .forgotten-cost-item {
@@ -1674,6 +1755,41 @@ a.info-card:hover {
 .snapshot-warning {
   border-color: rgba(240, 177, 75, 0.18);
   background: rgba(240, 177, 75, 0.08);
+}
+
+.snapshot-final-call {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(70, 195, 141, 0.13), rgba(70, 195, 141, 0.04)),
+    rgba(8, 19, 32, 0.58);
+  border: 1px solid rgba(70, 195, 141, 0.22);
+  box-shadow: var(--shadow-soft);
+}
+
+.snapshot-final-call > strong {
+  font-size: clamp(1.45rem, 3vw, 2.05rem);
+  line-height: 1.15;
+  color: var(--text);
+}
+
+.snapshot-final-call div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.snapshot-final-call div span {
+  color: var(--text-faint);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.snapshot-final-call p {
+  color: var(--text-soft);
 }
 
 .snapshot-share-card {
@@ -2377,6 +2493,17 @@ a.info-card:hover {
     flex-direction: column;
   }
 
+  .section-header-with-action,
+  .recent-trip-main,
+  .hidden-cost-warning {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hidden-cost-warning span {
+    text-align: left;
+  }
+
   .advanced-header {
     flex-direction: column;
     align-items: flex-start;
@@ -2424,6 +2551,27 @@ a.info-card:hover {
 
   .caught-example-swing {
     grid-template-columns: 1fr;
+  }
+
+  .hero-actions,
+  .share-button-row,
+  .snapshot-empty-actions,
+  .decision-next-links,
+  .saved-comparison-actions {
+    width: 100%;
+  }
+
+  .hero-actions .button,
+  .share-button-row .button,
+  .snapshot-empty-actions .button,
+  .decision-next-links .button,
+  .saved-comparison-actions .button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .snapshot-final-call > strong {
+    font-size: clamp(1.25rem, 7vw, 1.55rem);
   }
 
   .card {
