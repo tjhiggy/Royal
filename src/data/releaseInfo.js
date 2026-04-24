@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v2.0.0',
-  updatedDate: '2026-04-23',
-  buildId: 'cruise-decision-engine-2',
+  currentVersion: 'v2.1.0',
+  updatedDate: '2026-04-24',
+  buildId: 'expanded-product-experience',
   changelogEntries: [
+    {
+      version: 'v2.1.0',
+      date: '2026-04-24',
+      changes: [
+        'Expanded the guided decision system so Guided Start now publishes its deal, cost, upgrade, and comparison run into Trip Snapshot.',
+        'Made Dining Package Calculator ship-aware with local dining dataset context, future-ship handling, and clearer package guidance without inventing venue facts.',
+        'Added consistent copy/share summaries for add-on calculators, stronger Compare to Snapshot handoff, Snapshot action brief, homepage examples, first-cruise presets, and mobile-friendly product polish.',
+      ],
+    },
     {
       version: 'v2.0.0',
       date: '2026-04-23',
