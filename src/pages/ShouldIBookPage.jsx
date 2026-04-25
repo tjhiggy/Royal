@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import AssumptionsPanel from '../components/AssumptionsPanel'
 import FormField from '../components/FormField'
 import PageHero from '../components/PageHero'
@@ -9,6 +10,7 @@ import { calculateCruiseCost } from '../utils/calculators'
 import { formatCurrency } from '../utils/formatters'
 import { getCurrentShareUrl } from '../utils/share'
 import {
+  getRecentTripById,
   loadShouldBookState,
   saveRecentTrip,
   saveShouldBookState,
@@ -233,8 +235,19 @@ function buildShortSummary(form, decision, url = getCurrentShareUrl()) {
 }
 
 export default function ShouldIBookPage() {
-  const sessionId = useRef(`should-book-${Date.now()}`)
-  const [form, setForm] = useState(() => loadShouldBookState(initialState))
+  const location = useLocation()
+  const requestedRecentTrip = useMemo(() => {
+    const recentId = new URLSearchParams(location.search).get('recent')
+    const recentTrip = recentId ? getRecentTripById(recentId) : null
+
+    return recentTrip?.tool === 'should-book' && recentTrip.data?.form ? recentTrip : null
+  }, [location.search])
+  const sessionId = useRef(requestedRecentTrip?.id ?? `should-book-${Date.now()}`)
+  const [form, setForm] = useState(() => (
+    requestedRecentTrip?.data?.form
+      ? { ...initialState, ...requestedRecentTrip.data.form }
+      : loadShouldBookState(initialState)
+  ))
   const decision = useMemo(() => evaluateBookingDecision(form), [form])
   const verdictClass =
     decision.verdict === 'BOOK NOW'
@@ -247,6 +260,15 @@ export default function ShouldIBookPage() {
     const { name, value } = event.target
     setForm((current) => ({ ...current, [name]: value }))
   }
+
+  useEffect(() => {
+    if (!requestedRecentTrip) {
+      return
+    }
+
+    sessionId.current = requestedRecentTrip.id
+    setForm({ ...initialState, ...requestedRecentTrip.data.form })
+  }, [requestedRecentTrip])
 
   useEffect(() => {
     saveShouldBookState(form)

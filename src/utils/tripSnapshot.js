@@ -71,6 +71,7 @@ export function buildTripSnapshot({ snapshotState = {}, recentTrips = [], planne
   const recentCompareTrip = latestRecentTrip(recentTrips, 'compare')
   const recentShouldBookTrip = latestRecentTrip(recentTrips, 'should-book')
   const shouldBookDecision = snapshotState.shouldBook?.decision ?? recentShouldBookTrip?.data?.decision ?? null
+  const hasDecisionCostData = Boolean(shouldBookDecision)
 
   const savedCostForm = snapshotState.cost?.form ?? recentCostTrip?.data?.form ?? null
   const savedDealForm = snapshotState.deal?.form ?? recentDealTrip?.data?.form ?? null
@@ -166,7 +167,7 @@ export function buildTripSnapshot({ snapshotState = {}, recentTrips = [], planne
   const nextSteps = [
     !shouldBookDecision ? { to: '/should-i-book', title: 'Get the booking verdict', copy: 'Use Should I Book when you need the actual Book Now, Wait, or Walk Away call.' } : null,
     !dealResults ? { to: '/tools/deal-evaluator', title: 'Complete Deal Evaluator', copy: 'Start here if you have not tested whether the fare is actually good.' } : null,
-    !costResults ? { to: '/tools/cruise-cost', title: 'Check real trip cost', copy: 'Snapshot needs the full cost before it can be brutally useful.' } : null,
+    !costResults && !hasDecisionCostData ? { to: '/tools/cruise-cost', title: 'Check real trip cost', copy: 'Snapshot needs the full cost before it can be brutally useful.' } : null,
     !drinkResults ? { to: '/tools/drink-package', title: 'Check drink package', copy: 'Run the package math before it becomes a very expensive hunch.' } : null,
     !wifiResults ? { to: '/tools/wifi', title: 'Check WiFi', copy: 'See whether one device is enough before buying extra internet.' } : null,
     !keyResults ? { to: '/tools/the-key', title: 'Check The Key', copy: 'Test whether the perks are usable value or just a shiny label.' } : null,
@@ -175,7 +176,7 @@ export function buildTripSnapshot({ snapshotState = {}, recentTrips = [], planne
   ].filter(Boolean).slice(0, 4)
 
   return {
-    hasCostData: Boolean(costResults),
+    hasCostData: Boolean(costResults) || hasDecisionCostData,
     hasDealData: Boolean(dealResults),
     hasUserShip: Boolean(selectedShip),
     costForm,

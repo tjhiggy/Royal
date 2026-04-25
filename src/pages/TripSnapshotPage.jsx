@@ -88,6 +88,14 @@ function buildFinalRecommendation(snapshot) {
   const biggestDriver = snapshot.costDrivers[0]
   const hasSkipUpgrade = snapshot.upgradeVerdicts.find((item) => item.value === 'Skip it')
 
+  if (snapshot.shouldBookDecision) {
+    return {
+      call: snapshot.shouldBookDecision.bestNextAction,
+      why: snapshot.shouldBookDecision.personalCall,
+      risk: snapshot.shouldBookDecision.financialRisk,
+    }
+  }
+
   if (!snapshot.hasCostData) {
     return {
       call: 'Do not book from the headline fare yet.',
