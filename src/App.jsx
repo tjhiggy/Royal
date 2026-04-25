@@ -12,6 +12,7 @@ import GuidedModePage from './pages/GuidedModePage'
 import HomePage from './pages/HomePage'
 import PackingPage from './pages/PackingPage'
 import PlannerPage from './pages/PlannerPage'
+import ShouldIBookPage from './pages/ShouldIBookPage'
 import TheKeyPage from './pages/TheKeyPage'
 import ToolsPage from './pages/ToolsPage'
 import TripBriefPage from './pages/TripBriefPage'
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/tools" element={<ToolsPage />} />
         <Route path="/compare" element={<ComparePage />} />
         <Route path="/snapshot" element={<TripSnapshotPage />} />
+        <Route path="/should-i-book" element={<ShouldIBookPage />} />
         <Route path="/brief" element={<TripBriefPage />} />
         <Route path="/dining" element={<DiningPage />} />
         <Route path="/changelog" element={<ChangelogPage />} />

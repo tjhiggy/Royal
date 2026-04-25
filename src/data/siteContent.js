@@ -72,6 +72,14 @@ export const toolCards = [
     ctaLabel: 'Compare scenarios',
   },
   {
+    title: 'Should I Book This Cruise?',
+    icon: '!',
+    description: 'Turn the full trip cost into a blunt Book Now, Wait, or Walk Away recommendation.',
+    to: '/should-i-book',
+    badge: 'Flagship',
+    ctaLabel: 'Get booking verdict',
+  },
+  {
     title: 'Trip Snapshot',
     icon: 'S',
     description: 'Pull the latest local calculator sessions into one final-answer view.',

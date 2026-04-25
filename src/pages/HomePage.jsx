@@ -44,6 +44,14 @@ const decisionPath = [
   },
   {
     step: '05',
+    label: 'Book',
+    title: 'Make the booking call',
+    copy: 'Use the flagship verdict to decide whether this is Book Now, Wait, or Walk Away.',
+    to: '/should-i-book',
+    cta: 'Get booking verdict',
+  },
+  {
+    step: '06',
     label: 'Snapshot',
     title: 'Leave with the final answer',
     copy: 'Review the verdict, biggest drivers, upgrade calls, quick wins, and share text in one place.',
@@ -55,6 +63,7 @@ const decisionPath = [
 const priorityTools = [
   { title: 'Deal Evaluator', copy: 'Decide whether the sailing is actually worth chasing.', to: '/tools/deal-evaluator' },
   { title: 'Cruise Cost', copy: 'Turn the fare into the full trip total.', to: '/tools/cruise-cost' },
+  { title: 'Should I Book?', copy: 'Get the blunt Book, Wait, or Walk Away call.', to: '/should-i-book' },
   { title: 'Upgrade Checks', copy: 'Challenge drinks, dining, WiFi, and The Key.', to: '/tools' },
   { title: 'Trip Snapshot', copy: 'Copy the final call for the travel group.', to: '/snapshot' },
 ]
@@ -166,6 +175,9 @@ export default function HomePage() {
             <Link className="button button-secondary" to="/tools/deal-evaluator">
               Check Deal First
             </Link>
+            <Link className="button button-ghost" to="/should-i-book">
+              Should I Book?
+            </Link>
             <Link className="button button-ghost" to="/snapshot">
               View Snapshot
             </Link>
@@ -178,8 +190,8 @@ export default function HomePage() {
             <strong>Home to Snapshot</strong>
           </div>
           <div className="engine-route-list">
-            {['Home', 'Guided', 'Deal', 'Cost', 'Upgrades', 'Dining', 'Compare', 'Snapshot'].map((item, index) => (
-              <span key={item} className={index === 7 ? 'engine-route-active' : ''}>
+            {['Home', 'Guided', 'Deal', 'Cost', 'Upgrades', 'Dining', 'Compare', 'Book', 'Snapshot'].map((item, index) => (
+              <span key={item} className={index === 8 ? 'engine-route-active' : ''}>
                 {item}
               </span>
             ))}
