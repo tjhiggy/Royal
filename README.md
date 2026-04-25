@@ -47,6 +47,30 @@ If you update the site later, just push to `main` again. Nice and boring, which 
 - `src/utils/`: Calculation and storage helpers
 - `src/styles.css`: Global styles and responsive layout rules
 
+## Development workflow
+
+This project uses GitHub Issues as the source of truth for backlog and implementation work.
+
+Issues move through these workflow labels:
+
+- `codex-ready`
+- `codex-working`
+- `codex-blocked`
+- `codex-review`
+- `codex-done`
+
+Only one issue should be actively marked `codex-ready` at a time.
+
+Detailed Codex implementation and review rules are defined in `AGENTS.md`.
+
+Standard flow:
+
+1. Work starts from the next `codex-ready` issue.
+2. Codex creates a branch and pull request.
+3. Validation is performed and documented.
+4. The issue moves to `codex-review`.
+5. Merge only after review passes.
+
 ## Notes
 
 - Routing uses `HashRouter` so the app can deploy cleanly to GitHub Pages without extra server config.
