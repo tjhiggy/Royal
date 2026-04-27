@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v2.4.0',
-  updatedDate: '2026-04-24',
-  buildId: 'should-i-book-flagship',
+  currentVersion: 'v2.5.0',
+  updatedDate: '2026-04-27',
+  buildId: 'snapshot-recommendation-hub',
   changelogEntries: [
+    {
+      version: 'v2.5.0',
+      date: '2026-04-27',
+      changes: [
+        'Upgraded Trip Snapshot into a stronger final recommendation hub with a clearer answer-first hierarchy, readiness status, and primary next move.',
+        'Made Should I Book outputs drive Snapshot recommendations and share text more directly so the booking verdict stays consistent across final-answer surfaces.',
+        'Reworked empty Snapshot states into direct action paths toward Should I Book, Deal Evaluator, and Cruise Cost instead of passive placeholder copy.',
+      ],
+    },
     {
       version: 'v2.4.0',
       date: '2026-04-24',

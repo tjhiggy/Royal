@@ -37,8 +37,26 @@ function SnapshotPrompt({ item }) {
   )
 }
 
+function SnapshotCommand({ action }) {
+  return (
+    <Link className="snapshot-command-link" to={action.to}>
+      <span>{action.eyebrow}</span>
+      <strong>{action.label}</strong>
+      <small>{action.detail}</small>
+    </Link>
+  )
+}
+
 function buildSnapshotActionItems(snapshot) {
   const actions = []
+
+  if (!snapshot.shouldBookDecision) {
+    actions.push({
+      title: 'Get the booking verdict',
+      detail: 'Should I Book turns the saved trip numbers into the blunt Book Now, Wait, or Walk Away call.',
+      to: '/should-i-book',
+    })
+  }
 
   if (!snapshot.hasCostData) {
     actions.push({
@@ -81,6 +99,33 @@ function buildSnapshotActionItems(snapshot) {
   }
 
   return actions.slice(0, 3)
+}
+
+function buildPrimaryCommand(snapshot, actionItems) {
+  if (snapshot.shouldBookDecision) {
+    return {
+      eyebrow: 'Primary move',
+      label: snapshot.shouldBookDecision.bestNextAction,
+      detail: 'Pulled from the latest Should I Book verdict saved in this browser.',
+      to: '/should-i-book',
+    }
+  }
+
+  if (actionItems[0]) {
+    return {
+      eyebrow: 'Next best input',
+      label: actionItems[0].title,
+      detail: actionItems[0].detail,
+      to: actionItems[0].to,
+    }
+  }
+
+  return {
+    eyebrow: 'Final artifact',
+    label: 'Open My Trip Brief',
+    detail: 'Use the shareable trip brief when the decision is ready for another human to judge.',
+    to: '/brief',
+  }
 }
 
 function buildFinalRecommendation(snapshot) {
@@ -160,6 +205,12 @@ export default function TripSnapshotPage() {
   const completionCount = completionItems.filter((item) => item.complete).length
   const actionItems = buildSnapshotActionItems(snapshot)
   const finalRecommendation = buildFinalRecommendation(snapshot)
+  const primaryCommand = buildPrimaryCommand(snapshot, actionItems)
+  const readinessLabel = snapshot.shouldBookDecision
+    ? 'Booking verdict ready'
+    : snapshot.hasCostData
+      ? 'Cost picture ready'
+      : 'Decision needs one real input'
 
   useEffect(() => {
     if (!snapshot.hasCostData && !snapshot.hasDealData && !snapshot.compareSnapshot && !snapshot.shouldBookDecision) {
@@ -194,12 +245,16 @@ export default function TripSnapshotPage() {
 
       <section className="card snapshot-hero-card">
         <div className="snapshot-verdict-panel">
-          <span className="verdict-kicker">Final answer</span>
-          <h2>{snapshot.mainVerdict}</h2>
-          <p>{snapshot.mainLine}</p>
-          <div className="verdict-highlight snapshot-warning">
-            <span>Main warning</span>
-            <strong>{snapshot.mainWarning}</strong>
+          <div className="snapshot-command-header">
+            <div>
+              <span className="verdict-kicker">Final answer</span>
+              <h2>{snapshot.mainVerdict}</h2>
+              <p>{snapshot.mainLine}</p>
+            </div>
+            <div className="snapshot-status-pill">
+              <span>{readinessLabel}</span>
+              <strong>{completionCount}/{completionItems.length}</strong>
+            </div>
           </div>
           <div className="snapshot-final-call">
             <span className="verdict-kicker">What I would do</span>
@@ -213,20 +268,12 @@ export default function TripSnapshotPage() {
               <p>{finalRecommendation.risk}</p>
             </div>
           </div>
-          <p className="snapshot-source-note">{snapshot.sourceLine}</p>
-          <div className="snapshot-readiness">
-            <div>
-              <span>Decision readiness</span>
-              <strong>{completionCount} of {completionItems.length} checks complete</strong>
-            </div>
-            <div className="engine-chip-row">
-              {completionItems.map((item) => (
-                <span key={item.label} className={item.complete ? 'engine-chip-complete' : ''}>
-                  {item.label}
-                </span>
-              ))}
-            </div>
+          <div className="verdict-highlight snapshot-warning">
+            <span>Biggest risk</span>
+            <strong>{snapshot.mainWarning}</strong>
           </div>
+          <SnapshotCommand action={primaryCommand} />
+          <p className="snapshot-source-note">{snapshot.sourceLine}</p>
           <div className="snapshot-share-card">
             <div>
               <strong>Share this call</strong>
@@ -249,17 +296,36 @@ export default function TripSnapshotPage() {
         </div>
 
         {snapshot.keyMetrics.length ? (
-          <div className="stats-grid snapshot-top-stats">
-            {snapshot.keyMetrics.map((metric) => (
-              <SnapshotMetric key={metric.label} {...metric} />
-            ))}
+          <div className="snapshot-side-panel">
+            <div className="snapshot-readiness">
+              <div>
+                <span>Decision readiness</span>
+                <strong>{completionCount} of {completionItems.length} checks complete</strong>
+              </div>
+              <div className="engine-chip-row">
+                {completionItems.map((item) => (
+                  <span key={item.label} className={item.complete ? 'engine-chip-complete' : ''}>
+                    {item.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="stats-grid snapshot-top-stats">
+              {snapshot.keyMetrics.map((metric) => (
+                <SnapshotMetric key={metric.label} {...metric} />
+              ))}
+            </div>
           </div>
         ) : (
-          <div className="card callout-card snapshot-empty-card">
-            <strong>No real trip total yet.</strong>
-            <p>Run Deal Evaluator or Cruise Cost Calculator first. Snapshot gets much sharper once it has actual cost data.</p>
+          <div className="snapshot-empty-card">
+            <span className="verdict-kicker">Nothing useful saved yet</span>
+            <strong>Give Snapshot one real decision input.</strong>
+            <p>Start with Should I Book for the fastest verdict, or add Deal and Cost if you want the full financial trail first.</p>
             <div className="snapshot-empty-actions">
-              <Link className="button button-primary" to="/tools/deal-evaluator">
+              <Link className="button button-primary" to="/should-i-book">
+                Get booking verdict
+              </Link>
+              <Link className="button button-secondary" to="/tools/deal-evaluator">
                 Start with deal check
               </Link>
               <Link className="button button-secondary" to="/tools/cruise-cost">
