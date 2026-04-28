@@ -325,6 +325,8 @@ function buildQuickWins({ costResults, drinkResults, wifiResults, keyResults, di
 }
 
 export function buildSnapshotSummaryText(snapshot, url = getCurrentShareUrl()) {
+  const nextAction = snapshot.shouldBookDecision?.bestNextAction ?? snapshot.quickWins[0] ?? 'Finish Should I Book or Cruise Cost before booking.'
+
   return buildToolShareSummary({
     title: 'Trip Snapshot',
     verdict: snapshot.mainVerdict,
@@ -336,12 +338,14 @@ export function buildSnapshotSummaryText(snapshot, url = getCurrentShareUrl()) {
     mainDriver: snapshot.costDrivers[0]
       ? `${snapshot.costDrivers[0].label}: ${formatCurrency(snapshot.costDrivers[0].value)}`
       : snapshot.mainWarning,
-    nextAction: snapshot.quickWins[0] ?? 'Finish Deal and Cruise Cost before booking.',
+    nextAction,
     url,
   })
 }
 
 export function buildSnapshotShortShareText(snapshot, url = getCurrentShareUrl()) {
+  const nextAction = snapshot.shouldBookDecision?.bestNextAction ?? snapshot.quickWins[0] ?? 'Get the booking verdict first.'
+
   return buildToolShortShare({
     title: 'Trip Snapshot',
     verdict: snapshot.mainVerdict,
@@ -350,7 +354,7 @@ export function buildSnapshotShortShareText(snapshot, url = getCurrentShareUrl()
       : snapshot.costResults
       ? `Real cost ${formatCurrency(snapshot.costResults.grandTotal)}`
       : 'Real cost incomplete',
-    nextAction: snapshot.quickWins[0] ?? 'Finish the cost check first.',
+    nextAction,
     url,
   })
 }
