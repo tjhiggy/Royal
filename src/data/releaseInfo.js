@@ -1,8 +1,17 @@
 export const releaseInfo = {
-  currentVersion: 'v2.5.0',
-  updatedDate: '2026-04-27',
-  buildId: 'snapshot-recommendation-hub',
+  currentVersion: 'v2.6.0',
+  updatedDate: '2026-04-29',
+  buildId: 'windows-native-tauri',
   changelogEntries: [
+    {
+      version: 'v2.6.0',
+      date: '2026-04-29',
+      changes: [
+        'Added a Tauri-based Windows desktop shell for Cruise Decision Engine while preserving the existing React/Vite app and GitHub Pages deployment path.',
+        'Added desktop build scripts, native app metadata, Windows installer configuration, and generated app icons for the native Windows package.',
+        'Documented the desktop release workflow, architecture decision, installer output paths, and how desktop packaging coexists with the web build.',
+      ],
+    },
     {
       version: 'v2.5.0',
       date: '2026-04-27',
